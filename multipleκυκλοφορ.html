@@ -3,291 +3,436 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcards: Κυκλοφορικό Σύστημα</title>
+    <title>Quiz: Κυκλοφορικό Σύστημα</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
     <style>
         body {
             font-family: 'Inter', sans-serif;
-            background: radial-gradient(circle at top right, #f8fafc, #e2e8f0);
-            overflow-x: hidden;
+            background: #f8fafc;
+            min-height: 100vh;
         }
-
-        .flip-card {
-            background-color: transparent;
-            perspective: 1000px;
-            height: 400px; /* Ελαφρώς μεγαλύτερο ύψος για άνεση */
-        }
-
-        .flip-card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
-            transform-style: preserve-3d;
-            cursor: pointer;
-        }
-
-        .flip-card.flipped .flip-card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .flip-card-front, .flip-card-back {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            -webkit-backface-visibility: hidden;
-            backface-visibility: hidden;
-            display: flex;
-            flex-direction: column;
-            border-radius: 1.5rem;
-            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.02);
-            overflow: hidden; /* Προστασία από εκτόπιση περιεχομένου */
-        }
-
-        .flip-card-front {
-            background: rgba(255, 255, 255, 0.9);
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.5);
-            color: #1e293b;
-            justify-content: center;
-            align-items: center;
-            padding: 2.5rem;
         }
-
-        .flip-card-back {
-            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+        .nav-btn {
+            transition: all 0.2s ease;
+        }
+        .nav-btn.active {
+            ring: 2px;
+            ring-offset: 2px;
+            --tw-ring-color: #3b82f6;
+            background-color: #3b82f6;
             color: white;
-            transform: rotateY(180deg);
-            justify-content: center;
-            align-items: center;
-            padding: 2.5rem;
         }
-
-        /* Διόρθωση για το scrollbar ώστε να μην "σπρώχνει" το κείμενο */
-        .content-scroll {
-            width: 100%;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            scrollbar-color: rgba(255,255,255,0.3) transparent;
-            padding-right: 4px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            min-height: 100%;
+        .nav-btn.correct {
+            background-color: #22c55e;
+            color: white;
         }
-
-        .content-scroll::-webkit-scrollbar {
-            width: 4px;
+        .nav-btn.wrong {
+            background-color: #ef4444;
+            color: white;
         }
-        .content-scroll::-webkit-scrollbar-track {
-            background: transparent;
+        .option-btn {
+            transition: all 0.2s ease;
         }
-        .content-scroll::-webkit-scrollbar-thumb {
-            background-color: rgba(255,255,255,0.3);
-            border-radius: 20px;
+        .option-btn:hover:not(:disabled) {
+            border-color: #3b82f6;
+            background-color: #eff6ff;
         }
-
-        .progress-bar {
-            transition: width 0.4s ease;
+        .correct-opt {
+            background-color: #dcfce7 !important;
+            border-color: #22c55e !important;
+            color: #166534 !important;
         }
-
-        .glass-btn {
-            background: rgba(255, 255, 255, 0.7);
-            backdrop-filter: blur(5px);
-            border: 1px solid rgba(255, 255, 255, 0.5);
+        .wrong-opt {
+            background-color: #fee2e2 !important;
+            border-color: #ef4444 !important;
+            color: #991b1b !important;
+        }
+        
+        /* Modal Animation */
+        #nav-modal {
+            transition: opacity 0.3s ease, visibility 0.3s ease;
+        }
+        #nav-modal.hidden {
+            opacity: 0;
+            visibility: hidden;
+            display: flex; /* keep flex for layout but hide */
+        }
+        .modal-content {
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        #nav-modal.hidden .modal-content {
+            transform: translateY(20px);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col items-center justify-center py-8 px-4">
+<body class="p-4 md:p-8 flex flex-col items-center">
 
-    <!-- Background Decor -->
-    <div class="fixed top-0 left-0 w-full h-full pointer-events-none z-[-1] overflow-hidden opacity-20">
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-red-400 rounded-full mix-blend-multiply filter blur-3xl opacity-30"></div>
-    </div>
-
-    <div class="max-w-lg w-full">
+    <div class="max-w-3xl w-full">
         <!-- Header -->
-        <header class="text-center mb-6">
-            <span class="inline-block px-3 py-1 bg-blue-100 text-blue-600 text-[10px] font-bold rounded-full uppercase tracking-wider mb-2">Ιατρική Φυσιολογία</span>
-            <h1 class="text-4xl font-extrabold text-slate-900 tracking-tight">Κυκλοφορικό</h1>
+        <header class="flex justify-between items-center mb-6">
+            <div>
+                <h1 class="text-xl font-black text-slate-800 tracking-tight">Κυκλοφορικό Σύστημα</h1>
+                <p class="text-slate-500 text-xs">Interactive Assessment v3.0</p>
+            </div>
+            
+            <div class="flex items-center gap-3">
+                <span id="overall-progress" class="hidden sm:inline-block text-[10px] font-bold text-blue-600 bg-blue-50 px-3 py-1.5 rounded-full uppercase tracking-widest">
+                    0%
+                </span>
+                <!-- Popup Toggle Button -->
+                <button onclick="toggleModal(true)" class="flex items-center gap-2 px-4 py-2 bg-white border border-slate-200 rounded-xl shadow-sm hover:bg-slate-50 transition-all font-bold text-sm text-slate-700">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
+                    Ερωτήσεις
+                </button>
+            </div>
         </header>
 
-        <!-- Progress Bar -->
-        <div class="w-full bg-slate-200 h-1.5 rounded-full mb-6 overflow-hidden">
-            <div id="progress" class="progress-bar bg-blue-500 h-full w-0"></div>
-        </div>
-
-        <!-- Flashcard -->
-        <div id="card-container" class="flip-card mb-8">
-            <div class="flip-card-inner" id="card-inner" onclick="this.parentElement.classList.toggle('flipped')">
-                
-                <!-- Front Side -->
-                <div class="flip-card-front">
-                    <div class="absolute top-4 left-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ερώτηση</div>
-                    <div class="content-scroll">
-                        <p id="question-text" class="text-2xl font-bold text-slate-800 leading-snug"></p>
-                    </div>
-                    <div class="absolute bottom-6 opacity-10">
-                        <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"/><circle cx="12" cy="12" r="3"/></svg>
-                    </div>
-                </div>
-
-                <!-- Back Side -->
-                <div class="flip-card-back">
-                    <div class="absolute top-4 left-6 text-[10px] font-bold text-blue-200 uppercase tracking-widest">Απάντηση</div>
-                    <div class="content-scroll">
-                        <p id="answer-text" class="text-lg font-medium leading-relaxed"></p>
-                    </div>
-                </div>
-
+        <!-- Main Quiz Card -->
+        <main id="quiz-area" class="glass-card rounded-3xl shadow-xl p-6 md:p-10 min-h-[450px] flex flex-col relative overflow-hidden">
+            
+            <!-- Top Progress Bar -->
+            <div class="absolute top-0 left-0 w-full h-1 bg-slate-100">
+                <div id="inner-progress" class="h-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
             </div>
-        </div>
 
-        <!-- Controls -->
-        <div class="space-y-6">
-            <div class="flex justify-between items-center gap-4">
-                <button onclick="prevCard()" class="group flex items-center justify-center w-14 h-14 rounded-2xl glass-btn text-slate-700 hover:bg-white hover:shadow-lg transition-all">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 group-hover:-translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
-                </button>
+            <div id="question-content">
+                <div class="flex justify-between items-center mb-6">
+                    <span class="text-blue-600 font-bold text-xs uppercase tracking-tighter">Ερώτηση <span id="current-num">1</span>/5</span>
+                    <span id="score-badge" class="text-slate-400 text-[10px] font-bold uppercase tracking-widest">Σκορ: 0</span>
+                </div>
+
+                <h2 id="question-text" class="text-xl md:text-2xl font-bold text-slate-800 mb-8 leading-tight"></h2>
                 
-                <div class="text-center min-w-[80px]">
-                    <div class="text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-1">Κάρτα</div>
-                    <div class="text-lg font-bold text-slate-800">
-                        <span id="current-index">1</span> <span class="text-slate-300 mx-1">/</span> <span id="total-cards">0</span>
+                <div id="options-list" class="space-y-3">
+                    <!-- Options -->
+                </div>
+
+                <!-- Feedback Box -->
+                <div id="feedback-box" class="mt-8 p-5 rounded-2xl hidden transform transition-all scale-95 opacity-0">
+                    <div class="flex gap-4">
+                        <div id="feedback-icon" class="flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"></div>
+                        <div>
+                            <h4 id="feedback-title" class="font-bold mb-0.5 text-[10px] uppercase tracking-wide"></h4>
+                            <p id="feedback-msg" class="text-sm leading-relaxed"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Next Button -->
+            <button id="next-btn" onclick="goToNext()" class="mt-8 w-full md:w-auto md:ml-auto px-8 py-3.5 bg-slate-900 text-white rounded-xl font-bold hover:bg-blue-600 transition-all shadow-lg hidden">
+                Επόμενη Ερώτηση
+            </button>
+
+            <!-- Result Screen -->
+            <div id="result-screen" class="hidden flex-col items-center justify-center h-full py-10 text-center">
+                <div class="w-16 h-16 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center text-2xl mb-4 mx-auto">🏆</div>
+                <h2 class="text-2xl font-black text-slate-800 mb-1">Συγχαρητήρια!</h2>
+                <p class="text-slate-500 text-sm mb-6">Ολοκλήρωσες το τεστ κυκλοφορικού συστήματος.</p>
+                
+                <div class="grid grid-cols-2 gap-3 w-full max-w-xs mb-8">
+                    <div class="bg-slate-50 p-4 rounded-2xl">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Σκορ</div>
+                        <div class="text-xl font-black text-slate-800"><span id="final-score">0</span>/5</div>
+                    </div>
+                    <div class="bg-slate-50 p-4 rounded-2xl">
+                        <div class="text-[9px] font-bold text-slate-400 uppercase mb-0.5">Ποσοστό</div>
+                        <div class="text-xl font-black text-blue-600"><span id="final-pct">0</span>%</div>
                     </div>
                 </div>
 
-                <button onclick="nextCard()" class="group flex items-center justify-center flex-1 h-14 bg-slate-900 text-white rounded-2xl hover:bg-blue-600 hover:shadow-xl hover:shadow-blue-200 transition-all font-bold">
-                    <span>Επόμενη</span>
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 ml-2 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                <button onclick="restartQuiz()" class="px-8 py-3 bg-blue-600 text-white rounded-xl font-bold hover:bg-blue-700 transition-all shadow-lg">
+                    Δοκίμασε Ξανά
+                </button>
+            </div>
+        </main>
+    </div>
+
+    <!-- NAVIGATION MODAL (The Pop-up) -->
+    <div id="nav-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/60 backdrop-blur-sm">
+        <div class="modal-content glass-card w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
+            <div class="p-6 border-b border-slate-100 flex justify-between items-center bg-white">
+                <h3 class="font-bold text-slate-800">Πλοήγηση Ερωτήσεων</h3>
+                <button onclick="toggleModal(false)" class="p-2 hover:bg-slate-100 rounded-lg text-slate-400">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
                 </button>
             </div>
             
-            <div class="flex justify-center">
-                <button onclick="shuffleCards()" class="flex items-center text-slate-500 hover:text-blue-600 font-bold text-xs transition-colors bg-white/50 px-4 py-2 rounded-full border border-slate-200">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-3 w-3 mr-2" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" /></svg>
-                    Ανακάτεμα
-                </button>
+            <div class="p-6 bg-slate-50/50 max-h-[60vh] overflow-y-auto">
+                <div id="nav-grid" class="grid grid-cols-5 gap-3">
+                    <!-- Nav buttons -->
+                </div>
+
+                <div class="mt-8 flex justify-center gap-4 text-[10px] font-bold uppercase tracking-widest">
+                    <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-green-500"></div> <span class="text-slate-500">Σωστό</span></div>
+                    <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-red-500"></div> <span class="text-slate-500">Λάθος</span></div>
+                    <div class="flex items-center gap-1.5"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div> <span class="text-slate-500">Τρέχουσα</span></div>
+                </div>
+            </div>
+            
+            <div class="p-4 bg-white text-center">
+                <button onclick="toggleModal(false)" class="text-blue-600 font-bold text-sm hover:underline">Επιστροφή στο τεστ</button>
             </div>
         </div>
-
-        <footer class="mt-8 text-center text-[9px] text-slate-400 uppercase tracking-[0.2em] font-bold">
-            Space για αναστροφή &bull; Βέλη για πλοήγηση
-        </footer>
     </div>
 
     <script>
-        const flashcards = [
+        const quizData = [
             {
-                q: "Ποιες είναι οι κύριες λειτουργίες του κυκλοφορικού συστήματος;",
-                a: "Oμοιόσταση, Μεταφορά αναπνευστικών αερίων & θρεπτικών συστατικών, απομάκρυνση προϊόντων μεταβολισμού, θερμορύθμιση και άμυνα (μεταφορά ορμονών)."
+                id: 0,
+                q: "Ποια από τις παρακάτω λειτουργίες ΔΕΝ αποτελεί κύρια αρμοδιότητα του κυκλοφορικού συστήματος;",
+                options: [
+                    "Μεταφορά ορμονών και θρεπτικών συστατικών",
+                    "Παραγωγή βιταμίνης D μέσω της ηλιακής ακτινοβολίας",
+                    "Ρύθμιση της θερμοκρασίας του σώματος",
+                    "Απομάκρυνση άχρηστων προϊόντων του μεταβολισμού"
+                ],
+                correct: 1,
+                reason: "Η παραγωγή βιταμίνης D είναι λειτουργία του δέρματος."
             },
             {
-                q: "Ποιοι είναι οι τρεις χιτώνες των αγγείων;",
-                a: "<div class='text-left space-y-2 italic'>• <b>Έσω χιτώνας:</b> Ενδοθήλιο<br>• <b>Μέσος χιτώνας:</b> Λείες μυϊκές ίνες<br>• <b>Έξω χιτώνας:</b> Συνδετικός ιστός</div>"
+                id: 1,
+                q: "Τι εξασφαλίζει τη μονόδρομη ροή του αίματος στις φλέβες, παρά τη χαμηλή πίεση;",
+                options: [
+                    "Ο παχύς μέσος χιτώνας",
+                    "Η ώθηση από την αριστερή κοιλία",
+                    "Οι φλεβικές βαλβίδες",
+                    "Η παρουσία τενόντιων χορδών"
+                ],
+                correct: 2,
+                reason: "Οι βαλβίδες εμποδίζουν την παλινδρόμηση του αίματος."
             },
             {
-                q: "Ποια είναι η βασική ανατομική διαφορά των φλεβών από τις αρτηρίες;",
-                a: "Οι φλέβες διαθέτουν <b>βαλβίδες</b> για μονόδρομη ροή και έχουν <b>λεπτότερο μέσο χιτώνα</b> συγκριτικά με τις αρτηρίες."
+                id: 2,
+                q: "Από ποιο τμήμα της καρδιάς ξεκινά η πνευμονική κυκλοφορία;",
+                options: [
+                    "Από τον δεξιό κόλπο",
+                    "Από την αριστερή κοιλία",
+                    "Από τον αριστερό κόλπο",
+                    "Από τη δεξιά κοιλία"
+                ],
+                correct: 3,
+                reason: "Η δεξιά κοιλία στέλνει το αίμα στους πνεύμονες."
             },
             {
-                q: "Ποιες είναι οι κολποκοιλιακές βαλβίδες;",
-                a: "Η <b>Τριγλώχινα</b> (δεξιός κόλπος - δεξιά κοιλία) και η <b>Μιτροειδής</b> (αριστερός κόλπος - αριστερή κοιλία)."
+                id: 3,
+                q: "Τι επιτρέπουν οι χασμοσύνδεσμοι (gap junctions) στους εμβόλιμους δίσκους;",
+                options: [
+                    "Τη μηχανική συνοχή των κυττάρων",
+                    "Τη μετάδοση των ερεθισμάτων μεταξύ των κυττάρων",
+                    "Τη σύνδεση των βαλβίδων με τους θηλοειδείς μυς",
+                    "Την παραγωγή ATP για τη συστολή"
+                ],
+                correct: 1,
+                reason: "Επιτρέπουν τη γρήγορη ηλεκτρική επικοινωνία."
             },
             {
-                q: "Πώς συνδέονται οι γλωχίνες των κολποκοιλιακών βαλβίδων με την καρδιά;",
-                a: "Προσφύονται στο κολποκοιλιακό στόμιο και συνδέονται με τους <b>θηλοειδείς μυς</b> μέσω των <b>τενόντιων χορδών</b>."
+                id: 4,
+                q: "Ποιο είναι το κύριο χαρακτηριστικό των αυτορρυθμικών κυττάρων της καρδιάς;",
+                options: [
+                    "Αποτελούν το 99% των καρδιακών κυττάρων",
+                    "Παράγουν το μηχανικό έργο της συστολής",
+                    "Παράγουν δυναμικά δράσης αυτόματα χωρίς νευρική διέγερση",
+                    "Διαθέτουν πολύ μεγάλο πάχος τοιχώματος"
+                ],
+                correct: 2,
+                reason: "Είναι οι φυσικοί βηματοδότες της καρδιάς."
+            }
+            {
+                q: "Στο ΗΚΓ, ποιο κύμα αντιστοιχεί στην εκπόλωση των κόλπων;",
+                options: ["Κύμα T", "Κύμα P", "Σύμπλεγμα QRS", "Διάστημα ST"],
+                correct: 1
             },
             {
-                q: "Ποια είναι η πλήρης διαδρομή της πνευμονικής κυκλοφορίας;",
-                a: "Άνω/Κάτω κοίλη φλέβα → Δεξιός κόλπος → Δεξιά κοιλία → Πνευμονική αρτηρία → Πνεύμονες → Πνευμονικές φλέβες → Αριστερός κόλπος."
+                q: "Τι 'κρύβεται' κάτω από το σύμπλεγμα QRS στο ηλεκτροκαρδιογράφημα;",
+                options: ["Η εκπόλωση των κοιλιών", "Η επαναπόλωση των κόλπων", "Η κολπική συστολή", "Η πλήρωση των κοιλιών"],
+                correct: 1
             },
             {
-                q: "Ποιες είναι οι τρεις στιβάδες του καρδιακού τοιχώματος;",
-                a: "1. <b>Ενδοκάρδιο:</b> Εσωτερικά<br>2. <b>Μυοκάρδιο:</b> Μέση στιβάδα<br>3. <b>Επικάρδιο:</b> Εξωτερική στιβάδα."
+                q: "Το κύμα T αντιπροσωπεύει:",
+                options: ["Την εκπόλωση των κοιλιών", "Την κολποκοιλιακή καθυστέρηση", "Την επαναπόλωση των κοιλιών", "Την έναρξη της συστολής"],
+                correct: 2
             },
             {
-                q: "Ποιος είναι ο ρόλος των καρδιακών βαλβίδων;",
-                a: "Εξασφαλίζουν τη <b>μονόδρομη ροή</b>. Ανοίγουν όταν η πίεση πίσω είναι μεγαλύτερη και κλείνουν όταν η πίεση μπροστά αυξάνεται."
+                q: "Η λειτουργία 'διπλής αντλίας' διασφαλίζει ότι:",
+                options: ["Η αριστερή κοιλία αντλεί περισσότερο αίμα", "Και τα δύο τμήματα αντλούν την ίδια ποσότητα αίματος", "Το αίμα ρέει μόνο προς τους πνεύμονες", "Οι κόλποι συσπώνται πριν τις κοιλίες"],
+                correct: 1
             },
             {
-                q: "Τι είναι οι εμβόλιμοι δίσκοι;",
-                a: "Συνδέσεις μεταξύ κυττάρων που περιέχουν <b>δεσμοσώματα</b> (συνοχή) και <b>χασμοσυνδέσμους</b> (επικοινωνία)."
+                q: "Ποιο διάστημα στο ΗΚΓ αντιστοιχεί στην κολποκοιλιακή καθυστέρηση;",
+                options: ["Διάστημα PR", "Διάστημα ST", "Κύμα T", "Σύμπλεγμα QRS"],
+                correct: 0
             },
             {
-                q: "Ποιοι είναι οι δύο τύποι καρδιακών μυϊκών κυττάρων;",
-                a: "1. <b>Συσταλτά (99%):</b> Παράγουν μηχανικό έργο.<br>2. <b>Αυτορρυθμικά:</b> Βηματοδότες που παράγουν αυτόματα δυναμικά δράσης."
-            },
-            {
-                q: "Ποια είναι η σειρά διέλευσης του ηλεκτρικού ερεθίσματος;",
-                a: "Φλεβόκομβος → Κολποκοιλιακός κόμβος → Δεμάτιο His → Δεξί/Αριστερό σκέλος → Ίνες Purkinje."
-            },
-            {
-                q: "Γιατί η αριστερή κοιλία έχει παχύτερο τοίχωμα;",
-                a: "Γιατί εξωθεί το αίμα στη <b>συστηματική κυκλοφορία</b>, η οποία απαιτεί πολύ υψηλότερη πίεση σε σχέση με την πνευμονική."
+                q: "Κατά την ισοογκομετρική συστολή:",
+                options: ["Οι βαλβίδες είναι ανοιχτές", "Ο όγκος αίματος μειώνεται", "Η πίεση αυξάνεται με σταθερό όγκο", "Το αίμα ρέει στην αορτή"],
+                correct: 2
             }
         ];
 
-        let currentIndex = 0;
-        let cards = [...flashcards];
+        let state = {
+            currentQ: 0,
+            answers: Array(quizData.length).fill(null),
+            results: Array(quizData.length).fill(null),
+            score: 0
+        };
 
-        const cardContainer = document.getElementById('card-container');
-        const questionText = document.getElementById('question-text');
-        const answerText = document.getElementById('answer-text');
-        const currentIndexDisplay = document.getElementById('current-index');
-        const totalCardsDisplay = document.getElementById('total-cards');
-        const progressBar = document.getElementById('progress');
+        const navGrid = document.getElementById('nav-grid');
+        const modal = document.getElementById('nav-modal');
 
-        function updateCard() {
-            // Αφαιρούμε το flip πριν αλλάξουμε το περιεχόμενο
-            cardContainer.classList.remove('flipped');
-            
-            // Καθυστέρηση της αλλαγής κειμένου μέχρι να μην είναι ορατή η πλευρά
-            setTimeout(() => {
-                questionText.innerText = cards[currentIndex].q;
-                answerText.innerHTML = cards[currentIndex].a;
-                currentIndexDisplay.innerText = currentIndex + 1;
+        function toggleModal(show) {
+            if (show) modal.classList.remove('hidden');
+            else modal.classList.add('hidden');
+        }
+
+        function initNav() {
+            navGrid.innerHTML = '';
+            quizData.forEach((_, i) => {
+                const btn = document.createElement('button');
+                btn.className = `nav-btn h-10 w-full rounded-lg font-bold text-xs bg-slate-100 text-slate-400`;
+                btn.innerText = i + 1;
+                btn.id = `nav-${i}`;
+                btn.onclick = () => {
+                    jumpToQuestion(i);
+                    toggleModal(false);
+                };
+                navGrid.appendChild(btn);
+            });
+            updateNavUI();
+        }
+
+        function updateNavUI() {
+            quizData.forEach((_, i) => {
+                const btn = document.getElementById(`nav-${i}`);
+                if (!btn) return;
+                btn.classList.remove('active', 'correct', 'wrong', 'bg-slate-100', 'text-slate-400');
                 
-                const progress = ((currentIndex + 1) / cards.length) * 100;
-                progressBar.style.width = `${progress}%`;
-            }, 200);
+                if (state.currentQ === i) btn.classList.add('active');
+                else if (state.results[i] === true) btn.classList.add('correct');
+                else if (state.results[i] === false) btn.classList.add('wrong');
+                else btn.classList.add('bg-slate-100', 'text-slate-400');
+            });
+
+            const answeredCount = state.results.filter(r => r !== null).length;
+            const pct = Math.round((answeredCount / quizData.length) * 100);
+            document.getElementById('overall-progress').innerText = `${pct}%`;
+            document.getElementById('inner-progress').style.width = `${pct}%`;
+            document.getElementById('score-badge').innerText = `Σκορ: ${state.score}`;
         }
 
-        function nextCard() {
-            currentIndex = (currentIndex + 1) % cards.length;
-            updateCard();
+        function jumpToQuestion(index) {
+            state.currentQ = index;
+            renderQuestion();
+            updateNavUI();
         }
 
-        function prevCard() {
-            currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-            updateCard();
-        }
+        function renderQuestion() {
+            const data = quizData[state.currentQ];
+            document.getElementById('current-num').innerText = state.currentQ + 1;
+            document.getElementById('question-text').innerText = data.q;
+            const optionsList = document.getElementById('options-list');
+            const feedbackBox = document.getElementById('feedback-box');
+            const nextBtn = document.getElementById('next-btn');
+            
+            optionsList.innerHTML = '';
+            feedbackBox.classList.add('hidden');
+            nextBtn.classList.add('hidden');
 
-        function shuffleCards() {
-            for (let i = cards.length - 1; i > 0; i--) {
-                const j = Math.floor(Math.random() * (i + 1));
-                [cards[i], cards[j]] = [cards[j], cards[i]];
+            data.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = "option-btn w-full text-left p-4 rounded-xl border border-slate-100 text-sm font-medium text-slate-700 bg-white shadow-sm flex items-center gap-3";
+                btn.innerHTML = `<div class="w-5 h-5 rounded-full border border-slate-200 flex-shrink-0 flex items-center justify-center text-[10px] font-bold text-slate-400">${i+1}</div> <span>${opt}</span>`;
+                
+                if (state.results[state.currentQ] !== null) {
+                    btn.disabled = true;
+                    if (i === data.correct) btn.classList.add('correct-opt');
+                    if (i === state.answers[state.currentQ] && i !== data.correct) btn.classList.add('wrong-opt');
+                } else {
+                    btn.onclick = () => checkAnswer(i);
+                }
+                optionsList.appendChild(btn);
+            });
+
+            if (state.results[state.currentQ] !== null) {
+                showFeedback(state.results[state.currentQ]);
+                nextBtn.classList.remove('hidden');
             }
-            currentIndex = 0;
-            updateCard();
         }
 
-        // Initialize
-        totalCardsDisplay.innerText = cards.length;
-        updateCard();
+        function checkAnswer(idx) {
+            const data = quizData[state.currentQ];
+            state.answers[state.currentQ] = idx;
+            const isCorrect = (idx === data.correct);
+            state.results[state.currentQ] = isCorrect;
+            if (isCorrect) state.score++;
+            updateNavUI();
+            renderQuestion();
+        }
 
-        // Keyboard navigation
-        document.addEventListener('keydown', (e) => {
-            if (e.key === 'ArrowRight') nextCard();
-            if (e.key === 'ArrowLeft') prevCard();
-            if (e.key === ' ') {
-                e.preventDefault();
-                cardContainer.classList.toggle('flipped');
+        function showFeedback(isCorrect) {
+            const feedbackBox = document.getElementById('feedback-box');
+            const data = quizData[state.currentQ];
+            feedbackBox.classList.remove('hidden');
+            setTimeout(() => { feedbackBox.classList.remove('scale-95', 'opacity-0'); }, 50);
+
+            const icon = document.getElementById('feedback-icon');
+            const title = document.getElementById('feedback-title');
+            const msg = document.getElementById('feedback-msg');
+
+            if (isCorrect) {
+                feedbackBox.className = "mt-6 p-4 rounded-xl bg-green-50 border border-green-100 block transform transition-all";
+                icon.className = "flex-shrink-0 w-8 h-8 rounded-full bg-green-500 flex items-center justify-center text-white text-xs";
+                icon.innerHTML = "✓";
+                title.innerText = "Σωστό";
+                title.className = "font-bold text-[10px] uppercase tracking-widest text-green-600";
+            } else {
+                feedbackBox.className = "mt-6 p-4 rounded-xl bg-red-50 border border-red-100 block transform transition-all";
+                icon.className = "flex-shrink-0 w-8 h-8 rounded-full bg-red-500 flex items-center justify-center text-white text-xs";
+                icon.innerHTML = "✕";
+                title.innerText = "Λάθος";
+                title.className = "font-bold text-[10px] uppercase tracking-widest text-red-600";
             }
-        });
+            msg.innerText = data.reason;
+            
+            const nextBtn = document.getElementById('next-btn');
+            if (state.currentQ < quizData.length - 1) {
+                nextBtn.innerText = "Επόμενη";
+                nextBtn.onclick = goToNext;
+            } else {
+                nextBtn.innerText = "Αποτελέσματα";
+                nextBtn.onclick = showFinalScreen;
+            }
+        }
+
+        function goToNext() {
+            if (state.currentQ < quizData.length - 1) jumpToQuestion(state.currentQ + 1);
+        }
+
+        function showFinalScreen() {
+            document.getElementById('question-content').classList.add('hidden');
+            document.getElementById('next-btn').classList.add('hidden');
+            const screen = document.getElementById('result-screen');
+            screen.classList.remove('hidden');
+            screen.classList.add('flex');
+            document.getElementById('final-score').innerText = state.score;
+            document.getElementById('final-pct').innerText = Math.round((state.score / quizData.length) * 100);
+        }
+
+        function restartQuiz() {
+            state = { currentQ: 0, answers: Array(quizData.length).fill(null), results: Array(quizData.length).fill(null), score: 0 };
+            document.getElementById('question-content').classList.remove('hidden');
+            document.getElementById('result-screen').classList.add('hidden');
+            initNav();
+            renderQuestion();
+        }
+
+        initNav();
+        renderQuestion();
     </script>
 </body>
 </html>
