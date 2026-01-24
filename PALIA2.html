@@ -1,0 +1,250 @@
+<!DOCTYPE html>
+<html lang="el" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Φυσιολογία - Interactive Quiz</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #0f172a;
+            color: #f1f5f9;
+        }
+        .quiz-card {
+            background-color: #1e293b;
+            border: 1px solid #334155;
+        }
+        .option-btn {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            text-align: left;
+            width: 100%;
+        }
+        .option-btn:hover:not(:disabled) {
+            background-color: #334155;
+            transform: translateX(4px);
+        }
+        .option-correct {
+            background-color: #065f46 !important;
+            border-color: #10b981 !important;
+            color: #ecfdf5 !important;
+        }
+        .option-wrong {
+            background-color: #7f1d1d !important;
+            border-color: #ef4444 !important;
+            color: #fef2f2 !important;
+        }
+        .nav-dot {
+            transition: all 0.2s;
+            cursor: pointer;
+        }
+        .nav-dot.active {
+            border-color: #3b82f6;
+            background-color: #1e3a8a;
+            color: white;
+            transform: scale(1.1);
+        }
+        .nav-dot.answered {
+            border-color: #475569;
+            opacity: 0.6;
+        }
+        .btn-nav:hover:not(:disabled) {
+            background-color: #334155;
+            color: #60a5fa;
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #0f172a; }
+        ::-webkit-scrollbar-thumb { background: #334155; border-radius: 10px; }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col items-center py-10 px-4">
+
+    <div class="max-w-2xl w-full">
+        <header class="mb-8 text-center">
+            <h1 class="text-2xl font-bold text-blue-400 tracking-tight">Φυσιολογία - Interactive Quiz</h1>
+            <p class="text-slate-400 text-sm mt-1">ΑΠΘ - Διαγνωστικό Τεστ</p>
+        </header>
+
+        <!-- Main Quiz Card -->
+        <div id="quiz-container" class="quiz-card rounded-2xl p-6 shadow-2xl min-h-[480px] flex flex-col justify-between">
+            <div id="question-content">
+                <div class="flex justify-between items-center mb-6">
+                    <span id="q-number" class="text-blue-500 font-semibold text-lg">Ερώτηση</span>
+                    <span id="score-top" class="text-slate-500 font-mono text-xs">Σκορ: 0 / 0</span>
+                </div>
+                <p id="q-text" class="text-lg leading-relaxed mb-8 font-medium"></p>
+                <div id="q-options" class="space-y-3">
+                    <!-- Options injected here -->
+                </div>
+            </div>
+
+            <div class="mt-8 pt-6 border-t border-slate-700/50">
+                <div id="feedback" class="hidden p-4 rounded-xl mb-6 text-center font-semibold text-sm"></div>
+                
+                <div class="flex justify-between items-center gap-4">
+                    <button onclick="prevQuestion()" id="prev-btn" class="btn-nav p-2 rounded-lg text-slate-400 disabled:opacity-20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+                    </button>
+                    
+                    <button onclick="resetCurrent()" class="text-slate-600 hover:text-slate-400 text-[10px] uppercase font-bold tracking-widest px-4">
+                        Επαναφορα
+                    </button>
+
+                    <button onclick="nextQuestion()" id="next-btn" class="btn-nav p-2 rounded-lg text-slate-400 disabled:opacity-20">
+                        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Navigation Grid Panel -->
+        <div class="mt-6 quiz-card rounded-2xl p-5 border-slate-800">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xs font-bold text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" /></svg>
+                    Περιηγηση Ερωτησεων
+                </h3>
+                <span id="progress-text" class="text-[10px] font-mono text-slate-500">0 / 26</span>
+            </div>
+            <div id="nav-grid" class="flex flex-wrap gap-2">
+                <!-- Grid items injected here -->
+            </div>
+        </div>
+
+        <footer class="mt-10 text-center text-slate-600 text-[10px] uppercase tracking-tighter opacity-50">
+            Εργαστηριο Πειραματικης Φυσιολογιας - Ιατρικη ΑΠΘ
+        </footer>
+    </div>
+
+    <script>
+        const questions = [
+            { n: 1, q: "Ποιο από τα παρακάτω προκαλεί καρδιακό φύσημα που ακούγεται μόνο κατά τη διαστολική φάση;", options: ["Ανοιχτός βοτάλειος πόρος", "Ανεπάρκεια μιτροειδούς", "Στένωση τριγλώχινας βαλβίδας", "Ανοιχτό μεσοκολπικό διάφραγμα", "Στένωση αορτής"], a: 2 },
+            { n: 2, q: "Ποιο από τα παρακάτω εξηγεί καλύτερα το πώς επηρεάζει την καρδιά η διέγερση του συμπαθητικού;", options: ["Ελαττώνεται η διαπερατότητα του φλεβόκομβου για το νάτριο", "Ελαττώνεται η διαπερατότητα του κολποκοιλιακού κόμβου για το νάτριο", "Αυξάνεται η διαπερατότητα του φλεβόκομβου για το κάλιο", "Αυξάνεται η κλίση του προδυναμικού (βηματοδοτικού δυναμικού) στον φλεβόκομβο", "Ελαττώνεται η διαπερατότητα του καρδιακού μυός για το ασβέστιο"], a: 3 },
+            { n: 3, q: "Η σύσπαση της χοληδόχου κύστης:", options: ["Αναστέλλεται από την παρουσία αμινοξέων στο δωδεκαδάκτυλο", "Αναστέλλεται μετά την κατανάλωση γεύματος πλούσιου σε λίπη", "Διεγείρεται από τη χολοκυστοκινίνη", "Συνοδεύεται από σύσπαση του σφιγκτήρα του Oddi", "Διεγείρεται από την ατροπίνη"], a: 2 },
+            { n: 4, q: "Η ανταλλαγή των αερίων στους πνεύμονες γίνεται:", options: ["Στους κύριους βρόγχους.", "Στα βρογχιόλια.", "Στα δευτερογενή βρογχιόλια.", "Στις κυψελίδες."], a: 3 },
+            { n: 5, q: "Είναι σωστό ότι:", options: ["Η υποξία προκαλεί αγγειοδιαστολή στα πνευμονικά αγγεία.", "Η απόφραξη βρόγχου δεν διαταράσσει τη σχέση αερισμού/αιμάτωσης.", "Σε κατάσταση μεταβολικής αλκάλωσης ο αερισμός των πνευμόνων είναι αυξημένος.", "Η ευενδοτότητα (compliance) των πνευμόνων είναι μεγαλύτερη σε φυσιολογικό ενήλικα από ότι σε νεογέννητο άνθρωπο."], a: 3 },
+            { n: 6, q: "Αν κολποκοιλιακός κόμβος γίνει ο βηματοδότης της καρδιάς, ποιος είναι αναμενόμενος καρδιακός ρυθμός;", options: ["30 παλμοί/λεπτό", "50 παλμοί/λεπτό", "75 παλμοί/λεπτό", "85 παλμοί/λεπτό"], a: 1 },
+            { n: 8, q: "Όλα τα παρακάτω είναι σωστά εκτός από:", options: ["Η βιταμίνη Β12 απορροφάται από τον ειλεό", "Η χολή συμπυκνώνεται στη χοληδόχο κύστη με απορρόφηση ύδατος", "Τα λιπαρά οξέα εισέρχονται στα επιθηλιακά κύτταρα με ενεργητική μεταφορά", "Το μεγαλύτερο ποσοστό των υδατανθράκων απορροφάται ως μονοσακχαρίτες", "Η απορρόφηση των Ca2+ ελέγχεται από την αντιδιουρητική ορμόνη."], a: 4 },
+            { n: 9, q: "Η αντιδιουρητική ορμόνη:", options: ["παράγεται στους νεφρούς", "παράγεται στους κόλπους της καρδιάς", "παράγεται στους νευρώνες των υπεροπτικών πυρήνων του υποθαλάμου", "παράγεται στο ήπαρ", "αυξάνει την απέκκριση ιόντων ασβεστίου"], a: 2 },
+            { n: 10, q: "Ποια από τις παρακάτω καταστάσεις έχει ως αποτέλεσμα μια διατεταμένη, χαλαρή καρδιά;", options: ["Πλεόνασμα ιόντων ασβεστίου στο αίμα", "Πλεόνασμα ιόντων καλίου στο αίμα", "Πλεόνασμα ιόντων νατρίου στο αίμα", "Αυξημένη συμπαθητική διέγερση"], a: 1 },
+            { n: 11, q: "Οι παρακάτω παράγοντες επηρεάζουν τις τιμές των tests πνευμονικής λειτουργίας εκτός από:", options: ["Την ηλικία του εξεταζομένου", "Το γένος του", "Την εθνικότητά του", "Την ατμοσφαιρική πίεση", "Το ύψος του."], a: 3 },
+            { n: 12, q: "Μεγάλες τιμές της υδροστατικής πίεσης κατά τη νεφρική κυκλοφορία συμβαίνουν:", options: ["Στα προσαγωγά και απαγωγά αρτηρίδια", "Στις τοξοειδείς και μεσολόβιες αρτηρίες", "Στα ανιόντα και κατιόντα ορθά αγγεία", "Στο σπειραματικό θύλακο των τριχοειδών", "Στις νεφρικές αρτηρίες"], a: 3 },
+            { n: 13, q: "Για τη ζωτική χωρητικότητα ισχύει:", options: ["Είναι το άθροισμα όλων των όγκων.", "Αυξάνεται κατά τη μυασθένεια.", "Μειώνεται δραστικά από την παιδική ηλικία μέχρι την ενηλικίωση.", "Εξαρτάται από το φύλο, την ηλικία και τη σωματική διάπλαση.", "Αντιπροσωπεύει το 90% της ολικής πνευμονικής χωρητικότητας."], a: 3 },
+            { n: 15, q: "Ποια από τις παρακάτω αλλαγές, τείνει να αυξήσει το ρυθμό σπειραματικής διήθησης (GFR);", options: ["Αυξημένη αντίσταση προσαγωγού αρτηριδίου", "Ελαττωμένη αντίσταση απαγωγού αρτηριδίου", "Αυξημένος συντελεστής διήθησης (Kf)", "Αυξημένη υδροστατική πίεση στην κάψα του Bowman", "Ελαττωμένη υδροστατική πίεση στα τριχοειδή του σπειράματος"], a: 2 },
+            { n: 16, q: "Η παραγωγή των ούρων οφείλεται:", options: ["μόνο στη σπειραματική διήθηση", "μόνο στη σωληναριακή επαναρρόφηση", "μόνο στη σωληναριακή απέκκριση", "στην παρουσία αντλίας Na/K", "σε όλα τα παραπάνω"], a: 4 },
+            { n: 19, q: "Για τη διαστολική φάση του καρδιακού κύκλου ισχύει ότι:", options: ["Η φάση χαλάσεως χρονικά διαρκεί 40 έως 60 msec", "Η συστολή του δεξιού κόλπου αρχίζει πριν τη συστολή του αριστερού", "Ο όγκος πληρώσεως κάθε κοιλίας είναι περίπου 150 ml (τελοδιαστολικός)", "Διαιρείται σε τρεις υποφάσεις"], a: 2 },
+            { n: 22, q: "Ποιο αέριο χρησιμοποιείται συχνά για να εκτιμηθεί η ικανότητα διάχυσης οξυγόνου στους πνεύμονες;", options: ["Διοξείδιο του άνθρακα", "Μονοξείδιο του άνθρακα", "Υδροκυάνιο", "Άζωτο"], a: 1 },
+            { n: 29, q: "Ποιο από τα παρακάτω διεγείρει το πάγκρεας να εκκρίνει διττανθρακικά ιόντα;", options: ["Εκκριτίνη (Secretin)", "Χολοκυστοκινίνη", "Μοτιλίνη", "Γαστρίνη"], a: 0 },
+            { n: 30, q: "Σε υψόμετρο 5.895 m για 2 εβδομάδες. Τι παρατηρούμε στα αέρια αίματος;", options: ["Χρόνια αναπνευστική οξέωση", "Χρόνια αναπνευστική αλκάλωση με νεφρική αντιρρόπηση", "Χρόνια μεταβολική οξέωση", "Χρόνια μεταβολική αλκάλωση"], a: 1 },
+            { n: 31, q: "Σε υψηλή πρόσληψη καλίου, ποιο τμήμα του νεφρώνα θα εκκρίνει το περισσότερο κάλιο;", options: ["Εγγύς σωληνάριο", "Κατιόν λεπτό σκέλος", "Ανιόν σκέλος", "Πρώτη μοίρα άπω σωληναρίου", "Αθροιστικό σωληνάριο"], a: 4 },
+            { n: 32, q: "Ποιο από τα παρακάτω είναι πιθανό να προκαλέσει σπαστική συστολή της καρδιάς;", options: ["Αυξημένη θερμοκρασία σώματος", "Αυξημένη δράση συμπαθητικού", "Ελαττωμένα ιόντα K+", "Πλεόνασμα ιόντων K+", "Πλεόνασμα ιόντων Ca+"], a: 4 },
+            { n: 33, q: "Ποιος παράγοντας προκαλεί αγγειοδιαστολή;", options: ["Προσταγλανδίνη F2α.", "Αγγειοτενσίνη II.", "Βραδυκινίνη.", "Θρομβοξιάνιο ΤΧΑ2."], a: 2 },
+            { n: 35, q: "Επαναρρόφηση στο εγγύς σωληνάριο. Ποιο είναι το ΛΑΘΟΣ;", options: ["Αντιμεταφορά Na-H", "Συμμεταφορά Na-αμινοξέων", "Επαναρρόφηση 65-70% Na/H2O", "Η επαναρρόφηση των αμινοξέων γίνεται παθητικά"], a: 3 },
+            { n: 38, q: "Σχετικά με τη χολή, ποιο είναι το ΛΑΘΟΣ;", options: ["Εκκριτικοί πόροι εκκρίνουν αλκαλικό διάλυμα", "Μεγαλύτερο ποσοστό χολικών αλάτων απορροφάται στο δωδεκαδάκτυλο", "Κύρια χολοχρωστική είναι η χολερυθρίνη", "Η χολή έχει αλκαλικό pH"], a: 1 },
+            { n: 44, q: "Άτομο με αρτηριακή πίεση 125/77mmHg. Τι ισχύει;", options: ["Συστολική 125, Καρδιακή συχνότητα 77", "Η μέση αρτηριακή πίεση είναι 93mmHg", "Η μέση αρτηριακή πίεση είναι 101mmHg", "Το εύρος παλμού είναι 202mmHg"], a: 1 },
+            { n: 46, q: "Ποια κατάσταση του κολποκοιλιακού κόμβου προκαλεί ελάττωση καρδιακής συχνότητας;", options: ["Αυξημένη διαπερατότητα στο νάτριο", "Ελαττωμένα επίπεδα ακετυλοχολίνης", "Αυξημένα επίπεδα νορεπινεφρίνης", "Αυξημένη διαπερατότητα καλίου"], a: 3 },
+            { n: 47, q: "Ποιο από τα παρακάτω ζεύγη είναι λάθος;", options: ["Παγκρεατική αμυλάση / άμυλο", "Ελαστάση / ελαστίνη", "Πρωτεΐνη / πεψίνη", "Καρβοξυπεπτιδάση / ουρία"], a: 3 }
+        ];
+
+        let currentIndex = 0;
+        let score = 0;
+        let answeredQuestions = new Set();
+        let userChoices = {};
+
+        function updateUI() {
+            const question = questions[currentIndex];
+            document.getElementById('q-number').innerText = `Ερώτηση ${question.n}`;
+            document.getElementById('q-text').innerText = question.q;
+            document.getElementById('score-top').innerText = `Σκορ: ${score} / ${answeredQuestions.size}`;
+            document.getElementById('progress-text').innerText = `${answeredQuestions.size} / ${questions.length}`;
+            
+            // Render Options
+            const optionsContainer = document.getElementById('q-options');
+            optionsContainer.innerHTML = '';
+            
+            const feedback = document.getElementById('feedback');
+            feedback.classList.add('hidden');
+
+            question.options.forEach((opt, idx) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn p-4 bg-slate-800/40 border border-slate-700/60 rounded-xl text-sm font-medium';
+                btn.innerText = opt;
+                
+                if (userChoices.hasOwnProperty(currentIndex)) {
+                    btn.disabled = true;
+                    if (idx === question.a) btn.classList.add('option-correct');
+                    else if (idx === userChoices[currentIndex]) btn.classList.add('option-wrong');
+                } else {
+                    btn.onclick = () => selectOption(idx);
+                }
+                optionsContainer.appendChild(btn);
+            });
+
+            if (userChoices.hasOwnProperty(currentIndex)) {
+                feedback.classList.remove('hidden');
+                if (userChoices[currentIndex] === question.a) {
+                    feedback.innerText = "Σωστό! ✨";
+                    feedback.className = "p-4 rounded-xl mb-6 text-center font-bold text-sm bg-green-500/10 text-green-400 border border-green-500/20";
+                } else {
+                    feedback.innerText = "Λάθος επιλογή.";
+                    feedback.className = "p-4 rounded-xl mb-6 text-center font-bold text-sm bg-red-500/10 text-red-400 border border-red-500/20";
+                }
+            }
+
+            // Update Grid
+            renderGrid();
+
+            document.getElementById('prev-btn').disabled = currentIndex === 0;
+            document.getElementById('next-btn').disabled = currentIndex === questions.length - 1;
+        }
+
+        function renderGrid() {
+            const grid = document.getElementById('nav-grid');
+            grid.innerHTML = '';
+            questions.forEach((q, idx) => {
+                const dot = document.createElement('div');
+                dot.className = `nav-dot w-9 h-9 flex items-center justify-center rounded-lg text-xs font-bold border border-slate-700 text-slate-500 bg-slate-800/20`;
+                dot.innerText = q.n;
+                
+                if (idx === currentIndex) dot.classList.add('active');
+                if (answeredQuestions.has(idx)) dot.classList.add('answered');
+                
+                dot.onclick = () => {
+                    currentIndex = idx;
+                    updateUI();
+                };
+                grid.appendChild(dot);
+            });
+        }
+
+        function selectOption(index) {
+            if (userChoices.hasOwnProperty(currentIndex)) return;
+            userChoices[currentIndex] = index;
+            answeredQuestions.add(currentIndex);
+            if (index === questions[currentIndex].a) score++;
+            updateUI();
+        }
+
+        function resetCurrent() {
+            if (userChoices.hasOwnProperty(currentIndex)) {
+                if (userChoices[currentIndex] === questions[currentIndex].a) score--;
+                delete userChoices[currentIndex];
+                answeredQuestions.delete(currentIndex);
+            }
+            updateUI();
+        }
+
+        function nextQuestion() { if (currentIndex < questions.length - 1) { currentIndex++; updateUI(); } }
+        function prevQuestion() { if (currentIndex > 0) { currentIndex--; updateUI(); } }
+
+        updateUI();
+
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextQuestion();
+            if (e.key === 'ArrowLeft') prevQuestion();
+        });
+    </script>
+</body>
+</html>
