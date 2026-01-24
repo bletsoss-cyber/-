@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Flashcards: Ουροποιητικο Σύστημα</title>
+    <title>Flashcards: Φυσιολογία Ουροποιητικού</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
         tailwind.config = {
@@ -11,280 +11,238 @@
             theme: {
                 extend: {
                     fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
                     },
                 }
             }
         }
     </script>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.4s ease, color 0.4s ease;
-        }
-
+        body { font-family: 'Inter', sans-serif; transition: all 0.4s ease; }
+        
+        /* Animation για την αναστροφή της κάρτας */
         .flip-card {
-            background-color: transparent;
             perspective: 1000px;
-            height: 440px;
+            height: 400px;
         }
-
         .flip-card-inner {
             position: relative;
             width: 100%;
             height: 100%;
-            text-align: center;
             transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
             transform-style: preserve-3d;
             cursor: pointer;
         }
-
         .flip-card.flipped .flip-card-inner {
             transform: rotateY(180deg);
         }
-
         .flip-card-front, .flip-card-back {
             position: absolute;
             width: 100%;
             height: 100%;
             -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+            border-radius: 1.5rem;
             display: flex;
             flex-direction: column;
-            border-radius: 2rem;
-            overflow: hidden;
-            padding: 2rem;
-        }
-
-        .flip-card-front {
             justify-content: center;
             align-items: center;
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            padding: 2rem;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.1);
         }
-
         .flip-card-back {
             transform: rotateY(180deg);
-            justify-content: center;
-            align-items: center;
+            background: linear-gradient(135deg, #2563eb 0%, #1e40af 100%);
+            color: white;
         }
-
-        .content-scroll {
-            width: 100%;
-            overflow-y: auto;
-            scrollbar-width: thin;
-            max-height: 100%;
-        }
-
-        .content-scroll::-webkit-scrollbar {
-            width: 4px;
-        }
-
-        .content-scroll::-webkit-scrollbar-thumb {
-            background: rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-        }
-
-        .dark .content-scroll::-webkit-scrollbar-thumb {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
+        
+        /* Glassmorphism εφέ */
         .glass {
-            background: rgba(255, 255, 255, 0.85);
-            backdrop-filter: blur(12px);
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
         }
-
         .dark .glass {
-            background: rgba(30, 41, 59, 0.85);
+            background: rgba(30, 41, 59, 0.8);
             border-color: rgba(255, 255, 255, 0.1);
         }
 
-        .modal-overlay {
-            opacity: 0;
-            visibility: hidden;
-            transition: all 0.3s ease;
-        }
-        .modal-overlay.active {
-            opacity: 1;
-            visibility: visible;
-        }
-        .modal-content {
-            transform: scale(0.9);
-            transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
-        }
-        .modal-overlay.active .modal-content {
-            transform: scale(1);
-        }
+        .custom-scroll::-webkit-scrollbar { width: 5px; }
+        .custom-scroll::-webkit-scrollbar-thumb { background: rgba(0,0,0,0.1); border-radius: 10px; }
+        .dark .custom-scroll::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.1); }
     </style>
 </head>
-<body class="bg-slate-50 dark:bg-slate-950 min-h-screen flex flex-col items-center justify-center p-4">
+<body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 min-h-screen flex items-center justify-center p-4">
 
-    <div class="fixed inset-0 pointer-events-none z-0 overflow-hidden">
-        <div class="absolute -top-24 -left-24 w-96 h-96 bg-blue-500/10 dark:bg-blue-500/5 rounded-full blur-3xl"></div>
-        <div class="absolute -bottom-24 -right-24 w-96 h-96 bg-red-500/10 dark:bg-red-500/5 rounded-full blur-3xl"></div>
+    <!-- Διακοσμητικά φόντου -->
+    <div class="fixed inset-0 overflow-hidden pointer-events-none opacity-50">
+        <div class="absolute -top-20 -left-20 w-80 h-80 bg-blue-500/10 rounded-full blur-3xl"></div>
+        <div class="absolute bottom-0 right-0 w-96 h-96 bg-indigo-500/10 rounded-full blur-3xl"></div>
     </div>
 
-    <div class="relative z-10 max-w-lg w-full">
-        
-        <div class="flex justify-between items-center mb-6">
+    <div class="relative w-full max-w-lg">
+        <!-- Header -->
+        <header class="flex justify-between items-center mb-8">
             <div>
-                <span class="px-3 py-1 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-300 text-[10px] font-bold rounded-full uppercase tracking-widest">
-                    Ιατρική Φυσιολογία
-                </span>
-                <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white mt-1">Ουροποιητικο</h1>
+                <p class="text-blue-600 dark:text-blue-400 text-xs font-bold uppercase tracking-widest mb-1">Ιατρική Φυσιολογία</p>
+                <h1 class="text-3xl font-extrabold tracking-tight">Ουροποιητικό</h1>
             </div>
             <div class="flex gap-2">
-                <button onclick="toggleModal(true)" class="p-3 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-blue-50 dark:hover:bg-slate-700 transition-colors">
-                    <svg class="w-6 h-6 text-slate-600 dark:text-slate-300" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/>
-                    </svg>
+                <button onclick="openModal()" class="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:bg-slate-50 transition-colors">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"/></svg>
                 </button>
-                <button onclick="toggleTheme()" class="p-3 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-200 dark:border-slate-700 hover:scale-110 transition-transform">
-                    <span id="theme-icon" class="text-xl">🌙</span>
+                <button onclick="toggleTheme()" class="p-3 bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-200 dark:border-slate-700 hover:scale-105 transition-transform">
+                    <span id="theme-icon">🌙</span>
                 </button>
+            </div>
+        </header>
+
+        <!-- Progress Bar -->
+        <div class="mb-8">
+            <div class="flex justify-between items-end mb-2">
+                <span class="text-[10px] font-bold uppercase text-slate-400">Πρόοδος Ενότητας</span>
+                <span id="progress-text" class="text-sm font-bold text-blue-600">0%</span>
+            </div>
+            <div class="h-2 w-full bg-slate-200 dark:bg-slate-800 rounded-full overflow-hidden">
+                <div id="progress-bar" class="h-full bg-blue-500 w-0 transition-all duration-500"></div>
             </div>
         </div>
 
-        <div class="mb-6">
-            <div class="flex justify-between text-[10px] font-bold text-slate-400 uppercase tracking-tighter mb-2">
-                <span>Πρόοδος Μελέτης</span>
-                <span id="progress-text">0%</span>
-            </div>
-            <div class="w-full bg-slate-200 dark:bg-slate-800 h-2 rounded-full overflow-hidden">
-                <div id="progress-bar" class="bg-blue-500 h-full w-0 transition-all duration-500 ease-out"></div>
-            </div>
-        </div>
-
-        <div id="card-element" class="flip-card group mb-8">
+        <!-- Main Card Container -->
+        <div id="card-container" class="flip-card mb-8">
             <div class="flip-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
-                <div class="flip-card-front glass border border-white/50 shadow-2xl dark:shadow-none">
-                    <span class="absolute top-6 left-8 text-[10px] font-bold text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Ερώτηση</span>
-                    <div class="content-scroll flex items-center justify-center">
-                        <p id="q-text" class="text-2xl font-bold text-slate-800 dark:text-slate-100 leading-tight px-4 text-center"></p>
+                <!-- Ερώτηση -->
+                <div class="flip-card-front glass">
+                    <span class="absolute top-6 left-6 text-[10px] font-bold text-slate-400 uppercase tracking-widest">Ερώτηση</span>
+                    <div class="overflow-y-auto custom-scroll w-full text-center px-2">
+                        <p id="question-text" class="text-xl sm:text-2xl font-bold leading-tight"></p>
                     </div>
+                    <span class="absolute bottom-6 text-[10px] font-medium text-slate-400 animate-pulse">Κάντε κλικ για αποκάλυψη</span>
                 </div>
-                <div class="flip-card-back bg-gradient-to-br from-blue-600 to-indigo-800 text-white shadow-2xl">
-                    <span class="absolute top-6 left-8 text-[10px] font-bold text-blue-200/60 uppercase tracking-[0.2em]">Απάντηση</span>
-                    <div class="content-scroll flex items-center justify-center py-8">
-                        <div id="a-text" class="text-lg font-medium leading-relaxed px-6 text-center"></div>
+                <!-- Απάντηση -->
+                <div class="flip-card-back">
+                    <span class="absolute top-6 left-6 text-[10px] font-bold text-blue-100/50 uppercase tracking-widest">Απάντηση</span>
+                    <div class="overflow-y-auto custom-scroll w-full text-center px-2 py-4">
+                        <div id="answer-text" class="text-lg font-medium leading-relaxed"></div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div class="grid grid-cols-4 gap-4 mb-8">
-            <button onclick="prevCard()" class="col-span-1 h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 transition-all active:scale-95">
+        <!-- Controls -->
+        <div class="grid grid-cols-4 gap-4 mb-6">
+            <button onclick="prevCard()" class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center justify-center hover:bg-slate-50 active:scale-95 transition-all">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/></svg>
             </button>
-            <button onclick="nextCard()" class="col-span-2 h-16 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-3 hover:opacity-90 active:scale-95 transition-all shadow-lg">
+            <button onclick="nextCard()" class="col-span-2 p-4 bg-slate-900 dark:bg-blue-600 text-white rounded-2xl font-bold text-lg flex items-center justify-center gap-2 hover:opacity-90 active:scale-95 transition-all shadow-xl shadow-blue-500/10">
                 Επόμενη
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </button>
-            <button onclick="shuffleCards()" class="col-span-1 h-16 rounded-2xl bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 flex items-center justify-center text-slate-400 hover:text-blue-500 transition-all active:rotate-180 duration-500">
+            <button onclick="shuffleCards()" class="p-4 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-2xl flex items-center justify-center hover:bg-slate-50 active:rotate-180 transition-all duration-500 text-slate-400 hover:text-blue-500">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
             </button>
         </div>
 
-        <div class="flex justify-between items-center px-2">
-            <div class="text-sm font-bold text-slate-400">
-                ΚΑΡΤΑ <span id="current-idx" class="text-slate-900 dark:text-white">1</span> / <span id="total-cnt">0</span>
-            </div>
-            <div class="flex gap-4">
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">Space: Αναστροφή</span>
-                <span class="text-[10px] font-bold text-slate-400 uppercase tracking-widest hidden sm:inline">Βέλη: Πλοήγηση</span>
-            </div>
+        <!-- Footer Info -->
+        <div class="flex justify-between items-center text-[10px] font-bold text-slate-400 uppercase tracking-tighter">
+            <div>Κάρτα <span id="current-count" class="text-slate-900 dark:text-white text-sm">1</span> από <span id="total-count" class="text-slate-900 dark:text-white text-sm">0</span></div>
+            <div class="hidden sm:block">Space: Αναστροφή • Βέλη: Πλοήγηση</div>
         </div>
     </div>
 
-    <div id="nav-modal" class="modal-overlay fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/40 backdrop-blur-sm" onclick="toggleModal(false)">
-        <div class="modal-content glass w-full max-w-md max-h-[80vh] rounded-[2.5rem] shadow-2xl border border-white/20 flex flex-col overflow-hidden" onclick="event.stopPropagation()">
-            <div class="p-6 border-b border-slate-200 dark:border-slate-700 flex justify-between items-center">
-                <h3 class="text-xl font-bold text-slate-800 dark:text-white">Μετάβαση σε Κάρτα</h3>
-                <button onclick="toggleModal(false)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full transition-colors">
-                    <svg class="w-6 h-6 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+    <!-- Navigation Modal -->
+    <div id="nav-modal" class="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/40 backdrop-blur-sm hidden opacity-0 transition-opacity duration-300">
+        <div class="bg-white dark:bg-slate-900 w-full max-w-md rounded-[2rem] shadow-2xl overflow-hidden transform scale-95 transition-transform duration-300" id="modal-content">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
+                <h3 class="text-xl font-bold">Όλες οι Κάρτες</h3>
+                <button onclick="closeModal()" class="text-slate-400 hover:text-slate-600">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
                 </button>
             </div>
-            <div class="p-6 overflow-y-auto grid grid-cols-5 gap-3" id="modal-grid"></div>
+            <div class="p-6 grid grid-cols-5 gap-3 max-h-[60vh] overflow-y-auto custom-scroll" id="grid-container">
+                <!-- Τα κουμπιά παράγονται δυναμικά -->
+            </div>
         </div>
     </div>
 
     <script>
+        // Δεδομένα Μελέτης
         const rawData = [
-             {
-                question: "Ποιες είναι οι 3 πιο σημαντικές λειτουργίες των νεφρών;",
-                answer: "1. Ομοιοστατική<br>2. Απεκκριτική<br>3. Ενδοκρινική"
-            },
-            {
-                question: "Ποια μεταβολικά προϊόντα απεκκρίνονται από τους νεφρούς;",
-                answer: "Ουρία, κρεατινίνη και ουρικό οξύ (προϊόντα μεταβολισμού πρωτεϊνών και νουκλεϊκών οξέων)."
-            },
-            {
-                question: "Ποιες ορμόνες εκκρίνουν οι νεφροί;",
-                answer: "Ρενίνη, ερυθροποιητίνη και διϋδροξυχολοκαλσιφερόλη (ενεργός μορφή βιταμίνης D)."
-            },
-            {
-                question: "Τι περιλαμβάνει η ομοιοστατική λειτουργία των νεφρών;",
-                answer: "Τη ρύθμιση του ισοζυγίου νερού, των ηλεκτρολυτών και της οξεοβασικής ισορροπίας."
-            },
-            {
-                question: "Τι εκφράζει η 'Διήθηση' στο σπείραμα;",
-                answer: "Την κάθαρση μέρους του πλάσματος από τα τριχοειδή του σπειράματος προς την Κάψα του Bowman."
-            },
-            {
-                question: "Ποια είναι η διαφορά μεταξύ Απέκκρισης και Έκκρισης;",
-                answer: "Η <b>Έκκριση</b> είναι η μεταφορά ουσιών από τα περισωληναριακά τριχοειδή στα σωληνάρια, ενώ η <b>Απέκκριση</b> είναι η τελική αποβολή με τα ούρα."
-            },
-            {
-                question: "Ποιος είναι ο ρόλος των νεφρών στον μεταβολισμό των αμινοξέων;",
-                answer: "Συμμετέχουν στη νεογλυκογένεση."
-            },
-            {
-                question: "Ποια πεπτίδια αποδομούνται στους νεφρούς;",
-                answer: "Η ινσουλίνη και το γλουκαγόνο."
-            }
+            { question: "Ποιες είναι οι 3 πιο σημαντικές λειτουργίες των νεφρών;", answer: "1. <b>Ομοιοστατική</b> (ισορροπία υγρών/ηλεκτρολυτών)<br>2. <b>Απεκκριτική</b> (αποβολή παραγώγων μεταβολισμού)<br>3. <b>Ενδοκρινική</b> (ορμόνες)" },
+            { question: "Ποια είναι η λειτουργική μονάδα του νεφρού;", answer: "Ο <b>Νεφρώνας</b>. Κάθε νεφρός περιέχει περίπου 1 εκατομμύριο νεφρώνες." },
+            { question: "Τι είναι ο Ρυθμός Σπειραματικής Διήθησης (GFR);", answer: "Ο όγκος του πλάσματος που διηθείται από τα σπειράματα προς την κάψα του Bowman ανά μονάδα χρόνου (φυσιολογικά ~125 ml/min)." },
+            { question: "Ποια ορμόνη ρυθμίζει την επαναρρόφηση νερού στο αθροιστικό σωληνάριο;", answer: "Η <b>Αντιδιουρητική Ορμόνη (ADH)</b> ή Βαζοπρεσσίνη, μέσω των διαύλων ακουαπορίνης-2." },
+            { question: "Πού παράγεται η Ρενίνη;", answer: "Από τα <b>παρασπειραματικά κύτταρα</b> του προσαγωγού αρτηριδίου." },
+            { question: "Ποιος είναι ο ρόλος της Ερυθροποιητίνης;", answer: "Διεγείρει την παραγωγή ερυθρών αιμοσφαιρίων στον μυελό των οστών σε κατάσταση υποξίας." },
+            { question: "Τι είναι το Σύστημα RAAS;", answer: "Το σύστημα Ρενίνης-Αγγειοτενσίνης-Αλδοστερόνης που ρυθμίζει την αρτηριακή πίεση και τον όγκο του αίματος." },
+            { question: "Ποια είναι η διαφορά μεταξύ έκκρισης και απέκκρισης;", answer: "<b>Έκκριση:</b> Μεταφορά από το αίμα στο σωληνάριο.<br><b>Απέκκριση:</b> Η τελική αποβολή στα ούρα." },
+            { question: "Ποια ουσία χρησιμοποιείται ως δείκτης GFR στην κλινική πράξη;", answer: "Η <b>Κρεατινίνη</b>, καθώς παράγεται με σταθερό ρυθμό και αποβάλλεται κυρίως μέσω διήθησης." },
+            { question: "Τι επαναρροφάται σχεδόν 100% στο εγγύς εσπειραμένο σωληνάριο;", answer: "Η Γλυκόζη και τα Αμινοξέα (μέχρι το νεφρικό ουδό)." },
+            { question: "Ποιο τμήμα του νεφρώνα ονομάζεται 'αραιωτικό τμήμα';", answer: "Το <b>παχύ ανιόν σκέλος της αγκύλης του Henle</b>, επειδή είναι αδιαπέραστο στο νερό αλλά επαναρροφά ηλεκτρολύτες." },
+            { question: "Ποια ορμόνη αυξάνει την επαναρρόφηση Νατρίου (Na+);", answer: "Η <b>Αλδοστερόνη</b>, που δρα στο άπω σωληνάριο και το αθροιστικό." },
+            { question: "Τι σημαίνει 'νεφρική κάθαρση' (clearance);", answer: "Ο όγκος του πλάσματος που καθαρίζεται πλήρως από μια ουσία από τους νεφρούς ανά μονάδα χρόνου." },
+            { question: "Ποιο είναι το κύριο οξεοβασικό ρυθμιστικό των νεφρών;", answer: "Η επαναρρόφηση των <b>διττανθρακικών (HCO3-)</b> και η έκκριση πρωτονίων (H+)." },
+            { question: "Ποια είναι η δράση του Κολπικού Νατριουρητικού Πεπτιδίου (ANP);", answer: "Αυξάνει την απέκκριση Na+ και νερού για να μειώσει τον όγκο του αίματος." }
         ];
 
         let cards = [...rawData];
         let currentIndex = 0;
 
-        const cardEl = document.getElementById('card-element');
-        const qText = document.getElementById('q-text');
-        const aText = document.getElementById('a-text');
-        const progressBar = document.getElementById('progress-bar');
-        const progressText = document.getElementById('progress-text');
-        const modalGrid = document.getElementById('modal-grid');
-        const navModal = document.getElementById('nav-modal');
+        const container = document.getElementById('card-container');
+        const qText = document.getElementById('question-text');
+        const aText = document.getElementById('answer-text');
+        const progBar = document.getElementById('progress-bar');
+        const progLabel = document.getElementById('progress-text');
+        const currentLbl = document.getElementById('current-count');
+        const totalLbl = document.getElementById('total-count');
+        const modal = document.getElementById('nav-modal');
+        const modalContent = document.getElementById('modal-content');
+        const grid = document.getElementById('grid-container');
 
-        function updateUI() {
-            cardEl.classList.remove('flipped');
+        // Αρχικοποίηση
+        function init() {
+            renderCard();
+            updateProgress();
+            generateGrid();
+        }
+
+        function renderCard() {
+            container.classList.remove('flipped');
             setTimeout(() => {
-                const current = cards[currentIndex];
-                qText.innerText = current.q;
-                aText.innerHTML = current.a;
-                document.getElementById('current-idx').innerText = currentIndex + 1;
-                document.getElementById('total-cnt').innerText = cards.length;
-                const percent = Math.round(((currentIndex + 1) / cards.length) * 100);
-                progressBar.style.width = `${percent}%`;
-                progressText.innerText = `${percent}%`;
-                updateModalButtons();
+                const card = cards[currentIndex];
+                qText.textContent = card.question;
+                aText.innerHTML = card.answer;
+                currentLbl.textContent = currentIndex + 1;
+                totalLbl.textContent = cards.length;
+                updateGridActive();
             }, 150);
         }
 
         function nextCard() {
             currentIndex = (currentIndex + 1) % cards.length;
-            updateUI();
+            renderCard();
+            updateProgress();
         }
 
         function prevCard() {
             currentIndex = (currentIndex - 1 + cards.length) % cards.length;
-            updateUI();
+            renderCard();
+            updateProgress();
         }
 
         function shuffleCards() {
             cards = [...cards].sort(() => Math.random() - 0.5);
             currentIndex = 0;
-            updateUI();
-            generateModalButtons();
+            renderCard();
+            updateProgress();
+            generateGrid();
+        }
+
+        function updateProgress() {
+            const percent = Math.round(((currentIndex + 1) / cards.length) * 100);
+            progBar.style.width = percent + '%';
+            progLabel.textContent = percent + '%';
         }
 
         function toggleTheme() {
@@ -292,62 +250,72 @@
             const icon = document.getElementById('theme-icon');
             if (html.classList.contains('dark')) {
                 html.classList.remove('dark');
-                icon.innerText = '🌙';
+                icon.textContent = '🌙';
             } else {
                 html.classList.add('dark');
-                icon.innerText = '☀️';
+                icon.textContent = '☀️';
             }
         }
 
-        function toggleModal(show) {
-            if (show) navModal.classList.add('active');
-            else navModal.classList.remove('active');
+        // Modal Logic
+        function openModal() {
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('opacity-100');
+                modalContent.classList.remove('scale-95');
+                modalContent.classList.add('scale-100');
+            }, 10);
         }
 
-        function generateModalButtons() {
-            modalGrid.innerHTML = '';
-            cards.forEach((_, idx) => {
+        function closeModal() {
+            modal.classList.remove('opacity-100');
+            modalContent.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        function generateGrid() {
+            grid.innerHTML = '';
+            cards.forEach((_, i) => {
                 const btn = document.createElement('button');
-                btn.innerText = idx + 1;
-                btn.id = `btn-nav-${idx}`;
-                btn.className = "h-10 rounded-xl font-bold transition-all text-sm flex items-center justify-center border";
+                btn.className = `h-10 rounded-lg font-bold text-sm border transition-all ${i === currentIndex ? 'bg-blue-600 border-blue-600 text-white' : 'bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700'}`;
+                btn.textContent = i + 1;
                 btn.onclick = () => {
-                    currentIndex = idx;
-                    updateUI();
-                    toggleModal(false);
+                    currentIndex = i;
+                    renderCard();
+                    updateProgress();
+                    closeModal();
                 };
-                modalGrid.appendChild(btn);
+                grid.appendChild(btn);
             });
-            updateModalButtons();
         }
 
-        function updateModalButtons() {
-            cards.forEach((_, idx) => {
-                const btn = document.getElementById(`btn-nav-${idx}`);
-                if (!btn) return;
-                if (idx === currentIndex) {
-                    btn.className = "h-10 rounded-xl font-bold transition-all text-sm flex items-center justify-center border-blue-500 bg-blue-500 text-white shadow-lg scale-110 z-10";
+        function updateGridActive() {
+            Array.from(grid.children).forEach((btn, i) => {
+                if (i === currentIndex) {
+                    btn.className = "h-10 rounded-lg font-bold text-sm border bg-blue-600 border-blue-600 text-white scale-105 shadow-md";
                 } else {
-                    btn.className = "h-10 rounded-xl font-bold transition-all text-sm flex items-center justify-center border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-800 text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700";
+                    btn.className = "h-10 rounded-lg font-bold text-sm border bg-slate-50 dark:bg-slate-800 border-slate-200 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700";
                 }
             });
         }
 
+        // Keyboard events
         document.addEventListener('keydown', (e) => {
-            if (navModal.classList.contains('active')) {
-                if (e.key === 'Escape') toggleModal(false);
-                return;
-            }
             if (e.key === 'ArrowRight') nextCard();
             if (e.key === 'ArrowLeft') prevCard();
             if (e.key === ' ') {
                 e.preventDefault();
-                cardEl.classList.toggle('flipped');
+                container.classList.toggle('flipped');
             }
+            if (e.key === 'Escape') closeModal();
         });
 
-        generateModalButtons();
-        updateUI();
+        // Close modal on click outside
+        modal.addEventListener('click', (e) => {
+            if (e.target === modal) closeModal();
+        });
+
+        init();
     </script>
 </body>
 </html>
