@@ -3,45 +3,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Quiz: Νεφρικό Σύστημα</title>
+    <title>Πλήρες Quiz: Νεφρικό Σύστημα (38 Ερωτήσεις)</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
+        tailwind.config = { darkMode: 'class' }
     </script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;900&display=swap" rel="stylesheet">
     <style>
-        body {
-            font-family: 'Inter', sans-serif;
-            transition: background-color 0.3s ease, color 0.3s ease;
-        }
-        .glass-card {
-            backdrop-filter: blur(10px);
-            transition: all 0.3s ease;
-        }
-        .dark .glass-card {
-            background: rgba(30, 41, 59, 0.9);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-        }
-        .nav-btn { transition: all 0.2s ease; }
+        body { font-family: 'Inter', sans-serif; transition: background-color 0.3s ease; }
+        .glass-card { backdrop-filter: blur(10px); transition: all 0.3s ease; }
+        .dark .glass-card { background: rgba(30, 41, 59, 0.9); border: 1px solid rgba(255, 255, 255, 0.1); }
         .nav-btn.active { ring: 2px; ring-offset: 2px; background-color: #3b82f6 !important; color: white !important; }
         .nav-btn.correct { background-color: #22c55e !important; color: white !important; }
         .nav-btn.wrong { background-color: #ef4444 !important; color: white !important; }
-        
-        .option-btn { transition: all 0.2s ease; }
-        .option-btn:hover:not(:disabled) { border-color: #3b82f6; background-color: #eff6ff; }
-        .dark .option-btn:hover:not(:disabled) { background-color: #1e293b; border-color: #3b82f6; }
-        
         .correct-opt { background-color: #dcfce7 !important; border-color: #22c55e !important; color: #166534 !important; }
         .wrong-opt { background-color: #fee2e2 !important; border-color: #ef4444 !important; color: #991b1b !important; }
-        
         .dark .correct-opt { background-color: #064e3b !important; border-color: #10b981 !important; color: #ecfdf5 !important; }
         .dark .wrong-opt { background-color: #7f1d1d !important; border-color: #ef4444 !important; color: #fef2f2 !important; }
-
-        #nav-grid-container::-webkit-scrollbar { width: 5px; }
-        #nav-grid-container::-webkit-scrollbar-track { background: transparent; }
-        #nav-grid-container::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 10px; }
     </style>
 </head>
 <body class="bg-slate-50 dark:bg-slate-950 text-slate-900 dark:text-slate-100 p-4 md:p-8 flex flex-col items-center min-h-screen">
@@ -50,30 +28,27 @@
         <header class="flex justify-between items-center mb-6">
             <div>
                 <h1 class="text-xl font-black tracking-tight text-blue-600 dark:text-blue-400">Νεφρικό Σύστημα</h1>
-                <p class="text-slate-500 dark:text-slate-400 text-xs">Διαδραστική Αξιολόγηση v4.0</p>
+                <p class="text-slate-500 dark:text-slate-400 text-xs">Πλήρης Αξιολόγηση (38 Ενότητες)</p>
             </div>
             
             <div class="flex items-center gap-2">
                 <button onclick="toggleDarkMode()" class="p-2.5 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all">
-                    <svg id="sun-icon" class="h-5 w-5 text-amber-500 hidden" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4 8a4 4 0 11-8 0 4 4 0 018 0zm-.464 4.95l.707.707a1 1 0 001.414-1.414l-.707-.707a1 1 0 00-1.414 1.414zm2.12-10.607a1 1 0 010 1.414l-.706.707a1 1 0 11-1.414-1.414l.707-.707a1 1 0 011.414 0zM17 11a1 1 0 100-2h-1a1 1 0 100 2h1zm-7 4a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zM5.05 6.464A1 1 0 106.465 5.05l-.708-.707a1 1 0 00-1.414 1.414l.707.707zm1.414 8.486l-.707.707a1 1 0 01-1.414-1.414l.707-.707a1 1 0 011.414 1.414zM4 11a1 1 0 100-2H3a1 1 0 000 2h1z"/></svg>
-                    <svg id="moon-icon" class="h-5 w-5 text-slate-600" fill="currentColor" viewBox="0 0 20 20"><path d="M17.293 13.293A8 8 0 016.707 2.707a8.001 8.001 0 1010.586 10.586z"/></svg>
+                    <span id="theme-icon">🌙</span>
                 </button>
-
                 <button onclick="toggleModal(true)" class="flex items-center gap-2 px-4 py-2 bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-700 rounded-xl shadow-sm hover:bg-slate-50 dark:hover:bg-slate-700 transition-all font-bold text-sm">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" /></svg>
-                    <span class="hidden sm:inline">Ερωτήσεις</span>
+                    📜 <span class="hidden sm:inline">Πλοήγηση</span>
                 </button>
             </div>
         </header>
 
-        <main id="quiz-area" class="glass-card bg-white rounded-3xl shadow-xl p-6 md:p-10 min-h-[450px] flex flex-col relative overflow-hidden border border-slate-100">
+        <main id="quiz-area" class="glass-card bg-white dark:bg-slate-900 rounded-3xl shadow-xl p-6 md:p-10 min-h-[500px] flex flex-col relative overflow-hidden border border-slate-100 dark:border-slate-800">
             <div class="absolute top-0 left-0 w-full h-1.5 bg-slate-100 dark:bg-slate-800">
                 <div id="inner-progress" class="h-full bg-blue-500 transition-all duration-500" style="width: 0%"></div>
             </div>
 
             <div id="question-content">
                 <div class="flex justify-between items-center mb-6">
-                    <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Ερώτηση <span id="current-num">1</span>/<span id="total-num">10</span></span>
+                    <span class="text-blue-600 dark:text-blue-400 font-bold text-xs uppercase tracking-widest">Ερώτηση <span id="current-num">1</span>/<span id="total-num">38</span></span>
                     <span id="score-badge" class="bg-slate-100 dark:bg-slate-800 px-3 py-1 rounded-full text-[10px] font-bold uppercase tracking-tighter">Σκορ: 0</span>
                 </div>
 
@@ -97,18 +72,18 @@
             </button>
 
             <div id="result-screen" class="hidden flex-col items-center justify-center h-full py-10 text-center">
-                <div class="w-20 h-20 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-full flex items-center justify-center text-3xl mb-4 mx-auto">🏆</div>
+                <div class="text-5xl mb-4">🏆</div>
                 <h2 class="text-3xl font-black mb-2">Ολοκλήρωση!</h2>
-                <p class="text-slate-500 dark:text-slate-400 mb-8">Ολοκληρώσατε την αξιολόγηση του νεφρικού συστήματος.</p>
+                <p class="text-slate-500 dark:text-slate-400 mb-8">Ολοκληρώσατε την πλήρη αξιολόγηση.</p>
                 
                 <div class="grid grid-cols-2 gap-4 w-full max-w-xs mb-8 mx-auto">
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase mb-1 text-center">Σκορ</div>
-                        <div class="text-2xl font-black text-center"><span id="final-score">0</span>/<span id="final-total">0</span></div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase mb-1">Σωστά</div>
+                        <div class="text-2xl font-black"><span id="final-score">0</span>/<span id="final-total">0</span></div>
                     </div>
                     <div class="bg-slate-50 dark:bg-slate-800/50 p-4 rounded-2xl">
-                        <div class="text-[9px] font-bold text-slate-400 uppercase mb-1 text-center">Ποσοστό</div>
-                        <div class="text-2xl font-black text-blue-600 text-center"><span id="final-pct">0</span>%</div>
+                        <div class="text-[9px] font-bold text-slate-400 uppercase mb-1">Ποσοστό</div>
+                        <div class="text-2xl font-black text-blue-600"><span id="final-pct">0</span>%</div>
                     </div>
                 </div>
 
@@ -119,196 +94,63 @@
         </main>
     </div>
 
-    <!-- Navigation Modal -->
     <div id="nav-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-sm">
         <div class="glass-card bg-white dark:bg-slate-900 w-full max-w-md rounded-3xl shadow-2xl overflow-hidden">
             <div class="p-6 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center">
                 <h3 class="font-bold">Πλοήγηση Ερωτήσεων</h3>
-                <button onclick="toggleModal(false)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">
-                    <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg>
-                </button>
+                <button onclick="toggleModal(false)" class="p-2 hover:bg-slate-100 dark:hover:bg-slate-800 rounded-lg">✕</button>
             </div>
-            <div id="nav-grid-container" class="p-6 max-h-[60vh] overflow-y-auto bg-slate-50/30 dark:bg-slate-900/30">
+            <div class="p-6 max-h-[60vh] overflow-y-auto bg-slate-50/30 dark:bg-slate-900/30">
                 <div id="nav-grid" class="grid grid-cols-5 gap-3"></div>
-            </div>
-            <div class="p-4 text-center">
-                <button onclick="toggleModal(false)" class="text-blue-600 dark:text-blue-400 font-bold text-sm">Επιστροφή στο Quiz</button>
             </div>
         </div>
     </div>
 
     <script>
         const quizData = [
-            { 
-                q: "Ποιες είναι οι τρεις πρωταρχικές κατηγορίες λειτουργιών των νεφρών;", 
-                options: ["Ομοιοστατική, Απεκκριτική και Ενδοκρινική", "Αναπνευστική, Πεπτική και Κυκλοφορική", "Κινητική, Αισθητική και Μεταβολική", "Διηθητική, Αποθηκευτική και Θερμορυθμιστική"], 
-                correct: 0, 
-                reason: "Αυτές οι τρεις κατηγορίες συνοψίζουν τη ρύθμιση του εσωτερικού περιβάλλοντος, την αποβολή ουσιών και την παραγωγή ορμονών." 
-            },
-            { 
-                q: "Ποιο από τα παρακάτω μεταβολικά προϊόντα απεκκρίνεται από τους νεφρούς;", 
-                options: ["Γλυκόζη", "Κρεατινίνη", "Γλυκογόνο", "Ινσουλίνη"], 
-                correct: 1, 
-                reason: "Η κρεατινίνη είναι ένα από τα κύρια τελικά προϊόντα του μεταβολισμού που αποβάλλεται μέσω των ούρων." 
-            },
-            { 
-                q: "Ποια ορμόνη εκκρίνουν οι νεφροί για τη ρύθμιση της παραγωγής ερυθρών αιμοσφαιρίων;", 
-                options: ["Ρενίνη", "Ερυθροποιητίνη", "Ινσουλίνη", "Αδρεναλίνη"], 
-                correct: 1, 
-                reason: "Η ερυθροποιητίνη διεγείρει τον μυελό των οστών για την παραγωγή ερυθρών αιμοσφαιρίων." 
-            },
-            { 
-                q: "Η ρύθμιση της οξεοβασικής ισορροπίας εμπίπτει σε ποια λειτουργία;", 
-                options: ["Ενδοκρινική", "Ομοιοστατική", "Απεκκριτική", "Μεταβολική"], 
-                correct: 1, 
-                reason: "Η ομοιοστατική λειτουργία αφορά τη διατήρηση σταθερών συνθηκών στο εσωτερικό περιβάλλον, όπως το pH." 
-            },
-            { 
-                q: "Πού πραγματοποιείται η διαδικασία της διήθησης;", 
-                options: ["Στα περισωληναριακά τριχοειδή", "Στο σπείραμα", "Στη νεφρική φλέβα", "Στα απαγωγά αρτηρίδια"], 
-                correct: 1, 
-                reason: "Το σπείραμα είναι το δίκτυο τριχοειδών όπου το πλάσμα διηθείται προς την κάψα του Bowman." 
-            },
-            { 
-                q: "Ποια είναι η θεμελιώδη εξίσωση του νεφρού;", 
-                options: ["Απέκκριση = Διήθηση + Επαναρρόφηση - Έκκριση", "Απέκκριση = Διήθηση - Επαναρρόφηση + Έκκριση", "Απέκκριση = Διήθηση + Έκκριση", "Απέκκριση = Επαναρρόφηση - Διήθηση"], 
-                correct: 1, 
-                reason: "Η απεκκρινόμενη ποσότητα ισούται με τη διηθημένη μείον την επαναρροφημένη συν την εκκρινόμενη." 
-            },
-            { 
-                q: "Τι ονομάζουμε 'Έκκριση' στη νεφρική λειτουργία;", 
-                options: ["Τη μεταφορά ουσιών από την κάψα του Bowman στα σωληνάρια", "Τη μεταφορά ουσιών από τα περισωληναριακά τριχοειδή προς τα σωληνάρια", "Την αποβολή των ούρων", "Την επιστροφή γλυκόζης στο αίμα"], 
-                correct: 1, 
-                reason: "Έκκριση είναι η μεταφορά ουσιών από το αίμα των τριχοειδών απευθείας προς το εσωτερικό των σωληναρίων." 
-            },
-            { 
-                q: "Ποια από τις παρακάτω ορμόνες αποδομείται (καταβολίζεται) στους νεφρούς;", 
-                options: ["Γλουκαγόνο", "Τεστοστερόνη", "Θυροξίνη", "Οιστρογόνα"], 
-                correct: 0, 
-                reason: "Οι νεφροί συμμετέχουν στην αποδόμηση πεπτιδίων όπως η ινσουλίνη και το γλουκαγόνο." 
-            },
-            { 
-                q: "Σε ποια μεταβολική διεργασία συμμετέχουν οι νεφροί;", 
-                options: ["Γλυκογονόλυση", "Νεογλυκογένεση", "Πρωτεϊνοσύνθεση", "Λιπόλυση"], 
-                correct: 1, 
-                reason: "Οι νεφροί συμμετέχουν στο μεταβολισμό των αμινοξέων μέσω της διαδικασίας της νεογλυκογένεσης." 
-            },
-            { 
-                q: "Ποιο συστατικό του αίματος διηθείται στο σπείραμα σε φυσιολογικές συνθήκες;", 
-                options: ["Τα ερυθρά αιμοσφαίρια", "Τα λευκά αιμοσφαίρια", "Ένα μέρος του πλάσματος", "Τα αιμοπετάλια"], 
-                correct: 2, 
-                reason: "Στο σπείραμα διηθείται ένα μέρος του πλάσματος, καθώς τα έμμορφα συστατικά είναι πολύ μεγάλα για να διηθηθούν." 
-            },
-            { 
-                q: "Ποιο στοιχείο του σπειραματικού ηθμού ευθύνεται για την 100 φορές μεγαλύτερη διαπερατότητα σε σχέση με τα κοινά τριχοειδή;", 
-                options: ["Τα ποδοκύτταρα", "Η βασική μεμβράνη", "Οι θυρίδες (fenestrations) των ενδοθηλιακών κυττάρων", "Τα μεσαγγειακά κύτταρα"], 
-                correct: 2, 
-                reason: "Οι θυρίδες και οι πόροι των ενδοθηλιακών κυττάρων καθιστούν τη στιβάδα αυτή εξαιρετικά διαπερατή." 
-            },
-            { 
-                q: "Γιατί οι πρωτεΐνες του πλάσματος, όπως η λευκωματίνη, δεν διηθούνται φυσιολογικά;", 
-                options: ["Λόγω σχήματος", "Επειδή απωθούνται από τα αρνητικά φορτία της βασικής μεμβράνης", "Λόγω υπερβολικά υψηλής υδροστατικής πίεσης", "Λόγω των ποδοκυττάρων"], 
-                correct: 1, 
-                reason: "Η βασική μεμβράνη φέρει αρνητικά φορτία που απωθούν τις αρνητικά φορτισμένες πρωτεΐνες." 
-            },
-            { 
-                q: "Πώς επηρεάζουν τα μεσαγγειακά κύτταρα τον GFR;", 
-                options: ["Εκκρίνουν ορμόνες", "Αυξάνουν την πίεση στην κάψα", "Μεταβάλλουν τη συνολική επιφάνεια διήθησης μέσω συστολής", "Φιλτράρουν τις πρωτεΐνες"], 
-                correct: 2, 
-                reason: "Όταν συστέλλονται, αλλάζει η συνολική επιφάνεια που είναι διαθέσιμη για υπερδιήθηση." 
-            },
-            { 
-                q: "Ποια είναι η συγκέντρωση ουσιών με μικρό μοριακό βάρος (<5500 Da) στο σπειραματικό διήθημα;", 
-                options: ["Μηδενική", "Διπλάσια από το πλάσμα", "Ίδια με τη συγκέντρωση στο πλάσμα", "Το 20% της συγκέντρωσης του πλάσματος"], 
-                correct: 2, 
-                reason: "Μικρά μόρια όπως το νερό, η γλυκόζη και η ουρία διέρχονται ελεύθερα από τον ηθμό." 
-            },
-            { 
-                q: "Αν PG=55, PB=15 και πG=30, ποια είναι η καθαρή πίεση διήθησης;", 
-                options: ["10 mmHg", "25 mmHg", "40 mmHg", "5 mmHg"], 
-                correct: 0, 
-                reason: "Προκύπτει από τον τύπο: 55 - (15 + 30) = 10 mmHg." 
-            },
-            { 
-                q: "Γιατί η κολλοειδωσμωτική πίεση της κάψας Bowman (πB) είναι φυσιολογικά μηδενική;", 
-                options: ["Γιατί δεν υπάρχει υγρό", "Γιατί οι πρωτεΐνες δεν διαπερνούν τον ηθμό", "Λόγω χαμηλής θερμοκρασίας", "Λόγω της παρουσίας γλυκόζης"], 
-                correct: 1, 
-                reason: "Οι πρωτεΐνες δεν περνούν στον χώρο της κάψας, άρα δεν δημιουργούν κολλοειδωσμωτική πίεση εκεί." 
-            },
-            { 
-                q: "Πώς μεταβάλλεται η κολλοειδωσμωτική πίεση (πG) καθώς το αίμα ρέει προς το απαγωγό αρτηρίδιο;", 
-                options: ["Μειώνεται", "Παραμένει σταθερή", "Αυξάνεται", "Μηδενίζεται"], 
-                correct: 2, 
-                reason: "Η διήθηση του υγρού αυξάνει τη συγκέντρωση των πρωτεϊνών που παραμένουν στα τριχοειδή." 
-            },
-            { 
-                q: "Πόσα λίτρα πλάσματος διηθούνται συνολικά το 24ωρο στους νεφρούς;", 
-                options: ["1,5 λίτρα", "180 λίτρα", "600 λίτρα", "5 λίτρα"], 
-                correct: 1, 
-                reason: "Ο GFR είναι ~125ml/min, που αντιστοιχεί σε 180 λίτρα την ημέρα." 
-            },
-            { 
-                q: "Τι ορίζεται ως κλάσμα διήθησης (filtration fraction);", 
-                options: ["GFR / RPF", "RPF / GFR", "GFR x RPF", "BP / GFR"], 
-                correct: 0, 
-                reason: "Είναι το ποσοστό της νεφρικής ροής πλάσματος που διηθείται στο σπείραμα (φυσιολογικά ~20%)." 
-            },
-            { 
-                q: "Ποιος από τους παρακάτω παράγοντες ΔΕΝ αποτελεί κριτήριο διαπερατότητας του ηθμού;", 
-                options: ["Μοριακό βάρος", "Μοριακή ακτίνα", "Ηλεκτρικό φορτίο", "Συγκέντρωση οξυγόνου"], 
-                correct: 3, 
-                reason: "Η διαπερατότητα καθορίζεται από φυσικοχημικές ιδιότητες του μορίου (Βάρος, Ακτίνα, Φορτίο, Σχήμα)." 
-            },
-            { question: "Ποιες είναι οι 3 πιο σημαντικές λειτουργίες των νεφρών;", answer: "1. <b>Ομοιοστατική</b> (ισορροπία υγρών/ηλεκτρολυτών)<br>2. <b>Απεκκριτική</b> (αποβολή παραγώγων μεταβολισμού)<br>3. <b>Ενδοκρινική</b> (ορμόνες)" },
-            { question: "Ποια είναι η λειτουργική μονάδα του νεφρού;", answer: "Ο <b>Νεφρώνας</b>. Κάθε νεφρός περιέχει περίπου 1 εκατομμύριο νεφρώνες." },
-            { question: "Ποιες είναι οι φυσιολογικές τιμές GFR και RBF;", answer: "<b>GFR:</b> ~125 mL/min (180L/ημέρα)<br><b>RBF:</b> 1.100 - 1.200 mL/min (20-25% της καρδιακής παροχής)" },
-            { question: "Ποια είναι η επίδραση της μέτριας σύσπασης του απαγωγού αρτηριδίου;", answer: "Προκαλεί <b>αύξηση</b> του GFR λόγω αύξησης της υδροστατικής πίεσης στο σπείραμα." },
-            { question: "Γιατί η πολύ έντονη σύσπαση του απαγωγού μειώνει τελικά τον GFR;", answer: "Λόγω υπερβολικής αύξησης της <b>κολλοειδωσμωτικής</b> πίεσης εξαιτίας της μεγάλης ελάττωσης της νεφρικής αιμάτωσης." },
-            { question: "Ποιο αρτηρίδιο συμμετέχει κυρίως στον μηχανισμό αυτορρύθμισης του GFR;", answer: "Μόνο το <b>προσαγωγό</b> (afferent) αρτηρίδιο, όχι το απαγωγό." },
-            { question: "Τι συμβαίνει στον GFR κατά την αγγειοδιαστολή του απαγωγού αρτηριδίου;", answer: "Ο GFR <b>μειώνεται</b> επειδή πέφτει η σπειραματική υδροστατική πίεση." },
-            { question: "Τι ορίζεται ως Κλάσμα Διήθησης (Filtration Fraction);", answer: "Είναι ο λόγος <b>GFR / RPF</b> και η φυσιολογική του τιμή είναι περίπου <b>20%</b>." },
-            { question: "Ποιες είναι οι υδροστατικές πιέσεις στο προσαγωγό και το απαγωγό αρτηρίδιο;", answer: "Στο προσαγωγό είναι περίπου <b>60 mmHg</b> και στο απαγωγό περίπου <b>58 mmHg</b>." },
-            { question: "Ποιες ουσίες έχουν ισχυρότερη αγγειοσυσπαστική δράση στο απαγωγό αρτηρίδιο;", answer: "Η <b>αγγειοτενσίνη ΙΙ</b> και η <b>επινεφρίνη</b>, λόγω του μεγαλύτερου αριθμού υποδοχέων στο απαγωγό." },
-            {
-                question: "Ποιος μεταφορέας αναστέλλεται από τα θειαζιδικά διουρητικά;",
-                options: ["Συμμεταφορέας Na-K-2Cl", "Συμμεταφορέας Na-Cl", "Επιθηλιακός δίαυλος Na (ENaC)", "Αντλία Na-K ATPase"],
-                correct: 1
-            },
-            {
-                question: "Γιατί η φουροσεμίδη προκαλεί αυξημένη αποβολή ασβεστίου στα ούρα;",
-                options: ["Αναστέλλει άμεσα τους διαύλους ασβεστίου", "Αυξάνει τη διαπερατότητα του νερού", "Καταργεί το ηλεκτροθετικό δυναμικό του αυλού", "Διεγείρει την αλδοστερόνη"],
-                correct: 2
-            },
-            {
-                question: "Πού εντοπίζεται η αντλία Na-K ATPase στα σωληναριακά κύτταρα;",
-                options: ["Στην αυλική μεμβράνη", "Στις στερεές συνδέσεις", "Στη βασεοπλευρική μεμβράνη", "Στο κυτταρόπλασμα μόνο"],
-                correct: 2
-            },
-            {
-                question: "Ποια κύτταρα είναι υπεύθυνα για την έκκριση πρωτονίων (H+) και την επαναρρόφηση διττανθρακικών;",
-                options: ["Κύρια κύτταρα", "α-εμβόλιμα κύτταρα", "β-εμβόλιμα κύτταρα", "Κύτταρα του λεπτού κατιόντος σκέλους"],
-                correct: 1
-            },
-            {
-                question: "Ποιο τμήμα της αγκύλης του Henle είναι διαπερατό ΜΟΝΟ στο νερό;",
-                options: ["Λεπτό ανιόν σκέλος", "Λεπτό κατιόν σκέλος", "Παχύ ανιόν σκέλος", "Συνδετικό σωληνάριο"],
-                correct: 1
-            },
-            {
-                question: "Ποια ορμόνη αυξάνει την επαναρρόφηση Na+ και την έκκριση K+ στα κύρια κύτταρα;",
-                options: ["Αντιδιουρητική ορμόνη (ADH)", "Αλδοστερόνη", "Παραθορμόνη", "Ανθρακική ανυδράση"],
-                correct: 1
-            },
-            {
-                question: "Τι ονομάζουμε 'ελκυσμό διαλύτη' (solvent drag);",
-                options: ["Την ενεργητική μεταφορά νατρίου", "Την παράσυρση διαλυμένων ουσιών μέσω των στερεών συνδέσεων μαζί με το νερό", "Την κίνηση του νερού μέσω των ακουαπορινών", "Την αναστολή των μεταφορέων από φάρμακα"],
-                correct: 1
-            },
-            {
-                question: "Ποιο είναι το κύριο χαρακτηριστικό του επιθηλίου στο άπω σωληνάριο σε σύγκριση με το εγγύς;",
-                options: ["Είναι πιο 'διαρρέον' (leaky)", "Είναι 'σφιχτό' (tight) και επιτρέπει απότομες κλίσεις συγκέντρωσης", "Έχει μεγαλύτερη επιφάνεια απορρόφησης", "Είναι πάντα διαπερατό στο νερό"],
-                correct: 1
-            }
+            // ΕΡΩΤΗΣΕΙΣ 1-20 (QUIZ)
+            { type: "quiz", q: "Ποιες είναι οι τρεις πρωταρχικές κατηγορίες λειτουργιών των νεφρών;", options: ["Ομοιοστατική, Απεκκριτική και Ενδοκρινική", "Αναπνευστική, Πεπτική και Κυκλοφορική", "Κινητική, Αισθητική και Μεταβολική", "Διηθητική, Αποθηκευτική και Θερμορυθμιστική"], correct: 0, reason: "Αυτές οι τρεις κατηγορίες συνοψίζουν τη ρύθμιση του εσωτερικού περιβάλλοντος, την αποβολή ουσιών και την παραγωγή ορμονών." },
+            { type: "quiz", q: "Ποιο από τα παρακάτω μεταβολικά προϊόντα απεκκρίνεται από τους νεφρούς;", options: ["Γλυκόζη", "Κρεατινίνη", "Γλυκογόνο", "Ινσουλίνη"], correct: 1, reason: "Η κρεατινίνη είναι ένα από τα κύρια τελικά προϊόντα του μεταβολισμού που αποβάλλεται μέσω των ούρων." },
+            { type: "quiz", q: "Ποια ορμόνη εκκρίνουν οι νεφροί για τη ρύθμιση της παραγωγής ερυθρών αιμοσφαιρίων;", options: ["Ρενίνη", "Ερυθροποιητίνη", "Ινσουλίνη", "Αδρεναλίνη"], correct: 1, reason: "Η ερυθροποιητίνη διεγείρει τον μυελό των οστών για την παραγωγή ερυθρών αιμοσφαιρίων." },
+            { type: "quiz", q: "Η ρύθμιση της οξεοβασικής ισορροπίας εμπίπτει σε ποια λειτουργία;", options: ["Ενδοκρινική", "Ομοιοστατική", "Απεκκριτική", "Μεταβολική"], correct: 1, reason: "Η ομοιοστατική λειτουργία αφορά τη διατήρηση σταθερών συνθηκών στο εσωτερικό περιβάλλον." },
+            { type: "quiz", q: "Πού πραγματοποιείται η διαδικασία της διήθησης;", options: ["Στα περισωληναριακά τριχοειδή", "Στο σπείραμα", "Στη νεφρική φλέβα", "Στα απαγωγά αρτηρίδια"], correct: 1, reason: "Το σπείραμα είναι το δίκτυο τριχοειδών όπου το πλάσμα διηθείται προς την κάψα του Bowman." },
+            { type: "quiz", q: "Ποια είναι η θεμελιώδη εξίσωση του νεφρού;", options: ["Απέκκριση = Διήθηση + Επαναρρόφηση - Έκκριση", "Απέκκριση = Διήθηση - Επαναρρόφηση + Έκκριση", "Απέκκριση = Διήθηση + Έκκριση", "Απέκκριση = Επαναρρόφηση - Διήθηση"], correct: 1, reason: "Η απεκκρινόμενη ποσότητα ισούται με τη διηθημένη μείον την επαναρροφημένη συν την εκκρινόμενη." },
+            { type: "quiz", q: "Τι ονομάζουμε 'Έκκριση' στη νεφρική λειτουργία;", options: ["Τη μεταφορά ουσιών από την κάψα του Bowman στα σωληνάρια", "Τη μεταφορά ουσιών από τα περισωληναριακά τριχοειδή προς τα σωληνάρια", "Την αποβολή των ούρων", "Την επιστροφή γλυκόζης στο αίμα"], correct: 1, reason: "Έκκριση είναι η μεταφορά ουσιών από το αίμα των τριχοειδών απευθείας προς το εσωτερικό των σωληναρίων." },
+            { type: "quiz", q: "Ποια από τις παρακάτω ορμόνες αποδομείται (καταβολίζεται) στους νεφρούς;", options: ["Γλουκαγόνο", "Τεστοστερόνη", "Θυροξίνη", "Οιστρογόνα"], correct: 0, reason: "Οι νεφροί συμμετέχουν στην αποδόμηση πεπτιδίων όπως η ινσουλίνη και το γλουκαγόνο." },
+            { type: "quiz", q: "Σε ποια μεταβολική διεργασία συμμετέχουν οι νεφροί;", options: ["Γλυκογονόλυση", "Νεογλυκογένεση", "Πρωτεϊνοσύνθεση", "Λιπόλυση"], correct: 1, reason: "Οι νεφροί συμμετέχουν στο μεταβολισμό των αμινοξέων μέσω της διαδικασίας της νεογλυκογένεσης." },
+            { type: "quiz", q: "Ποιο συστατικό του αίματος διηθείται στο σπείραμα σε φυσιολογικές συνθήκες;", options: ["Τα ερυθρά αιμοσφαίρια", "Τα λευκά αιμοσφαίρια", "Ένα μέρος του πλάσματος", "Τα αιμοπετάλια"], correct: 2, reason: "Στο σπείραμα διηθείται ένα μέρος του πλάσματος, τα έμμορφα συστατικά είναι πολύ μεγάλα." },
+            { type: "quiz", q: "Ποιο στοιχείο του σπειραματικού ηθμού ευθύνεται για την 100 φορές μεγαλύτερη διαπερατότητα;", options: ["Τα ποδοκύτταρα", "Η βασική μεμβράνη", "Οι θυρίδες (fenestrations) των ενδοθηλιακών κυττάρων", "Τα μεσαγγειακά κύτταρα"], correct: 2, reason: "Οι θυρίδες και οι πόροι των ενδοθηλιακών κυττάρων καθιστούν τη στιβάδα αυτή εξαιρετικά διαπερατή." },
+            { type: "quiz", q: "Γιατί οι πρωτεΐνες του πλάσματος, όπως η λευκωματίνη, δεν διηθούνται φυσιολογικά;", options: ["Λόγω σχήματος", "Επειδή απωθούνται από τα αρνητικά φορτία της βασικής μεμβράνης", "Λόγω υπερβολικά υψηλής υδροστατικής πίεσης", "Λόγω των ποδοκυττάρων"], correct: 1, reason: "Η βασική μεμβράνη φέρει αρνητικά φορτία που απωθούν τις αρνητικά φορτισμένες πρωτεΐνες." },
+            { type: "quiz", q: "Πώς επηρεάζουν τα μεσαγγειακά κύτταρα τον GFR;", options: ["Εκκρίνουν ορμόνες", "Αυξάνουν την πίεση στην κάψα", "Μεταβάλλουν τη συνολική επιφάνεια διήθησης μέσω συστολής", "Φιλτράρουν τις πρωτεΐνες"], correct: 2, reason: "Όταν συστέλλονται, αλλάζει η συνολική επιφάνεια που είναι διαθέσιμη για υπερδιήθηση." },
+            { type: "quiz", q: "Ποια είναι η συγκέντρωση ουσιών με μικρό μοριακό βάρος (<5500 Da) στο σπειραματικό διήθημα;", options: ["Μηδενική", "Διπλάσια από το πλάσμα", "Ίδια με τη συγκέντρωση στο πλάσμα", "Το 20% της συγκέντρωσης του πλάσματος"], correct: 2, reason: "Μικρά μόρια όπως το νερό, η γλυκόζη και η ουρία διέρχονται ελεύθερα από τον ηθμό." },
+            { type: "quiz", q: "Αν PG=55, PB=15 και πG=30, ποια είναι η καθαρή πίεση διήθησης;", options: ["10 mmHg", "25 mmHg", "40 mmHg", "5 mmHg"], correct: 0, reason: "Προκύπτει από τον τύπο: 55 - (15 + 30) = 10 mmHg." },
+            { type: "quiz", q: "Γιατί η κολλοειδωσμωτική πίεση της κάψας Bowman (πB) είναι φυσιολογικά μηδενική;", options: ["Γιατί δεν υπάρχει υγρό", "Γιατί οι πρωτεΐνες δεν διαπερνούν τον ηθμό", "Λόγω χαμηλής θερμοκρασίας", "Λόγω της παρουσίας γλυκόζης"], correct: 1, reason: "Οι πρωτεΐνες δεν περνούν στον χώρο της κάψας, άρα δεν δημιουργούν κολλοειδωσμωτική πίεση εκεί." },
+            { type: "quiz", q: "Πώς μεταβάλλεται η κολλοειδωσμωτική πίεση (πG) καθώς το αίμα ρέει προς το απαγωγό αρτηρίδιο;", options: ["Μειώνεται", "Παραμένει σταθερή", "Αυξάνεται", "Μηδενίζεται"], correct: 2, reason: "Η διήθηση του υγρού αυξάνει τη συγκέντρωση των πρωτεϊνών που παραμένουν στα τριχοειδή." },
+            { type: "quiz", q: "Πόσα λίτρα πλάσματος διηθούνται συνολικά το 24ωρο στους νεφρούς;", options: ["1,5 λίτρα", "180 λίτρα", "600 λίτρα", "5 λίτρα"], correct: 1, reason: "Ο GFR είναι ~125ml/min, που αντιστοιχεί σε 180 λίτρα την ημέρα." },
+            { type: "quiz", q: "Τι ορίζεται ως κλάσμα διήθησης (filtration fraction);", options: ["GFR / RPF", "RPF / GFR", "GFR x RPF", "BP / GFR"], correct: 0, reason: "Είναι το ποσοστό της νεφρικής ροής πλάσματος που διηθείται στο σπείραμα (~20%)." },
+            { type: "quiz", q: "Ποιος από τους παρακάτω παράγοντες ΔΕΝ αποτελεί κριτήριο διαπερατότητας του ηθμού;", options: ["Μοριακό βάρος", "Μοριακή ακτίνα", "Ηλεκτρικό φορτίο", "Συγκέντρωση οξυγόνου"], correct: 3, reason: "Η διαπερατότητα καθορίζεται από φυσικοχημικές ιδιότητες (Βάρος, Ακτίνα, Φορτίο, Σχήμα)." },
+
+            // ΘΕΩΡΗΤΙΚΕΣ ΚΑΡΤΕΣ (21-30)
+            { type: "theory", q: "Ποιες είναι οι 3 πιο σημαντικές λειτουργίες των νεφρών;", answer: "1. <b>Ομοιοστατική</b> (υγρών/ηλεκτρολυτών)<br>2. <b>Απεκκριτική</b> (παράγωγα μεταβολισμού)<br>3. <b>Ενδοκρινική</b> (ορμόνες: ρενίνη, ερυθροποιητίνη, βιταμίνη D)" },
+            { type: "theory", q: "Ποια είναι η λειτουργική μονάδα του νεφρού;", answer: "Ο <b>Νεφρώνας</b>. Κάθε νεφρός περιέχει περίπου 1.000.000 νεφρώνες." },
+            { type: "theory", q: "Ποιες είναι οι φυσιολογικές τιμές GFR και RBF;", answer: "<b>GFR:</b> ~125 mL/min (180L/ημέρα)<br><b>RBF:</b> 1.100 - 1.200 mL/min (20-25% της καρδιακής παροχής)" },
+            { type: "theory", q: "Ποια είναι η επίδραση της μέτριας σύσπασης του απαγωγού αρτηριδίου;", answer: "Προκαλεί <b>αύξηση</b> του GFR λόγω αύξησης της υδροστατικής πίεσης στο σπείραμα." },
+            { type: "theory", q: "Γιατί η πολύ έντονη σύσπαση του απαγωγού μειώνει τελικά τον GFR;", answer: "Λόγω υπερβολικής αύξησης της <b>κολλοειδωσμωτικής</b> πίεσης εξαιτίας της μεγάλης ελάττωσης της νεφρικής αιμάτωσης." },
+            { type: "theory", q: "Ποιο αρτηρίδιο συμμετέχει κυρίως στον μηχανισμό αυτορρύθμισης του GFR;", answer: "Το <b>προσαγωγό</b> (afferent) αρτηρίδιο." },
+            { type: "theory", q: "Τι συμβαίνει στον GFR κατά την αγγειοδιαστολή του απαγωγού αρτηριδίου;", answer: "Ο GFR <b>μειώνεται</b> επειδή πέφτει η σπειραματική υδροστατική πίεση." },
+            { type: "theory", q: "Τι ορίζεται ως Κλάσμα Διήθησης (Filtration Fraction);", answer: "Είναι ο λόγος <b>GFR / RPF</b>. Φυσιολογική τιμή: <b>20%</b>." },
+            { type: "theory", q: "Ποιες είναι οι υδροστατικές πιέσεις στα αρτηρίδια;", answer: "Στο προσαγωγό: <b>60 mmHg</b>. Στο απαγωγό: <b>58 mmHg</b>." },
+            { type: "theory", q: "Ποιες ουσίες έχουν ισχυρότερη δράση στο απαγωγό;", answer: "Η <b>αγγειοτενσίνη ΙΙ</b> και η <b>επινεφρίνη</b> (λόγω περισσότερων υποδοχέων στο απαγωγό)." },
+
+            // ΕΠΙΠΛΕΟΝ ΕΡΩΤΗΣΕΙΣ (31-38)
+            { type: "quiz", q: "Ποιος μεταφορέας αναστέλλεται από τα θειαζιδικά διουρητικά;", options: ["Συμμεταφορέας Na-K-2Cl", "Συμμεταφορέας Na-Cl", "Επιθηλιακός δίαυλος Na (ENaC)", "Αντλία Na-K ATPase"], correct: 1, reason: "Τα θειαζιδικά αναστέλλουν τον Na-Cl στο άπω εσπειραμένο σωληνάριο." },
+            { type: "quiz", q: "Γιατί η φουροσεμίδη προκαλεί αυξημένη αποβολή ασβεστίου στα ούρα;", options: ["Αναστέλλει άμεσα τους διαύλους ασβεστίου", "Αυξάνει τη διαπερατότητα του νερού", "Καταργεί το ηλεκτροθετικό δυναμικό του αυλού", "Διεγείρει την αλδοστερόνη"], correct: 2, reason: "Η αναστολή του Na-K-2Cl καταργεί το θετικό δυναμικό που ωθεί το ασβέστιο παρακυτταρικά." },
+            { type: "quiz", q: "Πού εντοπίζεται η αντλία Na-K ATPase στα σωληναριακά κύτταρα;", options: ["Στην αυλική μεμβράνη", "Στις στερεές συνδέσεις", "Στη βασεοπλευρική μεμβράνη", "Στο κυτταρόπλασμα μόνο"], correct: 2, reason: "Βρίσκεται πάντα στη βασεοπλευρική πλευρά για να διατηρεί την κλίση νατρίου." },
+            { type: "quiz", q: "Ποια κύτταρα εκκρίνουν H+ και επαναρροφούν διττανθρακικά;", options: ["Κύρια κύτταρα", "α-εμβόλιμα κύτταρα", "β-εμβόλιμα κύτταρα", "Κύτταρα του λεπτού κατιόντος σκέλους"], correct: 1, reason: "Τα α-εμβόλιμα κύτταρα είναι υπεύθυνα για την έκκριση πρωτονίων." },
+            { type: "quiz", q: "Ποιο τμήμα της αγκύλης του Henle είναι διαπερατό ΜΟΝΟ στο νερό;", options: ["Λεπτό ανιόν σκέλος", "Λεπτό κατιόν σκέλος", "Παχύ ανιόν σκέλος", "Συνδετικό σωληνάριο"], correct: 1, reason: "Το λεπτό κατιόν σκέλος είναι εξαιρετικά διαπερατό στο νερό αλλά όχι σε ηλεκτρολύτες." },
+            { type: "quiz", q: "Ποια ορμόνη αυξάνει την επαναρρόφηση Na+ και την έκκριση K+ στα κύρια κύτταρα;", options: ["ADH", "Αλδοστερόνη", "Παραθορμόνη", "Ανθρακική ανυδράση"], correct: 1, reason: "Η αλδοστερόνη διεγείρει την επαναρρόφηση νατρίου και την αποβολή καλίου." },
+            { type: "quiz", q: "Τι ονομάζουμε 'ελκυσμό διαλύτη' (solvent drag);", options: ["Την ενεργητική μεταφορά νατρίου", "Την παράσυρση διαλυμένων ουσιών μέσω των στερεών συνδέσεων μαζί με το νερό", "Την κίνηση του νερού μέσω ακουαπορινών", "Την αναστολή των μεταφορέων"], correct: 1, reason: "Είναι η παθητική παράσυρση ουσιών μαζί με το νερό που κινείται παρακυτταρικά." },
+            { type: "quiz", q: "Ποιο είναι το κύριο χαρακτηριστικό του επιθηλίου στο άπω σωληνάριο;", options: ["Είναι πιο 'διαρρέον'", "Είναι 'σφιχτό' (tight)", "Έχει μεγαλύτερη επιφάνεια απορρόφησης", "Είναι πάντα διαπερατό στο νερό"], correct: 1, reason: "Το επιθήλιο του άπω σωληναρίου είναι πιο 'σφιχτό' για να διατηρεί μεγάλες κλίσεις συγκέντρωσης." }
         ];
 
         let state = {
@@ -320,8 +162,7 @@
 
         function toggleDarkMode() {
             const isDark = document.documentElement.classList.toggle('dark');
-            document.getElementById('sun-icon').classList.toggle('hidden', !isDark);
-            document.getElementById('moon-icon').classList.toggle('hidden', isDark);
+            document.getElementById('theme-icon').innerText = isDark ? '☀️' : '🌙';
             localStorage.setItem('theme', isDark ? 'dark' : 'light');
         }
 
@@ -335,7 +176,7 @@
             quizData.forEach((_, i) => {
                 const btn = document.createElement('button');
                 btn.id = `nav-${i}`;
-                btn.className = "nav-btn h-10 w-full rounded-lg font-bold text-xs flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400";
+                btn.className = "h-10 w-full rounded-lg font-bold text-xs flex items-center justify-center bg-slate-100 dark:bg-slate-800 text-slate-400 transition-all";
                 btn.innerText = i + 1;
                 btn.onclick = () => { jumpToQuestion(i); toggleModal(false); };
                 navGrid.appendChild(btn);
@@ -348,23 +189,21 @@
             quizData.forEach((_, i) => {
                 const btn = document.getElementById(`nav-${i}`);
                 if (!btn) return;
-                btn.className = "nav-btn h-10 w-full rounded-lg font-bold text-xs flex items-center justify-center ";
-                if (state.currentQ === i) btn.classList.add('active');
-                else if (state.results[i] === true) btn.classList.add('correct');
-                else if (state.results[i] === false) btn.classList.add('wrong');
+                btn.className = "h-10 w-full rounded-lg font-bold text-xs flex items-center justify-center ";
+                if (state.currentQ === i) btn.classList.add('bg-blue-500', 'text-white', 'ring-2', 'ring-offset-2');
+                else if (state.results[i] === true) btn.classList.add('bg-green-500', 'text-white');
+                else if (state.results[i] === false) btn.classList.add('bg-red-500', 'text-white');
                 else btn.classList.add('bg-slate-100', 'dark:bg-slate-800', 'text-slate-400');
             });
-
             const answered = state.results.filter(r => r !== null).length;
-            const pct = (answered / quizData.length) * 100;
-            document.getElementById('inner-progress').style.width = `${pct}%`;
+            document.getElementById('inner-progress').style.width = `${(answered / quizData.length) * 100}%`;
             document.getElementById('score-badge').innerText = `Σκορ: ${state.score}`;
         }
 
         function renderQuestion() {
             const data = quizData[state.currentQ];
             document.getElementById('current-num').innerText = state.currentQ + 1;
-            document.getElementById('question-text').innerText = data.q;
+            document.getElementById('question-text').innerHTML = data.q;
             const optionsList = document.getElementById('options-list');
             const feedbackBox = document.getElementById('feedback-box');
             const nextBtn = document.getElementById('next-btn');
@@ -373,29 +212,37 @@
             feedbackBox.classList.add('hidden');
             nextBtn.classList.add('hidden');
 
-            data.options.forEach((opt, i) => {
-                const btn = document.createElement('button');
-                btn.className = "option-btn w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-medium bg-white dark:bg-slate-800 shadow-sm flex items-center gap-3";
-                btn.innerHTML = `<div class="w-6 h-6 rounded-full border border-slate-200 dark:border-slate-600 flex-shrink-0 flex items-center justify-center text-[10px] font-bold">${i+1}</div> <span>${opt}</span>`;
-                
-                if (state.results[state.currentQ] !== null) {
-                    btn.disabled = true;
-                    if (i === data.correct) btn.classList.add('correct-opt');
-                    if (i === state.answers[state.currentQ] && i !== data.correct) btn.classList.add('wrong-opt');
-                } else {
-                    btn.onclick = () => checkAnswer(i);
-                }
-                optionsList.appendChild(btn);
-            });
-
-            if (state.results[state.currentQ] !== null) {
-                showFeedback(state.results[state.currentQ]);
+            if (data.type === "theory") {
+                optionsList.innerHTML = `<div class="p-6 bg-blue-50 dark:bg-slate-800/50 rounded-2xl border border-blue-100 dark:border-blue-800 text-sm md:text-base leading-relaxed">${data.answer}</div>`;
                 nextBtn.classList.remove('hidden');
+                nextBtn.innerText = "Επόμενο";
+                // Θεωρούμε τη θεωρία πάντα σωστή για την πρόοδο
+                state.results[state.currentQ] = true;
+                updateNavUI();
+            } else {
+                data.options.forEach((opt, i) => {
+                    const btn = document.createElement('button');
+                    btn.className = "option-btn w-full text-left p-4 rounded-xl border border-slate-200 dark:border-slate-700 text-sm font-medium bg-white dark:bg-slate-800 shadow-sm transition-all";
+                    btn.innerHTML = `<span>${opt}</span>`;
+                    
+                    if (state.results[state.currentQ] !== null) {
+                        btn.disabled = true;
+                        if (i === data.correct) btn.classList.add('correct-opt');
+                        if (i === state.answers[state.currentQ] && i !== data.correct) btn.classList.add('wrong-opt');
+                    } else {
+                        btn.onclick = () => checkAnswer(i);
+                    }
+                    optionsList.appendChild(btn);
+                });
+
+                if (state.results[state.currentQ] !== null) {
+                    showFeedback(state.results[state.currentQ]);
+                    nextBtn.classList.remove('hidden');
+                }
             }
         }
 
         function checkAnswer(idx) {
-            if (state.results[state.currentQ] !== null) return;
             const isCorrect = (idx === quizData[state.currentQ].correct);
             state.answers[state.currentQ] = idx;
             state.results[state.currentQ] = isCorrect;
@@ -405,29 +252,26 @@
         }
 
         function showFeedback(isCorrect) {
-            const feedbackBox = document.getElementById('feedback-box');
+            const box = document.getElementById('feedback-box');
             const data = quizData[state.currentQ];
-            feedbackBox.classList.remove('hidden');
-
+            box.classList.remove('hidden');
             const icon = document.getElementById('feedback-icon');
             const title = document.getElementById('feedback-title');
             const msg = document.getElementById('feedback-msg');
 
             if (isCorrect) {
-                feedbackBox.className = "mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 text-green-800 dark:text-green-200";
+                box.className = "mt-6 p-4 rounded-xl bg-green-50 dark:bg-green-900/20 border border-green-100 dark:border-green-800 text-green-800 dark:text-green-200";
                 icon.className = "flex-shrink-0 w-8 h-8 rounded-full bg-green-500 text-white flex items-center justify-center";
                 icon.innerHTML = "✓";
-                title.innerText = "Σωστή Απάντηση";
+                title.innerText = "Σωστό";
             } else {
-                feedbackBox.className = "mt-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-200";
+                box.className = "mt-6 p-4 rounded-xl bg-red-50 dark:bg-red-900/20 border border-red-100 dark:border-red-800 text-red-800 dark:text-red-200";
                 icon.className = "flex-shrink-0 w-8 h-8 rounded-full bg-red-500 text-white flex items-center justify-center";
                 icon.innerHTML = "✕";
-                title.innerText = "Λάθος Απάντηση";
+                title.innerText = "Λάθος";
             }
-            msg.innerText = data.reason || "Δεν υπάρχει διαθέσιμη επεξήγηση.";
-            
-            const nextBtn = document.getElementById('next-btn');
-            nextBtn.innerText = (state.currentQ < quizData.length - 1) ? "Επόμενη Ερώτηση" : "Δείτε τα Αποτελέσματα";
+            msg.innerText = data.reason || "";
+            document.getElementById('next-btn').classList.remove('hidden');
         }
 
         function goToNext() {
@@ -452,148 +296,25 @@
             const screen = document.getElementById('result-screen');
             screen.classList.remove('hidden');
             screen.classList.add('flex');
+            
+            const quizQuestions = quizData.filter(q => q.type === "quiz").length;
             document.getElementById('final-score').innerText = state.score;
-            document.getElementById('final-total').innerText = quizData.length;
-            document.getElementById('final-pct').innerText = Math.round((state.score / quizData.length) * 100);
+            document.getElementById('final-total').innerText = quizQuestions;
+            document.getElementById('final-pct').innerText = Math.round((state.score / quizQuestions) * 100);
         }
 
         function restartQuiz() {
-            state = { 
-                currentQ: 0, 
-                answers: Array(quizData.length).fill(null), 
-                results: Array(quizData.length).fill(null), 
-                score: 0 
-            };
+            state = { currentQ: 0, answers: Array(quizData.length).fill(null), results: Array(quizData.length).fill(null), score: 0 };
             document.getElementById('question-content').classList.remove('hidden');
             document.getElementById('result-screen').classList.add('hidden');
             initNav();
             renderQuestion();
         }
 
-        // Initialize Theme from LocalStorage
-        if (localStorage.getItem('theme') === 'dark' || (!('theme' in localStorage) && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-            document.getElementById('sun-icon').classList.remove('hidden');
-            document.getElementById('moon-icon').classList.add('hidden');
-        }
-
-        // Start App
+        // Init
+        if (localStorage.getItem('theme') === 'dark') toggleDarkMode();
         initNav();
         renderQuestion();
-    <script>
-const quizData = [
-  {
-    type: "quiz",
-    q: "Ποιες είναι οι τρεις πρωταρχικές κατηγορίες λειτουργιών των νεφρών;",
-    options: [
-      "Ομοιοστατική, Απεκκριτική και Ενδοκρινική",
-      "Αναπνευστική, Πεπτική και Κυκλοφορική",
-      "Κινητική, Αισθητική και Μεταβολική",
-      "Διηθητική, Αποθηκευτική και Θερμορυθμιστική"
-    ],
-    correct: 0,
-    reason: "Ρύθμιση εσωτερικού περιβάλλοντος, απέκκριση και παραγωγή ορμονών."
-  },
-  {
-    type: "quiz",
-    q: "Ποιο μεταβολικό προϊόν απεκκρίνεται από τους νεφρούς;",
-    options: ["Γλυκόζη", "Κρεατινίνη", "Γλυκογόνο", "Ινσουλίνη"],
-    correct: 1,
-    reason: "Η κρεατινίνη αποβάλλεται φυσιολογικά στα ούρα."
-  },
-
-  /* ===== ΘΕΩΡΗΤΙΚΕΣ ΚΑΡΤΕΣ ===== */
-
-  {
-    type: "theory",
-    q: "Ποιες είναι οι 3 σημαντικότερες λειτουργίες των νεφρών;",
-    answer: `
-      <b>1. Ομοιοστατική</b><br>
-      <b>2. Απεκκριτική</b><br>
-      <b>3. Ενδοκρινική</b>
-    `
-  },
-  {
-    type: "theory",
-    q: "Ποια είναι η λειτουργική μονάδα του νεφρού;",
-    answer: "Ο <b>νεφρώνας</b>. Κάθε νεφρός περιέχει ~1.000.000."
-  }
-];
-
-let state = {
-  currentQ: 0,
-  answers: Array(quizData.length).fill(null),
-  results: Array(quizData.length).fill(null),
-  score: 0
-};
-
-function renderQuestion() {
-  const data = quizData[state.currentQ];
-  document.getElementById("current-num").innerText = state.currentQ + 1;
-  document.getElementById("question-text").innerHTML = data.q;
-
-  const optionsList = document.getElementById("options-list");
-  const feedbackBox = document.getElementById("feedback-box");
-  const nextBtn = document.getElementById("next-btn");
-
-  optionsList.innerHTML = "";
-  feedbackBox.classList.add("hidden");
-  nextBtn.classList.add("hidden");
-
-  /* ===== ΘΕΩΡΙΑ ===== */
-  if (data.type === "theory") {
-    optionsList.innerHTML = `
-      <div class="p-4 bg-blue-50 dark:bg-slate-800 rounded-xl text-sm leading-relaxed">
-        ${data.answer}
-      </div>
-    `;
-    nextBtn.classList.remove("hidden");
-    nextBtn.innerText = "Συνέχεια";
-    return;
-  }
-
-  /* ===== QUIZ ===== */
-  data.options.forEach((opt, i) => {
-    const btn = document.createElement("button");
-    btn.className =
-      "option-btn w-full p-4 rounded-xl border text-left bg-white dark:bg-slate-800";
-    btn.innerText = opt;
-
-    btn.onclick = () => checkAnswer(i);
-    optionsList.appendChild(btn);
-  });
-}
-
-function checkAnswer(idx) {
-  const data = quizData[state.currentQ];
-  const correct = idx === data.correct;
-
-  state.results[state.currentQ] = correct;
-  if (correct) state.score++;
-
-  showFeedback(correct);
-  document.getElementById("next-btn").classList.remove("hidden");
-}
-
-function showFeedback(correct) {
-  const box = document.getElementById("feedback-box");
-  const data = quizData[state.currentQ];
-
-  box.classList.remove("hidden");
-  box.innerHTML = correct
-    ? `<b>Σωστό!</b><br>${data.reason}`
-    : `<b>Λάθος.</b><br>${data.reason}`;
-}
-
-function goToNext() {
-  if (state.currentQ < quizData.length - 1) {
-    state.currentQ++;
-    renderQuestion();
-  }
-}
-
-renderQuestion();
-</script>
-
+    </script>
 </body>
 </html>
