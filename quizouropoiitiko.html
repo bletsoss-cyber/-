@@ -480,6 +480,120 @@
         // Start App
         initNav();
         renderQuestion();
-    </script>
+    <script>
+const quizData = [
+  {
+    type: "quiz",
+    q: "Ποιες είναι οι τρεις πρωταρχικές κατηγορίες λειτουργιών των νεφρών;",
+    options: [
+      "Ομοιοστατική, Απεκκριτική και Ενδοκρινική",
+      "Αναπνευστική, Πεπτική και Κυκλοφορική",
+      "Κινητική, Αισθητική και Μεταβολική",
+      "Διηθητική, Αποθηκευτική και Θερμορυθμιστική"
+    ],
+    correct: 0,
+    reason: "Ρύθμιση εσωτερικού περιβάλλοντος, απέκκριση και παραγωγή ορμονών."
+  },
+  {
+    type: "quiz",
+    q: "Ποιο μεταβολικό προϊόν απεκκρίνεται από τους νεφρούς;",
+    options: ["Γλυκόζη", "Κρεατινίνη", "Γλυκογόνο", "Ινσουλίνη"],
+    correct: 1,
+    reason: "Η κρεατινίνη αποβάλλεται φυσιολογικά στα ούρα."
+  },
+
+  /* ===== ΘΕΩΡΗΤΙΚΕΣ ΚΑΡΤΕΣ ===== */
+
+  {
+    type: "theory",
+    q: "Ποιες είναι οι 3 σημαντικότερες λειτουργίες των νεφρών;",
+    answer: `
+      <b>1. Ομοιοστατική</b><br>
+      <b>2. Απεκκριτική</b><br>
+      <b>3. Ενδοκρινική</b>
+    `
+  },
+  {
+    type: "theory",
+    q: "Ποια είναι η λειτουργική μονάδα του νεφρού;",
+    answer: "Ο <b>νεφρώνας</b>. Κάθε νεφρός περιέχει ~1.000.000."
+  }
+];
+
+let state = {
+  currentQ: 0,
+  answers: Array(quizData.length).fill(null),
+  results: Array(quizData.length).fill(null),
+  score: 0
+};
+
+function renderQuestion() {
+  const data = quizData[state.currentQ];
+  document.getElementById("current-num").innerText = state.currentQ + 1;
+  document.getElementById("question-text").innerHTML = data.q;
+
+  const optionsList = document.getElementById("options-list");
+  const feedbackBox = document.getElementById("feedback-box");
+  const nextBtn = document.getElementById("next-btn");
+
+  optionsList.innerHTML = "";
+  feedbackBox.classList.add("hidden");
+  nextBtn.classList.add("hidden");
+
+  /* ===== ΘΕΩΡΙΑ ===== */
+  if (data.type === "theory") {
+    optionsList.innerHTML = `
+      <div class="p-4 bg-blue-50 dark:bg-slate-800 rounded-xl text-sm leading-relaxed">
+        ${data.answer}
+      </div>
+    `;
+    nextBtn.classList.remove("hidden");
+    nextBtn.innerText = "Συνέχεια";
+    return;
+  }
+
+  /* ===== QUIZ ===== */
+  data.options.forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className =
+      "option-btn w-full p-4 rounded-xl border text-left bg-white dark:bg-slate-800";
+    btn.innerText = opt;
+
+    btn.onclick = () => checkAnswer(i);
+    optionsList.appendChild(btn);
+  });
+}
+
+function checkAnswer(idx) {
+  const data = quizData[state.currentQ];
+  const correct = idx === data.correct;
+
+  state.results[state.currentQ] = correct;
+  if (correct) state.score++;
+
+  showFeedback(correct);
+  document.getElementById("next-btn").classList.remove("hidden");
+}
+
+function showFeedback(correct) {
+  const box = document.getElementById("feedback-box");
+  const data = quizData[state.currentQ];
+
+  box.classList.remove("hidden");
+  box.innerHTML = correct
+    ? `<b>Σωστό!</b><br>${data.reason}`
+    : `<b>Λάθος.</b><br>${data.reason}`;
+}
+
+function goToNext() {
+  if (state.currentQ < quizData.length - 1) {
+    state.currentQ++;
+    renderQuestion();
+  }
+}
+
+renderQuestion();
+</script>
+
 </body>
 </html>
