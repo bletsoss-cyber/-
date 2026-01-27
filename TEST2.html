@@ -1,0 +1,515 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κουίζ Ελέγχου Λοιμώξεων</title>
+    <style>
+        :root {
+            --primary: #2563eb;
+            --primary-hover: #1d4ed8;
+            --success: #22c55e;
+            --error: #ef4444;
+            --background: #f3f4f6;
+            --card-bg: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--background);
+            color: var(--text);
+            line-height: 1.6;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: var(--card-bg);
+            border-radius: 12px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+
+        .header h1 {
+            color: var(--primary);
+            margin: 0;
+            font-size: 1.8rem;
+        }
+
+        .question-card {
+            background: var(--card-bg);
+            padding: 25px;
+            margin-bottom: 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+            border-left: 5px solid var(--primary);
+            transition: transform 0.2s;
+        }
+
+        .question-title {
+            font-weight: 600;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: #111827;
+        }
+
+        .options-list {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .option-item {
+            margin-bottom: 10px;
+        }
+
+        .option-label {
+            display: flex;
+            align-items: flex-start;
+            padding: 12px;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .option-label:hover {
+            background-color: #f9fafb;
+            border-color: var(--primary);
+        }
+
+        /* Disabled state styling */
+        .option-label.disabled {
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .option-label.disabled:hover {
+            background-color: transparent;
+            border-color: #e5e7eb;
+        }
+
+        input[type="radio"] {
+            margin-right: 12px;
+            margin-top: 5px;
+            transform: scale(1.2);
+            accent-color: var(--primary);
+        }
+
+        /* Feedback Styles */
+        .correct-answer {
+            background-color: #dcfce7 !important;
+            border-color: var(--success) !important;
+            color: #166534;
+        }
+
+        .wrong-answer {
+            background-color: #fee2e2 !important;
+            border-color: var(--error) !important;
+            color: #991b1b;
+        }
+
+        .explanation {
+            margin-top: 15px;
+            padding: 10px;
+            background-color: #f0f9ff;
+            border-radius: 6px;
+            font-size: 0.95rem;
+            display: none;
+            border-left: 4px solid var(--primary);
+            animation: fadeIn 0.5s;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .controls {
+            text-align: center;
+            margin-top: 30px;
+            padding-bottom: 40px;
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 15px 40px;
+            font-size: 1.1rem;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            box-shadow: 0 4px 6px rgba(37, 99, 235, 0.3);
+            transition: background-color 0.2s;
+        }
+
+        .btn:hover {
+            background-color: var(--primary-hover);
+        }
+
+        .score-board {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--text);
+            color: white;
+            padding: 15px 25px;
+            border-radius: 50px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            z-index: 100;
+            font-weight: bold;
+        }
+        
+        .result-header {
+            text-align: center;
+            font-size: 1.5rem;
+            margin-bottom: 20px;
+            display: none;
+            padding: 20px;
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 600px) {
+            body { padding: 10px; }
+            .question-card { padding: 15px; }
+            .btn { width: 100%; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header">
+        <h1>🔍 Κουίζ Ελέγχου Λοιμώξεων</h1>
+        <p>Επίλεξε μια απάντηση για να δεις αμέσως το αποτέλεσμα.</p>
+    </div>
+
+    <div id="result-header" class="result-header"></div>
+    <div id="quiz-container">
+        <!-- Questions will be injected here -->
+    </div>
+
+    <div class="controls">
+        <button class="btn" onclick="location.reload()" id="retryBtn" style="background-color: #4b5563;">Επαναφορά Κουίζ</button>
+    </div>
+</div>
+
+<div id="sticky-score" class="score-board">Σκορ: 0 / 16</div>
+
+<script>
+    const quizData = [
+        {
+            id: 1,
+            question: "Οι μολυσματικές πρωτεΐνες καταστρέφονται ασφαλώς:",
+            options: [
+                "a. στο αυτόκαυστο στους 121 °C για 30 λεπτά",
+                "b. με συνδυασμό θερμότητας και οξειδωτικών μέσων",
+                "c. όλες οι επιλογές είναι λάθος",
+                "d. με πρωτεολυτικά ένζυμα ανθρώπινης προέλευσης",
+                "e. με συνδυασμό πρωτεολυτικών ενζύμων και θερμότητας στους 134 °C για 10 λεπτά"
+            ],
+            correct: 1 // index e
+        },
+        {
+            id: 9,
+            question: "Ποιά από τα παρακάτω απόβλητα είναι Επικίνδυνα Απόβλητα Υγειονομικών Μονάδων (ΕΑΥΜ);",
+            options: [
+                "a. περίσσεια πορσελάνης",
+                "b. εξαχθέντα δόντια",
+                "c. πλαστικές συσκευασίες αποτυπωτικών υλικών",
+                "d. όλες οι επιλογές είναι σωστές",
+                "e. αντισηπτικά διαλύματα ιωδοφόρων"
+            ],
+            correct: 3 // index d
+        },
+        {
+            id: 10,
+            question: "Ως ιατροτεχνολογικά προϊόντα χαρακτηρίζονται:",
+            options: [
+                "a. ανοσοβιολογικά προϊόντα για διαγνωστικούς σκοπούς",
+                "b. εργαλεία που χρησιμοποιεί ο οδοντίατρος για εξέταση",
+                "c. μέταλλα και κεραμικά υλικά που χρησιμοποιούν οι οδοντοτεχνίτες για προσθετικές εργασίες",
+                "d. προϊόντα με σήμανση CE",
+                "e. τα b και c"
+            ],
+            correct: 4 // index e
+        },
+        {
+            id: 2,
+            question: "Αερογενής διασπορά μολυσματικού υλικού στο οδοντιατρείο:",
+            options: [
+                "a. όλες οι επιλογές είναι λάθος",
+                "b. δεν επιμολύνει σε απόσταση έως >1 μέτρου από τον ασθενή",
+                "c. οφείλεται στη δημιουργία αεροζόλ",
+                "d. μπορεί να αποφευχθεί με τη χρήση συσκευών ηλεκτροχειρουργικής",
+                "e. αποτελεί κύρια οδό μετάδοσης του ιού HIV"
+            ],
+            correct: 2 // index c
+        },
+        {
+            id: 17,
+            question: "Η αποτελεσματικότητα των μεθόδων αποστείρωσης με υγρή θερμότητα:",
+            options: [
+                "a. όλες οι επιλογές είναι λάθος",
+                "b. δεν επηρεάζεται από την παρουσία αέρα στο περιβάλλον",
+                "c. δεν εξαρτάται από το αρχικό μικροβιακό φορτίο",
+                "d. οφείλεται στην θερμική αγωγιμότητα του νερού",
+                "e. είναι μικρότερη από αυτήν των μεθόδων ξηρής θερμότητας"
+            ],
+            correct: 3 // index a
+        },
+        {
+            id: 7,
+            question: "Τα αυτόκαυστα τύπου Β:",
+            options: [
+                "a. χρησιμοποιούν ατμούς υπεροξειδίου του υδρογόνου",
+                "b. προορίζονται για αποστείρωση μη συσκευασμένων αντικειμένων",
+                "c. δεν διαθέτουν αντλία κενού",
+                "d. είναι τα πιο κατάλληλα για κοίλα εργαλεία",
+                "e. προορίζονται για αποστείρωση συγκεκριμένων θερμοευαίσθητων εργαλείων"
+            ],
+            correct: 3 // index d
+        },
+        {
+            id: 12,
+            question: "Όταν ο οδοντίατρος νοσεί από λοιμώδη επιπεφυκίτιδα:",
+            options: [
+                "a. δεν ισχύει κάποιος περιορισμός για λόγους μετάδοσης",
+                "b. απαγορεύεται να έχει επαφή με ασθενή μέχρι να υποχωρήσει το έκκριμα",
+                "c. πρέπει να χρησιμοποιεί απαραιτήτως αλκοολούχα απολυμαντικά πριν την επαφή με τον ασθενή",
+                "d. μπορεί να συνεχίσει να εργάζεται εφόσον φορά γάντια",
+                "e. μπορεί να επανέλθει στα καθήκοντά του 2 ημέρες μετά από την εκδήλωση των συμπτωμάτων"
+            ],
+            correct: 1 // index b
+        },
+        {
+            id: 8,
+            question: "Η διαδικασία αποστείρωσης σε αυτόκαυστο ελέγχεται σε κάθε χρήση με:",
+            options: [
+                "a. μικροβιακούς δείκτες",
+                "b. συνεχή καταγραφή της θερμοκρασίας και πίεσης",
+                "c. θερμόμετρο μέγιστης θερμοκρασίας",
+                "d. χρωματικές ενδείξεις στις συσκευασίες αποστείρωσης",
+                "e. τα a, b και d"
+            ],
+            correct: 4 // index e
+        },
+        {
+            id: 4,
+            question: "Αντισηψία είναι:",
+            options: [
+                "a. η αντίδραση του οργανισμού σε παθογόνα μικρόβια",
+                "b. η χημική διαδικασία που μειώνει τον αριθμό των παθογόνων μικροβίων σε κτηριακές επιφάνειες",
+                "c. η καταστροφή παθογόνων μικροβίων σε επιφάνειες του ξενιστή με τη χρήση χημικών σκευασμάτων",
+                "d. η διαδικασία για απολύμανση εργαλείων",
+                "e. όλες οι απαντήσεις είναι λάθος"
+            ],
+            correct: 2 // index c
+        },
+        {
+            id: 13,
+            question: "Αλλαγή της προστατευτικής μάσκας απαιτείται:",
+            options: [
+                "a. σε κάθε ασθενή",
+                "b. όταν διακοπεί η συνεδρία",
+                "c. όταν λερωθεί με μολυσματικό υλικό",
+                "d. όλες οι επιλογές είναι σωστές",
+                "e. όταν υγρανθεί"
+            ],
+            correct: 3 // index d
+        },
+        {
+            id: 5,
+            question: "Αποστείρωση στο αυτόκαυστο σε 121 °C για 20 λεπτά στοχεύει:",
+            options: [
+                "a. στη μείωση του μικροβιακού φορτίου του κάθε εργαλείου κατά 10^6 μικρόβια",
+                "b. στην εξάλειψη όλων των μικροβίων στο θάλαμο",
+                "c. στη μείωση του συνολικού μικροβιακού φορτίου κατά 10^6 μικρόβια",
+                "d. στην πιθανότητα ύπαρξης 1 μολυσμένου εργαλείου από 10^6 αποστειρωθέντα εργαλεία",
+                "e. στην πιθανότητα ύπαρξης μόνον 1 μολυσμένου εργαλείου στο θάλαμο"
+            ],
+            correct: 3 // index d
+        },
+        {
+            id: 3,
+            question: "Η αιθανόλη είναι κατάλληλη για απολύμανση χεριών όταν:",
+            options: [
+                "a. είναι σε υψηλή συγκέντρωση (70%)",
+                "b. συνδυάζεται με άλλα αντισηπτικά με παραμένουσα δραστικότητα",
+                "c. όλες οι επιλογές είναι σωστές",
+                "d. τα χέρια είναι λερωμένα με ορατές ποσότητες πρωτεϊνικών ρύπων",
+                "e. δρα για τουλάχιστον 5 λεπτά πριν εξατμισθεί"
+            ],
+            correct: 0 // index c
+        },
+        {
+            id: 11,
+            question: "Ο καθαρισμός περιλαμβάνει διαδικασίες που στοχεύουν στο να:",
+            options: [
+                "a. εξαλείψουν τους παθογόνους μικροοργανισμούς",
+                "b. μειώσουν το μικροβιακό φορτίο κατά 10^6",
+                "c. μειώσουν το μικροβιακό φορτίο κατά >95%",
+                "d. απομακρύνουν ορατούς ρύπους",
+                "e. τα a, c και d"
+            ],
+            correct: 4 // index e
+        },
+        {
+            id: 19,
+            question: "Όλοι οι ασθενείς πρέπει να αντιμετωπίζονται ως πιθανοί φορείς παθογόνων μικροβίων επειδή:",
+            options: [
+                "a. κάποιοι ασθενείς δεν γνωρίζουν αν είναι φορείς",
+                "b. όλες οι επιλογές είναι σωστές",
+                "c. είναι πρακτικά δύσκολο να υποβάλλεται ο ασθενής συνεχώς σε εργαστηριακούς ελέγχους",
+                "d. κάποιοι ασθενείς δεν λένε την αλήθεια για την υγεία τους",
+                "e. μπορεί να είναι φορείς κάποιου μη ανιχνεύσιμου μεταδιδόμενου νοσήματος"
+            ],
+            correct: 1 // index b
+        },
+        {
+            id: 18,
+            question: "Η αντιμικροβιακή δράση της υπεριώδους ακτινοβολίας:",
+            options: [
+                "a. δεν εξαρτάται από το μήκος κύματός της",
+                "b. είναι αποτελεσματική μέθοδος για απολύμανση αποτυπωμάτων από πολυαιθέρα",
+                "c. δεν επηρεάζεται από την παρουσία οργανικών ουσιών στο περιβάλλον μέσο",
+                "d. οφείλεται στο ότι μετουσιώνει μικροβιακές πρωτεΐνες",
+                "e. οφείλεται στο ότι καταστρέφει τα πυρηνικά οξέα"
+            ],
+            correct: 4 // index e
+        },
+        {
+            id: 14,
+            question: "Το τεστ Helix εφαρμόζεται προκειμένου να ελεγχθεί:",
+            options: [
+                "a. η διείσδυση του ατμού σε πορώδη υλικά",
+                "b. η ιχνηλασιμότητα της διαδικασίας αποστείρωσης",
+                "c. η ικανότητα του αυτόκαυστου να αφαιρεί τον αέρα από το εσωτερικό κοίλων εργαλείων",
+                "d. η ικανότητα του αυτόκαυστου να διατηρεί σταθερή θερμοκρασία αποστείρωσης",
+                "e. το ποσοστό του αέρα που παραμένει στον θάλαμο του αυτόκαυστου"
+            ],
+            correct: 2 // index c
+        }
+    ];
+
+    let currentScore = 0;
+    let answeredCount = 0;
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = ''; // Clear existing content
+        
+        quizData.forEach((item, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            card.id = `card-${index}`;
+
+            let optionsHtml = '';
+            item.options.forEach((opt, optIndex) => {
+                optionsHtml += `
+                    <li class="option-item">
+                        <label class="option-label" id="label-${index}-${optIndex}">
+                            <input type="radio" 
+                                   name="q${index}" 
+                                   value="${optIndex}" 
+                                   onchange="handleAnswer(${index}, ${optIndex})">
+                            <span>${opt}</span>
+                        </label>
+                    </li>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="question-title">${index + 1}. ${item.question}</div>
+                <ul class="options-list">${optionsHtml}</ul>
+                <div class="explanation" id="exp-${index}">
+                    <strong>Σωστή Απάντηση:</strong> ${item.options[item.correct]}
+                </div>
+            `;
+            container.appendChild(card);
+        });
+        
+        updateScoreBoard();
+    }
+
+    function handleAnswer(questionIndex, selectedOptionIndex) {
+        const item = quizData[questionIndex];
+        const explanation = document.getElementById(`exp-${questionIndex}`);
+        const selectedLabel = document.getElementById(`label-${questionIndex}-${selectedOptionIndex}`);
+        const correctLabel = document.getElementById(`label-${questionIndex}-${item.correct}`);
+        
+        // Disable all inputs for this question to prevent changing answer
+        const allRadios = document.getElementsByName(`q${questionIndex}`);
+        allRadios.forEach(radio => {
+            radio.disabled = true;
+            const label = document.getElementById(`label-${questionIndex}-${radio.value}`);
+            if (radio.value != selectedOptionIndex && radio.value != item.correct) {
+                label.classList.add('disabled');
+            }
+        });
+
+        // Check Logic
+        answeredCount++;
+        if (selectedOptionIndex === item.correct) {
+            // Correct
+            currentScore++;
+            selectedLabel.classList.add('correct-answer');
+        } else {
+            // Wrong
+            selectedLabel.classList.add('wrong-answer');
+            correctLabel.classList.add('correct-answer');
+        }
+        
+        // Show explanation immediately
+        explanation.style.display = 'block';
+        
+        updateScoreBoard();
+        checkCompletion();
+    }
+
+    function updateScoreBoard() {
+        const sticky = document.getElementById('sticky-score');
+        sticky.innerHTML = `Σκορ: ${currentScore} / ${quizData.length}`;
+        
+        // Optional: show "Completed" if all done
+        if (answeredCount === quizData.length) {
+             sticky.innerHTML += " (Ολοκληρώθηκε)";
+             sticky.style.backgroundColor = "var(--primary)";
+        }
+    }
+
+    function checkCompletion() {
+        if (answeredCount === quizData.length) {
+            const resultHeader = document.getElementById('result-header');
+            const percentage = Math.round((currentScore / quizData.length) * 100);
+            let message = '';
+            
+            if (percentage >= 90) message = 'Άριστα! 🏆';
+            else if (percentage >= 70) message = 'Πολύ καλά! 👏';
+            else if (percentage >= 50) message = 'Καλά, αλλά θέλει επανάληψη. 📚';
+            else message = 'Χρειάζεται διάβασμα! ✍️';
+
+            resultHeader.style.display = 'block';
+            resultHeader.innerHTML = `Τελικό Σκορ: ${currentScore} / ${quizData.length} (${percentage}%) <br> <span style="font-size: 1rem; color: var(--primary)">${message}</span>`;
+            
+            // Scroll to top to see result header
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    }
+
+    // Initialize
+    renderQuiz();
+
+</script>
+
+</body>
+</html>
