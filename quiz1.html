@@ -3,208 +3,157 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomy Quiz: Επιλογή Ενότητας</title>
+    <title>Anatomy Master Quiz</title>
     <style>
         :root {
-            --bg-color: #f0f2f5;
-            --card-bg: #ffffff;
-            --text-color: #2d3748;
-            --border-color: #e2e8f0;
-            --theme-color: #4a5568;
-            --theme-light: #edf2f7;
-        }
-
-        body.dark-mode {
-            --bg-color: #1a202c;
-            --card-bg: #2d3748;
-            --text-color: #f7fafc;
-            --border-color: #4a5568;
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --success: #27ae60;
+            --danger: #e74c3c;
+            --bg: #f4f7f6;
+            --text: #333;
+            --card-bg: #fff;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background-color: var(--bg-color);
-            color: var(--text-color);
+            background: var(--bg);
+            color: var(--text);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
             margin: 0;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            min-height: 100vh;
-            transition: all 0.3s;
+            padding: 10px;
         }
 
-        /* MENU SCREEN */
-        #home-screen {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-            max-width: 800px;
-            padding: 2rem;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .menu-title { font-size: 2rem; margin-bottom: 2rem; font-weight: 800; }
-
-        .menu-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 20px;
-            width: 100%;
-        }
-
-        .menu-card {
-            background: var(--card-bg);
-            border-radius: 20px;
-            padding: 2rem;
-            text-align: center;
-            cursor: pointer;
-            transition: transform 0.2s, box-shadow 0.2s;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            border: 3px solid transparent;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            min-height: 180px;
-        }
-
-        .menu-card:hover { transform: translateY(-5px); box-shadow: 0 10px 15px rgba(0,0,0,0.1); }
-
-        .icon { font-size: 3rem; margin-bottom: 1rem; }
-        .label { font-size: 1.2rem; font-weight: bold; }
-
-        .card-artery { color: #c53030; border-color: #feb2b2; background-color: #fff5f5; }
-        .card-artery:hover { background-color: #fed7d7; }
-
-        .card-vein { color: #2b6cb0; border-color: #90cdf4; background-color: #ebf8ff; }
-        .card-vein:hover { background-color: #bee3f8; }
-
-        .card-muscle { color: #b7791f; border-color: #f6e05e; background-color: #fffff0; }
-        .card-muscle:hover { background-color: #fefcbf; }
-
-        /* QUIZ SCREEN */
-        #quiz-screen {
-            display: none;
+        .container {
             width: 100%;
             max-width: 600px;
-            padding: 2rem;
-        }
-
-        .top-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 2rem;
-        }
-
-        .back-btn {
-            background: none;
-            border: none;
-            font-size: 1rem;
-            cursor: pointer;
-            color: var(--text-color);
-            font-weight: bold;
-            opacity: 0.7;
-        }
-        
-        .quiz-container {
-            background-color: var(--card-bg);
-            padding: 2rem;
+            background: var(--card-bg);
             border-radius: 15px;
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-            border-top: 5px solid var(--theme-color);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        .score-info { font-size: 0.9rem; opacity: 0.8; display: flex; justify-content: space-between; margin-bottom: 1rem; }
+        .header {
+            background: var(--primary);
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
 
-        .question-text { font-size: 1.3rem; font-weight: 700; margin: 1rem 0 2rem 0; }
+        .header h1 { margin: 0; font-size: 1.5rem; }
+        .score-board { font-size: 0.9rem; opacity: 0.9; margin-top: 5px; }
 
-        .options-grid { display: grid; gap: 10px; }
+        .content { padding: 25px; }
+
+        .question-meta {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            color: #7f8c8d;
+            font-weight: bold;
+            letter-spacing: 1px;
+            margin-bottom: 10px;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            color: var(--primary);
+            line-height: 1.4;
+        }
+
+        .options-list { display: grid; gap: 12px; }
 
         .option-btn {
+            background: #fff;
+            border: 2px solid #e0e0e0;
             padding: 15px;
-            border: 2px solid var(--border-color);
-            background: var(--card-bg);
-            color: var(--text-color);
             border-radius: 10px;
             cursor: pointer;
-            font-size: 1rem;
             text-align: left;
+            font-size: 1rem;
             transition: all 0.2s;
+            position: relative;
+            font-weight: 500;
+            color: var(--text);
         }
 
-        .option-btn:hover { border-color: var(--theme-color); background-color: var(--theme-light); }
+        .option-btn:hover { border-color: var(--accent); background: #f0f8ff; }
 
-        .correct { background-color: #48bb78 !important; color: white !important; border-color: #48bb78 !important; }
-        .wrong { background-color: #f56565 !important; color: white !important; border-color: #f56565 !important; }
+        .option-btn.correct { background: var(--success); color: white; border-color: var(--success); }
+        .option-btn.wrong { background: var(--danger); color: white; border-color: var(--danger); }
+        
+        /* Στυλ για όταν έχει απαντηθεί */
+        .disabled { pointer-events: none; opacity: 0.9; }
 
-        #next-btn {
-            margin-top: 20px;
-            padding: 12px;
-            width: 100%;
-            background-color: var(--theme-color);
+        .next-btn {
+            background: var(--accent);
             color: white;
             border: none;
-            border-radius: 8px;
-            cursor: pointer;
+            padding: 15px;
+            width: 100%;
+            font-size: 1.1rem;
             font-weight: bold;
-            font-size: 1rem;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 0 0 15px 15px;
             display: none;
         }
 
-        .nm-btn { position: fixed; top: 10px; right: 10px; padding: 8px 12px; border-radius: 20px; border: 1px solid var(--border-color); background: var(--card-bg); cursor: pointer; color: var(--text-color); font-size: 1.2rem; }
+        .next-btn:hover { background: #2980b9; }
+
+        #end-screen {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            color: white;
+            font-size: 0.7rem;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
     </style>
 </head>
 <body>
 
-<button class="nm-btn" onclick="document.body.classList.toggle('dark-mode')">🌙</button>
-
-<div id="home-screen">
-    <div class="menu-title">Επίλεξε Ενότητα</div>
-    <div class="menu-grid">
-        <div class="menu-card card-artery" onclick="startQuiz('artery')">
-            <div class="icon">❤️</div>
-            <div class="label">ΑΡΤΗΡΙΕΣ</div>
-            <div style="font-size:0.8rem; opacity:0.8;">Εκφύσεις & Κλάδοι</div>
-        </div>
-        <div class="menu-card card-vein" onclick="startQuiz('vein')">
-            <div class="icon">💙</div>
-            <div class="label">ΦΛΕΒΕΣ</div>
-            <div style="font-size:0.8rem; opacity:0.8;">Εκβολές & Κόλποι</div>
-        </div>
-        <div class="menu-card card-muscle" onclick="startQuiz('muscle')">
-            <div class="icon">⚡</div>
-            <div class="label">ΜΥΕΣ & ΝΕΥΡΑ</div>
-            <div style="font-size:0.8rem; opacity:0.8;">Νεύρωση Μυών</div>
-        </div>
-    </div>
-</div>
-
-<div id="quiz-screen">
-    <div class="top-bar">
-        <button class="back-btn" onclick="showMenu()">← Πίσω στο Μενού</button>
-        <div style="font-weight:bold; font-size:1.2rem;" id="quiz-title">Quiz</div>
+<div class="container">
+    <div class="header">
+        <h1 id="quiz-header">Anatomy Pro</h1>
+        <div class="score-board">Ερώτηση <span id="current-q">1</span> / <span id="total-q">0</span> | Σκορ: <span id="score">0</span></div>
     </div>
 
-    <div class="quiz-container">
-        <div class="score-info">
-            <span id="progress-text">Ερώτηση 1</span>
-            <span id="score-text">Σκορ: 0</span>
+    <div id="quiz-area" class="content">
+        <div class="question-meta">
+            <span id="category-tag" class="category-badge"></span>
+            <span id="prompt-text"></span>
         </div>
-        
-        <div id="question-text" class="question-text">...</div>
-        <div id="options-container" class="options-grid"></div>
-        <div id="feedback" style="margin-top:10px; height:20px; font-weight:bold;"></div>
-        <button id="next-btn" onclick="nextQuestion()">Επόμενη Ερώτηση</button>
+        <div id="question-main" class="question-text"></div>
+        <div id="options-container" class="options-list"></div>
+    </div>
+
+    <button id="next-btn" class="next-btn" onclick="nextQuestion()">Επόμενη Ερώτηση →</button>
+
+    <div id="end-screen">
+        <h2>Τέλος Κουίζ!</h2>
+        <p style="font-size: 1.2rem;">Το σκορ σου: <strong id="final-score"></strong></p>
+        <button onclick="location.reload()" style="padding: 10px 20px; font-size: 1rem; background: var(--primary); color: white; border: none; border-radius: 5px; cursor: pointer;">Επανάληψη</button>
     </div>
 </div>
 
 <script>
-    // ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ (ΑΓΓΕΙΑ & ΝΕΥΡΑ)
-    const database = [
+    // --- ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ (ΟΛΗ Η ΥΛΗ) ---
+    const rawData = [
         // ΑΡΤΗΡΙΕΣ
         { q: "Επιπολής κροταφική", a: "Έξω καρωτίδα", type: "artery", prompt: "Από πού εκφύεται;" },
         { q: "Άνω θυρεοειδής", a: "Έξω καρωτίδα", type: "artery", prompt: "Από πού εκφύεται;" },
@@ -297,29 +246,28 @@
         { q: "Άνω λιθοειδής κόλπος", a: "Εγκάρσιο κόλπο", type: "vein", prompt: "Πού εκβάλλει;" },
         { q: "Κάτω λιθοειδής κόλπος", a: "Έσω σφαγίτιδα", type: "vein", prompt: "Πού εκβάλλει;" },
 
-        // ΜΥΕΣ
+        // ΜΥΕΣ & ΝΕΥΡΑ
         { q: "Κορακοβραχιόνιος", a: "Μυοδερματικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Πρόσθιος βραχιόνιος", a: "Μυοδερματικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Δικέφαλος βραχιόνιος", a: "Μυοδερματικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Μακρός παλαμικός", a: "Μέσο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Τετράγωνος πρηνιστής", a: "Μέσο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Στρογγύλος πρηνιστής", a: "Μέσο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
-        { q: "Μακρός παλαμιαίος", a: "Μέσο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Επιπολής καμπτήρας δακτύλων", a: "Μέσο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Δέρμα δελτοειδή", a: "Μασχαλιαίο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Μείζων στρογγύλος", a: "Υποπλάτια", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Μείζων ρομβοειδής", a: "Μασχαλιαίο (ή Ραχιαίο)", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Δελτοειδής", a: "Μασχαλιαίο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Ελάσσων στρογγύλος", a: "Μασχαλιαίο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
-        { q: "Μυς του αναβολέα", a: "Ομώνυμο (Προσωπικό)", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
+        { q: "Μυς του αναβολέα", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Γενειακός", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
-        { q: "Βελονοϋοειδής", a: "Διγαστορικός κλ. προσωπικού", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
+        { q: "Βελονοϋοειδής", a: "Προσωπικό (διγαστορικός)", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Βυκανητής", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Μυώδες πλάτυσμα", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Μείζων ζυγωματικός", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Δέρμα προσώπου", a: "Τρίδυμο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Επισκύνιος", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
-        { q: "Κροταφίτης", a: "Εν τω βάθει κροταφικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
+        { q: "Κροταφίτης", a: "Εν τω βάθει κροταφικό (Τρίδυμο)", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Σφιγκτήρας βλεφάρου", a: "Προσωπικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Τείνων τη μαλακή υπερώα", a: "Κάτω γναθικό", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
         { q: "Γενειοϋοειδής", a: "Υπογλώσσιο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" },
@@ -389,112 +337,118 @@
         { q: "Ελμινθοειδείς", a: "Κοινό παλαμιαίο", type: "muscle", prompt: "Από ποιο νεύρο νευρώνεται;" }
     ];
 
-    let currentQuestions = [];
+    let quizData = [];
     let currentIndex = 0;
     let score = 0;
 
-    // Functions
-    function showMenu() {
-        document.getElementById('quiz-screen').style.display = 'none';
-        document.getElementById('home-screen').style.display = 'flex';
-        document.body.style.setProperty('--theme-color', '#4a5568'); // Reset to grey
+    // --- LOGIC ΓΙΑ ΔΗΜΙΟΥΡΓΙΑ ΕΞΥΠΝΩΝ ΠΑΓΙΔΩΝ ---
+    function generateQuizData() {
+        // 1. Δημιουργία pool απαντήσεων ανά κατηγορία
+        const answerPools = {
+            artery: [...new Set(rawData.filter(i => i.type === 'artery').map(i => i.a))],
+            vein: [...new Set(rawData.filter(i => i.type === 'vein').map(i => i.a))],
+            muscle: [...new Set(rawData.filter(i => i.type === 'muscle').map(i => i.a))]
+        };
+
+        // 2. Δημιουργία δομής ερωτήσεων
+        return rawData.map(item => {
+            // Βρες το pool της συγκεκριμένης κατηγορίας
+            const pool = answerPools[item.type];
+            
+            // Βρες 3 λάθος απαντήσεις (distractors) από το ΙΔΙΟ pool
+            // Αυτό είναι το "trick": βάζουμε μόνο νεύρα αν η ερώτηση είναι για μυ, κτλ.
+            let distractors = pool.filter(ans => ans !== item.a);
+            distractors.sort(() => Math.random() - 0.5); // Ανακάτεμα
+            distractors = distractors.slice(0, 3); // Πάρε τους 3 πρώτους
+
+            // Δημιούργησε τις επιλογές (Σωστό + 3 Λάθος)
+            let options = [item.a, ...distractors];
+            
+            // Ανακάτεμα των επιλογών
+            options.sort(() => Math.random() - 0.5);
+
+            // Βρες πού κατέληξε η σωστή απάντηση
+            const correctIndex = options.indexOf(item.a);
+
+            // Καθορισμός χρώματος badge
+            let badgeColor = "#95a5a6";
+            let catName = "";
+            if(item.type === 'artery') { badgeColor = "#c0392b"; catName = "ΑΡΤΗΡΙΑ"; }
+            if(item.type === 'vein') { badgeColor = "#2980b9"; catName = "ΦΛΕΒΑ"; }
+            if(item.type === 'muscle') { badgeColor = "#f39c12"; catName = "ΜΥΣ / ΝΕΥΡΟ"; }
+
+            return {
+                q: item.q,
+                prompt: item.prompt,
+                o: options,
+                a: correctIndex,
+                badge: badgeColor,
+                catName: catName
+            };
+        });
     }
 
-    function startQuiz(category) {
-        // 1. Reset
-        score = 0;
+    function startQuiz() {
+        quizData = generateQuizData();
+        // Ανακάτεμα όλων των ερωτήσεων
+        quizData.sort(() => Math.random() - 0.5);
+        
         currentIndex = 0;
-
-        // 2. Filter Questions
-        currentQuestions = database.filter(q => q.type === category);
-
-        // 3. Set Colors & Title
-        if (category === 'artery') {
-            document.body.style.setProperty('--theme-color', '#c53030');
-            document.body.style.setProperty('--theme-light', '#fff5f5');
-            document.getElementById('quiz-title').innerText = "Ενότητα: Αρτηρίες";
-        } else if (category === 'vein') {
-            document.body.style.setProperty('--theme-color', '#2b6cb0');
-            document.body.style.setProperty('--theme-light', '#ebf8ff');
-            document.getElementById('quiz-title').innerText = "Ενότητα: Φλέβες";
-        } else {
-            document.body.style.setProperty('--theme-color', '#b7791f');
-            document.body.style.setProperty('--theme-light', '#fffff0');
-            document.getElementById('quiz-title').innerText = "Ενότητα: Μύες & Νεύρα";
-        }
-
-        // 4. Shuffle Questions
-        currentQuestions.sort(() => 0.5 - Math.random());
-
-        // 5. Switch UI
-        document.getElementById('home-screen').style.display = 'none';
-        document.getElementById('quiz-screen').style.display = 'block';
-
-        // 6. Start
+        score = 0;
+        document.getElementById('total-q').innerText = quizData.length;
+        document.getElementById('end-screen').style.display = 'none';
+        document.getElementById('quiz-area').style.display = 'block';
+        document.getElementById('next-btn').style.display = 'none';
         loadQuestion();
     }
 
     function loadQuestion() {
-        document.getElementById('feedback').innerHTML = "";
-        document.getElementById('next-btn').style.display = "none";
-        document.getElementById('options-container').innerHTML = "";
-
-        // Check if finished
-        if (currentIndex >= currentQuestions.length) {
-            alert(`Τέλος ενότητας! Το σκορ σου είναι: ${score} από ${currentQuestions.length * 10}`);
-            showMenu();
+        if (currentIndex >= quizData.length) {
+            showResults();
             return;
         }
 
-        const q = currentQuestions[currentIndex];
+        const current = quizData[currentIndex];
         
-        document.getElementById('progress-text').innerText = `Ερώτηση ${currentIndex + 1} / ${currentQuestions.length}`;
-        document.getElementById('score-text').innerText = `Σκορ: ${score}`;
-        document.getElementById('question-text').innerText = `${q.prompt}\n${q.q}`;
-
-        // Get Distractors
-        let distractors = getDistractors(q.a, q.type);
-        while (distractors.length < 3) distractors.push("Άλλο");
+        // Update UI
+        document.getElementById('current-q').innerText = currentIndex + 1;
+        document.getElementById('score').innerText = score;
+        document.getElementById('question-main').innerText = current.q;
+        document.getElementById('prompt-text').innerText = current.prompt;
         
-        let options = [q.a, ...distractors];
-        options.sort(() => 0.5 - Math.random());
+        const badge = document.getElementById('category-tag');
+        badge.innerText = current.catName;
+        badge.style.backgroundColor = current.badge;
 
-        const optionsContainer = document.getElementById('options-container');
-        options.forEach(opt => {
-            let btn = document.createElement('button');
+        // Render Options
+        const container = document.getElementById('options-container');
+        container.innerHTML = "";
+        
+        current.o.forEach((opt, index) => {
+            const btn = document.createElement('button');
             btn.className = 'option-btn';
             btn.innerText = opt;
-            btn.onclick = () => checkAnswer(opt, btn, q.a);
-            optionsContainer.appendChild(btn);
+            btn.onclick = () => checkAnswer(index, btn, current.a);
+            container.appendChild(btn);
         });
+
+        document.getElementById('next-btn').style.display = 'none';
     }
 
-    function getDistractors(correctAnswer, type) {
-        let allAnswers = database.filter(item => item.type === type).map(item => item.a);
-        let uniqueWrong = [...new Set(allAnswers)].filter(ans => ans !== correctAnswer);
-        uniqueWrong.sort(() => 0.5 - Math.random());
-        return uniqueWrong.slice(0, 3);
-    }
+    function checkAnswer(selectedIndex, btn, correctIndex) {
+        const buttons = document.querySelectorAll('.option-btn');
+        buttons.forEach((b, idx) => {
+            b.classList.add('disabled'); // Κλείδωμα κουμπιών
+            if (idx === correctIndex) b.classList.add('correct'); // Δείξε το σωστό
+        });
 
-    function checkAnswer(selected, btnElement, correct) {
-        let buttons = document.querySelectorAll('.option-btn');
-        buttons.forEach(b => b.disabled = true);
-
-        const feedback = document.getElementById('feedback');
-
-        if (selected === correct) {
-            btnElement.classList.add('correct');
-            feedback.innerHTML = "<span style='color:#48bb78'>Σωστά!</span>";
+        if (selectedIndex === correctIndex) {
             score += 10;
         } else {
-            btnElement.classList.add('wrong');
-            buttons.forEach(b => {
-                if (b.innerText === correct) b.classList.add('correct');
-            });
-            feedback.innerHTML = `<span style='color:#f56565'>Λάθος. Το σωστό είναι: ${correct}</span>`;
+            btn.classList.add('wrong'); // Δείξε το λάθος
         }
 
-        document.getElementById('score-text').innerText = `Σκορ: ${score}`;
+        document.getElementById('score').innerText = score;
         document.getElementById('next-btn').style.display = 'block';
     }
 
@@ -502,7 +456,17 @@
         currentIndex++;
         loadQuestion();
     }
-</script>
 
+    function showResults() {
+        document.getElementById('quiz-area').style.display = 'none';
+        document.getElementById('next-btn').style.display = 'none';
+        document.getElementById('end-screen').style.display = 'block';
+        document.getElementById('final-score').innerText = `${score} / ${quizData.length * 10}`;
+    }
+
+    // Start on load
+    startQuiz();
+
+</script>
 </body>
 </html>
