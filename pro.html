@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>ΑΝΑΤΟΜΙΑ II - 100 ΕΡΩΤΗΣΕΙΣ</title>
+    <title>ΑΝΑΤΟΜΙΑ II - 100 ΕΡΩΤΗΣΕΙΣ (FIXED)</title>
     <style>
         :root {
             --bg-color: #f4f6f8;
@@ -41,209 +41,87 @@
             transition: all 0.3s ease;
         }
 
-        /* --- HEADER --- */
+        /* HEADER */
         .header {
-            width: 100%;
-            max-width: 800px;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            box-sizing: border-box;
+            width: 100%; max-width: 800px; padding: 20px;
+            display: flex; justify-content: space-between; align-items: center; box-sizing: border-box;
         }
-
-        .header h1 {
-            margin: 0;
-            font-size: 1.5rem;
-            color: var(--accent);
-        }
-
-        .controls {
-            display: flex;
-            gap: 10px;
-        }
-
+        .header h1 { margin: 0; font-size: 1.5rem; color: var(--accent); }
+        .controls { display: flex; gap: 10px; }
         .btn-control {
-            background: var(--card-bg);
-            border: 1px solid var(--border);
-            color: var(--text-primary);
-            padding: 8px 12px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.2s;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            background: var(--card-bg); border: 1px solid var(--border); color: var(--text-primary);
+            padding: 8px 12px; border-radius: 8px; cursor: pointer; font-weight: 600;
+            transition: all 0.2s; display: flex; align-items: center; gap: 5px;
         }
-
         .btn-control:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
 
-        /* --- MAIN CARD --- */
+        /* QUIZ CARD */
         .quiz-card {
-            background: var(--card-bg);
-            width: 90%;
-            max-width: 700px;
-            padding: 30px;
-            border-radius: 20px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--border);
-            margin-bottom: 20px;
-            position: relative;
+            background: var(--card-bg); width: 90%; max-width: 700px; padding: 30px;
+            border-radius: 20px; box-shadow: var(--shadow); border: 1px solid var(--border);
+            margin-bottom: 20px; position: relative;
         }
-
         .progress-bar {
-            width: 100%;
-            height: 6px;
-            background: var(--border);
-            border-radius: 3px;
-            margin-bottom: 20px;
-            overflow: hidden;
+            width: 100%; height: 6px; background: var(--border); border-radius: 3px;
+            margin-bottom: 20px; overflow: hidden;
         }
-
-        .progress-fill {
-            height: 100%;
-            background: var(--accent);
-            width: 0%;
-            transition: width 0.3s ease;
-        }
-
+        .progress-fill { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s ease; }
         .meta-info {
-            display: flex;
-            justify-content: space-between;
-            font-size: 0.9rem;
-            color: var(--text-secondary);
-            margin-bottom: 15px;
+            display: flex; justify-content: space-between; font-size: 0.9rem;
+            color: var(--text-secondary); margin-bottom: 15px;
         }
-
-        .question-text {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 30px;
-            line-height: 1.5;
-        }
-
+        .question-text { font-size: 1.3rem; font-weight: 700; margin-bottom: 30px; line-height: 1.5; }
         .badge {
-            display: inline-block;
-            padding: 4px 10px;
-            border-radius: 12px;
-            font-size: 0.75rem;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
+            display: inline-block; padding: 4px 10px; border-radius: 12px;
+            font-size: 0.75rem; font-weight: bold; margin-bottom: 10px; text-transform: uppercase;
         }
-
-        /* Category Colors */
         .badge-artery { background: rgba(214, 48, 49, 0.1); color: #d63031; }
         .badge-vein { background: rgba(9, 132, 227, 0.1); color: #0984e3; }
         .badge-muscle { background: rgba(253, 203, 110, 0.1); color: #e1b12c; }
         .badge-organ { background: rgba(0, 184, 148, 0.1); color: #00b894; }
 
-        .options-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-        }
-
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 12px; }
         .option-btn {
-            background: transparent;
-            border: 2px solid var(--border);
-            color: var(--text-primary);
-            padding: 15px 20px;
-            border-radius: 12px;
-            text-align: left;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: all 0.2s;
+            background: transparent; border: 2px solid var(--border); color: var(--text-primary);
+            padding: 15px 20px; border-radius: 12px; text-align: left; font-size: 1rem;
+            cursor: pointer; transition: all 0.2s;
         }
-
-        .option-btn:hover:not(:disabled) {
-            border-color: var(--accent);
-            background: rgba(116, 185, 255, 0.05);
-        }
-
-        .option-btn.correct { background: var(--success) !important; color: #fff !important; border-color: var(--success) !important; }
-        .option-btn.wrong { background: var(--error) !important; color: #fff !important; border-color: var(--error) !important; }
-        .option-btn:disabled { cursor: default; opacity: 0.9; }
-
-        /* --- NAVIGATION MODAL --- */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0; left: 0;
-            width: 100%; height: 100%;
-            background: rgba(0,0,0,0.6);
-            backdrop-filter: blur(5px);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
-            background: var(--card-bg);
-            width: 90%;
-            max-width: 600px;
-            max-height: 80vh;
-            border-radius: 20px;
-            padding: 30px;
-            overflow-y: auto;
-            border: 1px solid var(--border);
-        }
-
-        .nav-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
-            gap: 10px;
-            margin-top: 20px;
-        }
-
-        .nav-item {
-            aspect-ratio: 1;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            border: 1px solid var(--border);
-            border-radius: 8px;
-            cursor: pointer;
-            font-size: 0.9rem;
-            font-weight: 600;
-            color: var(--text-secondary);
-        }
-
-        .nav-item:hover { border-color: var(--accent); }
-        .nav-item.active { border: 2px solid var(--accent); color: var(--text-primary); }
-        .nav-item.correct { background: var(--success); color: white; border: none; }
-        .nav-item.wrong { background: var(--error); color: white; border: none; }
-
-        .close-btn {
-            float: right;
-            cursor: pointer;
-            font-size: 1.5rem;
-            color: var(--text-secondary);
-        }
-
-        /* --- FOOTER NAV --- */
-        .footer-nav {
-            display: flex;
-            justify-content: space-between;
-            width: 90%;
-            max-width: 700px;
-        }
-
-        .nav-arrow {
-            padding: 12px 25px;
-            border: none;
-            background: var(--accent);
-            color: white;
-            border-radius: 10px;
-            cursor: pointer;
-            font-weight: bold;
-            opacity: 0.9;
-        }
+        .option-btn:hover:not(:disabled) { border-color: var(--accent); background: rgba(116, 185, 255, 0.05); }
+        .option-btn:disabled { cursor: default; opacity: 0.7; }
         
-        .nav-arrow:hover { opacity: 1; transform: scale(1.05); }
-        .nav-arrow:disabled { background: var(--border); cursor: not-allowed; transform: none; }
+        /* Correct/Wrong Styles applied via JS */
+        .option-btn.correct-answer { background: var(--success) !important; color: white !important; border-color: var(--success) !important; opacity: 1 !important;}
+        .option-btn.wrong-answer { background: var(--error) !important; color: white !important; border-color: var(--error) !important; opacity: 1 !important;}
 
+        /* FOOTER NAV */
+        .footer-nav { display: flex; justify-content: space-between; width: 90%; max-width: 700px; }
+        .nav-arrow {
+            padding: 12px 25px; border: none; background: var(--accent); color: white;
+            border-radius: 10px; cursor: pointer; font-weight: bold; opacity: 0.9;
+        }
+        .nav-arrow:hover { opacity: 1; transform: scale(1.05); }
+        .nav-arrow:disabled { background: var(--border); cursor: not-allowed; transform: none; opacity: 0.5; }
+
+        /* MODAL */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.6); backdrop-filter: blur(5px); z-index: 1000;
+            justify-content: center; align-items: center;
+        }
+        .modal-content {
+            background: var(--card-bg); width: 90%; max-width: 600px; max-height: 80vh;
+            border-radius: 20px; padding: 30px; overflow-y: auto; border: 1px solid var(--border);
+        }
+        .nav-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(45px, 1fr)); gap: 10px; margin-top: 20px; }
+        .nav-item {
+            aspect-ratio: 1; display: flex; justify-content: center; align-items: center;
+            border: 1px solid var(--border); border-radius: 8px; cursor: pointer;
+            font-size: 0.9rem; font-weight: 600; color: var(--text-secondary);
+        }
+        .nav-item.active { border: 2px solid var(--accent); color: var(--text-primary); }
+        .nav-item.is-correct { background: var(--success); color: white; border: none; }
+        .nav-item.is-wrong { background: var(--error); color: white; border: none; }
+        .close-btn { float: right; cursor: pointer; font-size: 1.5rem; color: var(--text-secondary); }
     </style>
 </head>
 <body>
@@ -279,20 +157,14 @@
         <div class="modal-content">
             <span class="close-btn" onclick="toggleNav()">&times;</span>
             <h2 style="margin-top:0; color:var(--text-primary)">Χάρτης Ερωτήσεων</h2>
-            <div style="font-size:0.9rem; color:var(--text-secondary)">
-                <span style="color:var(--success)">■</span> Σωστό &nbsp; 
-                <span style="color:var(--error)">■</span> Λάθος &nbsp; 
-                <span style="border:1px solid #ccc; display:inline-block; width:10px; height:10px"></span> Κενό
-            </div>
             <div id="nav-grid" class="nav-grid"></div>
         </div>
     </div>
 
 <script>
-    // --- 100 Questions Database ---
-    // Βασισμένο αυστηρά στο PDF σου. Καλύπτει Αρτηρίες, Φλέβες, Μύες, Όργανα, Λεμφικά.
+    // --- DATABASE ---
     const database = [
-        // 1-30: ΑΡΤΗΡΙΕΣ
+        // ΑΡΤΗΡΙΕΣ
         {q:"Επιπολής κροταφική", a:"Έξω καρωτίδα", t:"artery", p:"Από πού εκφύεται η:"},
         {q:"Άνω θυρεοειδής", a:"Έξω καρωτίδα", t:"artery", p:"Από πού εκφύεται η:"},
         {q:"Ανιούσα φαρυγγική", a:"Έξω καρωτίδα", t:"artery", p:"Από πού εκφύεται η:"},
@@ -324,7 +196,7 @@
         {q:"Επιπολής περισπωμένη λαγόνια", a:"Κοινή μηριαία", t:"artery", p:"Από πού εκφύεται η:"},
         {q:"Περονιαία", a:"Οπίσθια κνημιαία", t:"artery", p:"Από πού εκφύεται η:"},
 
-        // 31-60: ΦΛΕΒΕΣ & ΚΟΛΠΟΙ
+        // ΦΛΕΒΕΣ
         {q:"Υπερπλάτια", a:"Έξω σφαγίτιδα", t:"vein", p:"Πού εκβάλλει η:"},
         {q:"Οπίσθια ωτιαία", a:"Έξω σφαγίτιδα", t:"vein", p:"Πού εκβάλλει η:"},
         {q:"Προσωπική", a:"Έσω σφαγίτιδα", t:"vein", p:"Πού εκβάλλει η:"},
@@ -356,7 +228,7 @@
         {q:"Σφηνοβρεγματικός κόλπος", a:"Σηραγγώδη κόλπο", t:"vein", p:"Πού εκβάλλει ο:"},
         {q:"Σιγμοειδής κόλπος", a:"Έσω σφαγίτιδα", t:"vein", p:"Πού εκβάλλει ο:"},
 
-        // 61-90: ΜΥΕΣ & ΝΕΥΡΑ
+        // ΜΥΕΣ
         {q:"Κορακοβραχιόνιος", a:"Μυοδερματικό", t:"muscle", p:"Από ποιο νεύρο νευρώνεται ο:"},
         {q:"Δικέφαλος βραχιόνιος", a:"Μυοδερματικό", t:"muscle", p:"Από ποιο νεύρο νευρώνεται ο:"},
         {q:"Μακρός παλαμικός", a:"Μέσο", t:"muscle", p:"Από ποιο νεύρο νευρώνεται ο:"},
@@ -388,7 +260,7 @@
         {q:"Πλατύς ραχιαίος", a:"Θωρακορραχιαίο", t:"muscle", p:"Από ποιο νεύρο νευρώνεται ο:"},
         {q:"Πρόσθιος οδοντωτός", a:"Μακρό θωρακικό", t:"muscle", p:"Από ποιο νεύρο νευρώνεται ο:"},
 
-        // 91-100: ΟΡΓΑΝΑ & ΛΕΜΦΙΚΑ (Peyer, Θυμικό, κτλ)
+        // ΟΡΓΑΝΑ
         {q:"Αγελαία λεμφοζίδια (Peyer)", a:"Λεπτό έντερο", t:"organ", p:"Πού βρίσκονται τα:"},
         {q:"Θυμικό τρίγωνο", a:"Άνω μεσοπνευμόνιος χώρος", t:"organ", p:"Πού βρίσκεται το:"},
         {q:"Καρδιακός βόθρος", a:"Αριστερός πνεύμονας", t:"organ", p:"Πού βρίσκεται ο:"},
@@ -401,108 +273,128 @@
         {q:"Θέση ακρόασης πνευμονικής βαλβίδας", a:"2ο αριστερό μεσοπλεύριο", t:"organ", p:"Πού βρίσκεται η:"}
     ];
 
-    // --- LOGIC ---
+    // --- GAME LOGIC ---
     let currentIdx = 0;
-    let userAnswers = new Array(database.length).fill(null); // null, true, false
-    
-    // Shuffle the database ONLY ONCE at startup so the navigation grid stays consistent
-    // To match user expectation of "shuffled" but consistent index for nav:
+    // We shuffle indices once to keep order consistent during session
     let shuffledIndices = Array.from(database.keys()).sort(() => 0.5 - Math.random());
-    
+    // Store user results: null = unanswered, true = correct, false = wrong
+    let userResults = new Array(database.length).fill(null);
+    // Store generated options so they don't change if you revisit
+    let savedOptions = new Array(database.length).fill(null);
+
     // UI Elements
-    const qCounter = document.getElementById('q-counter');
-    const sCounter = document.getElementById('score-counter');
-    const badge = document.getElementById('badge');
-    const qText = document.getElementById('question');
-    const optionsGrid = document.getElementById('options');
-    const prevBtn = document.getElementById('prev-btn');
-    const nextBtn = document.getElementById('next-btn');
-    const progFill = document.getElementById('progress-fill');
-    const navGrid = document.getElementById('nav-grid');
-    const modal = document.getElementById('navModal');
+    const els = {
+        question: document.getElementById('question'),
+        badge: document.getElementById('badge'),
+        options: document.getElementById('options'),
+        progress: document.getElementById('progress-fill'),
+        qCounter: document.getElementById('q-counter'),
+        sCounter: document.getElementById('score-counter'),
+        prev: document.getElementById('prev-btn'),
+        next: document.getElementById('next-btn'),
+        navModal: document.getElementById('navModal'),
+        navGrid: document.getElementById('nav-grid')
+    };
 
     function init() {
         loadQuestion();
         updateNavGrid();
     }
 
-    function getRealIndex() {
-        return shuffledIndices[currentIdx];
-    }
+    function getRealIdx() { return shuffledIndices[currentIdx]; }
 
     function loadQuestion() {
-        const realIdx = getRealIndex();
+        const realIdx = getRealIdx();
         const data = database[realIdx];
-        const status = userAnswers[realIdx];
+        const status = userResults[realIdx];
 
-        // Update Header Info
-        qCounter.innerText = `Ερώτηση ${currentIdx + 1} / ${database.length}`;
-        updateScore();
-        progFill.style.width = `${((currentIdx + 1) / database.length) * 100}%`;
-
-        // Update Badge Color
-        badge.className = 'badge';
-        if(data.t === 'artery') { badge.innerText = "ΑΡΤΗΡΙΑ"; badge.classList.add('badge-artery'); }
-        else if(data.t === 'vein') { badge.innerText = "ΦΛΕΒΑ"; badge.classList.add('badge-vein'); }
-        else if(data.t === 'muscle') { badge.innerText = "ΜΥΣ/ΝΕΥΡΟ"; badge.classList.add('badge-muscle'); }
-        else { badge.innerText = "ΟΡΓΑΝΟ/ΛΕΜΦΙΚΟ"; badge.classList.add('badge-organ'); }
-
-        // Question Text
-        qText.innerText = `${data.p}\n${data.q}`;
-
-        // Options
-        optionsGrid.innerHTML = '';
-        let distractors = getDistractors(data.a, data.t);
-        while(distractors.length < 3) distractors.push("Άλλο");
+        // 1. Update Meta
+        els.qCounter.innerText = `Ερώτηση ${currentIdx + 1} / ${database.length}`;
+        els.progress.style.width = `${((currentIdx + 1) / database.length) * 100}%`;
         
-        // We need consistent options if already answered? No, random is fine, but if answered we must find the correct button.
-        let opts = [data.a, ...distractors].sort(() => 0.5 - Math.random());
+        // 2. Badge & Text
+        els.badge.className = 'badge';
+        if(data.t==='artery') { els.badge.classList.add('badge-artery'); els.badge.innerText='ΑΡΤΗΡΙΑ'; }
+        else if(data.t==='vein') { els.badge.classList.add('badge-vein'); els.badge.innerText='ΦΛΕΒΑ'; }
+        else if(data.t==='muscle') { els.badge.classList.add('badge-muscle'); els.badge.innerText='ΜΥΣ/ΝΕΥΡΟ'; }
+        else { els.badge.classList.add('badge-organ'); els.badge.innerText='ΟΡΓΑΝΟ'; }
+        
+        els.question.innerText = `${data.p}\n${data.q}`;
 
-        opts.forEach(opt => {
+        // 3. Options Generation (Fixed per question)
+        els.options.innerHTML = '';
+        
+        // Retrieve or Generate options
+        if (!savedOptions[realIdx]) {
+            let distractors = getDistractors(data.a, data.t);
+            while(distractors.length < 3) distractors.push("Άλλο");
+            let opts = [data.a, ...distractors].sort(() => 0.5 - Math.random());
+            savedOptions[realIdx] = opts;
+        }
+        
+        let currentOptions = savedOptions[realIdx];
+
+        currentOptions.forEach(optText => {
             const btn = document.createElement('button');
             btn.className = 'option-btn';
-            btn.innerText = opt;
-            
+            btn.innerText = optText;
+
+            // State handling
             if (status !== null) {
+                // Question answered
                 btn.disabled = true;
-                if (opt === data.a) btn.classList.add('correct');
-                else if (status === false) {
-                    // We don't store "what they clicked", just "false". 
-                    // So just highlight the correct answer.
+                if (optText === data.a) {
+                    btn.classList.add('correct-answer');
+                } else if (status === false) {
+                    // We don't track *which* wrong answer was clicked in simple mode,
+                    // but we can just show the correct one. 
+                    // Or if we wanted to show the wrong one red, we'd need to save the user's choice.
+                    // For simplicity, we just show green for correct.
                 }
             } else {
-                btn.onclick = () => checkAnswer(opt, data.a, realIdx);
+                // Not answered
+                btn.onclick = () => handleAnswer(optText, data.a, btn, realIdx);
             }
-            optionsGrid.appendChild(btn);
+            els.options.appendChild(btn);
         });
 
-        // Nav Buttons State
-        prevBtn.disabled = (currentIdx === 0);
-        nextBtn.disabled = (currentIdx === database.length - 1);
+        // 4. Nav Buttons
+        els.prev.disabled = (currentIdx === 0);
+        els.next.disabled = (currentIdx === database.length - 1);
+        
+        updateScore();
     }
 
     function getDistractors(correct, type) {
-        // Filter by same type for realism
-        let candidates = database.filter(item => item.t === type).map(item => item.a);
-        let unique = [...new Set(candidates)].filter(a => a !== correct);
+        let candidates = database.filter(i => i.t === type && i.a !== correct).map(i => i.a);
+        let unique = [...new Set(candidates)];
         return unique.sort(() => 0.5 - Math.random()).slice(0, 3);
     }
 
-    function checkAnswer(selected, correct, realIdx) {
+    function handleAnswer(selected, correct, btnElement, realIdx) {
         const isCorrect = (selected === correct);
-        userAnswers[realIdx] = isCorrect;
-        updateNavGrid(); // Update the map
+        userResults[realIdx] = isCorrect;
+
+        // Apply styles immediately without reloading
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(btn => {
+            btn.disabled = true;
+            if (btn.innerText === correct) {
+                btn.classList.add('correct-answer');
+            } else if (btn === btnElement && !isCorrect) {
+                btn.classList.add('wrong-answer');
+            }
+        });
+
         updateScore();
-        loadQuestion(); // Reload to apply disabled styles
+        updateNavGrid();
     }
 
     function updateScore() {
-        const correctCount = userAnswers.filter(x => x === true).length;
-        const answeredCount = userAnswers.filter(x => x !== null).length;
-        // Percentage based on total questions or answered? Usually total for progress.
-        // Let's do accuracy for answered.
+        const correctCount = userResults.filter(r => r === true).length;
+        const answeredCount = userResults.filter(r => r !== null).length;
         const acc = answeredCount === 0 ? 0 : Math.round((correctCount / answeredCount) * 100);
-        sCounter.innerText = `Ακρίβεια: ${acc}% (${correctCount} Σωστά)`;
+        els.sCounter.innerText = `Ακρίβεια: ${acc}% (${correctCount}/${answeredCount})`;
     }
 
     function nextQ() {
@@ -519,40 +411,38 @@
         }
     }
 
+    // --- NAVIGATION MODAL ---
+    function toggleNav() {
+        els.navModal.style.display = (els.navModal.style.display === 'flex') ? 'none' : 'flex';
+    }
+
+    function updateNavGrid() {
+        els.navGrid.innerHTML = '';
+        shuffledIndices.forEach((realIdx, displayIdx) => {
+            const item = document.createElement('div');
+            item.className = 'nav-item';
+            item.innerText = displayIdx + 1;
+            
+            const res = userResults[realIdx];
+            if (res === true) item.classList.add('is-correct');
+            else if (res === false) item.classList.add('is-wrong');
+            
+            if (displayIdx === currentIdx) item.classList.add('active');
+
+            item.onclick = () => {
+                currentIdx = displayIdx;
+                loadQuestion();
+                toggleNav();
+            };
+            els.navGrid.appendChild(item);
+        });
+    }
+
     function toggleTheme() {
         document.body.classList.toggle('dark-mode');
     }
 
-    function toggleNav() {
-        if (modal.style.display === 'flex') {
-            modal.style.display = 'none';
-        } else {
-            modal.style.display = 'flex';
-        }
-    }
-
-    function updateNavGrid() {
-        navGrid.innerHTML = '';
-        shuffledIndices.forEach((realIdx, displayIndex) => {
-            const btn = document.createElement('div');
-            btn.className = 'nav-item';
-            btn.innerText = displayIndex + 1;
-            
-            const status = userAnswers[realIdx];
-            if (status === true) btn.classList.add('correct');
-            if (status === false) btn.classList.add('wrong');
-            if (displayIndex === currentIdx) btn.classList.add('active');
-
-            btn.onclick = () => {
-                currentIdx = displayIndex;
-                loadQuestion();
-                toggleNav();
-            };
-            navGrid.appendChild(btn);
-        });
-    }
-
-    // Start
+    // Initialize
     init();
 
 </script>
