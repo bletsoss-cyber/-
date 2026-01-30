@@ -4,107 +4,103 @@
   <meta charset="UTF-8">
   <title>ΑΝΑΤΟΜΙΑ ΙΙ</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <style>
     body {
       margin: 0;
-      font-family: "Segoe UI", Arial, sans-serif;
-      background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+      font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif;
+      background-color: #f4f7f6;
       min-height: 100vh;
       display: flex;
       align-items: center;
       justify-content: center;
-      color: #e0f2f1;
+      color: #333;
     }
 
     .container {
-      background: #102027;
-      padding: 40px;
-      border-radius: 16px;
-      width: 90%;
-      max-width: 500px;
-      box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
+      background: white;
+      padding: 60px 40px;
+      border-radius: 30px;
+      width: 85%;
+      max-width: 400px;
+      box-shadow: 0 20px 60px rgba(0,0,0,0.08);
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.08);
     }
 
+    .icon-main { font-size: 50px; margin-bottom: 20px; display: block; }
+
     h1 {
-      color: #81d4fa;
-      margin-bottom: 10px;
-      letter-spacing: 1px;
+      color: #2c3e50;
+      font-size: 24px;
+      margin: 0 0 10px 0;
+      font-weight: 800;
     }
 
     p {
-      color: #b0bec5;
-      margin-bottom: 30px;
+      color: #95a5a6;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1.5px;
+      margin-bottom: 40px;
     }
+
+    .menu { display: grid; gap: 15px; }
 
     .menu a {
+      text-decoration: none;
+      background: #fff;
+      color: #34495e;
+      padding: 20px;
+      border-radius: 15px;
+      font-size: 16px;
+      font-weight: 600;
+      transition: all 0.2s ease;
+      border: 2px solid #ecf0f1;
       display: flex;
       align-items: center;
-      justify-content: center;
-      gap: 12px;
-      text-decoration: none;
-      background: linear-gradient(135deg, #1565c0, #1e88e5);
-      color: white;
-      padding: 16px;
-      margin-bottom: 16px;
-      border-radius: 14px;
-      font-size: 18px;
-      font-weight: 500;
-      transition: all 0.25s ease;
-      box-shadow: 0 6px 18px rgba(30, 136, 229, 0.35);
+      justify-content: flex-start;
+      padding-left: 30px;
     }
+
+    .menu a span { margin-right: 15px; font-size: 20px; }
 
     .menu a:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 10px 28px rgba(30, 136, 229, 0.6);
+      border-color: #3498db;
+      background: #f0f8ff;
+      color: #2980b9;
+      transform: translateX(5px);
     }
-
-    .icon {
-      font-size: 22px;
+    
+    /* Ειδικό στυλ για το τελευταίο κουμπί */
+    .menu a.special {
+        border-color: #fff0f0;
+        background: #fffafa;
+        color: #c0392b;
+    }
+    .menu a.special:hover {
+        border-color: #e74c3c;
+        background: #fdedec;
     }
 
     footer {
-      margin-top: 30px;
-      font-size: 14px;
-      color: #78909c;
-      opacity: 0.9;
+      margin-top: 50px;
+      font-size: 12px;
+      color: #bdc3c7;
     }
   </style>
 </head>
-
 <body>
-
   <div class="container">
-    <h1>🩺 ΑΝΑΤΟΜΙΑ ΙΙ</h1>
-    <p>ΣΗΜΕΙΩΣΕΙΣ</p>
+    <span class="icon-main">🩺</span>
+    <h1>ΑΝΑΤΟΜΙΑ ΙΙ</h1>
+    <p>Study Session</p>
 
     <div class="menu">
-      <a href="letsgo.html">
-        <span class="icon"></span>
-        κουιζ ΟΛΑ
-      </a>
-
-      <div class="menu">
-      <a href="quiz1.html">
-        <span class="icon"></span>
-        quiz αγγεια νευρα
-      </a>
-
-      <div class="menu">
-      <a href="ola.html">
-        <span class="icon"></span>
-        το παρον αρχειο ειναι για ψυχικα αρρωστους
-      </a>
-
-      </a>
+      <a href="letsgo.html"><span>📚</span> Κουίζ ολα</a>
+      <a href="quiz1.html"><span>💉</span> Κουίζ Αγγεία & Νεύρα</a>
+      <a href="ola.html" class="special"><span>🧠</span> το παρον αρχειο ειναι για ψυχασθενεις</a>
     </div>
 
-    <footer>
-      Φτιαγμένο για academic miracles 🧑‍⚕️
-    </footer>
+    <footer>Academic Weapons</footer>
   </div>
-
 </body>
 </html>
