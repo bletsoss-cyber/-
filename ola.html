@@ -3,18 +3,40 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Κάρτες Ανατομίας</title>
+    <title>Ανατομία Flashcards Pro</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #34495e;
-            --accent: #e74c3c;
-            --bg: #f4f7f6;
-            --card-bg: #fff;
+            /* Light Theme Variables */
+            --bg-color: #f0f2f5;
+            --text-color: #2c3e50;
+            --card-bg: #ffffff;
+            --card-back-bg: #2c3e50;
+            --card-back-text: #ffffff;
+            --accent-color: #e74c3c;
+            --sidebar-bg: #ffffff;
+            --sidebar-hover: #f1f1f1;
+            --sidebar-active: #e3f2fd;
+            --shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
+
+        /* Dark Theme Variables */
+        body.dark-mode {
+            --bg-color: #121212;
+            --text-color: #e0e0e0;
+            --card-bg: #1e1e1e;
+            --card-back-bg: #333333; /* Lighter dark for back */
+            --card-back-text: #ffffff;
+            --accent-color: #ff6b6b;
+            --sidebar-bg: #1e1e1e;
+            --sidebar-hover: #333333;
+            --sidebar-active: #2c3e50;
+            --shadow: 0 10px 25px rgba(0,0,0,0.5);
+        }
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: var(--bg);
+            background-color: var(--bg-color);
+            color: var(--text-color);
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -22,75 +44,212 @@
             min-height: 100vh;
             margin: 0;
             padding: 20px;
+            transition: background-color 0.3s, color 0.3s;
+            overflow-x: hidden;
         }
-        h1 { color: var(--primary); margin-bottom: 10px; text-align: center; }
+
+        /* --- Header & Tools --- */
+        .header-tools {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            padding: 15px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 100;
+            pointer-events: none; /* Let clicks pass through empty space */
+        }
+
+        .tool-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 8px 15px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-weight: bold;
+            pointer-events: auto;
+            transition: all 0.2s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .tool-btn:hover {
+            transform: scale(1.05);
+            background: var(--text-color);
+            color: var(--bg-color);
+        }
+
+        h1 { margin-top: 40px; margin-bottom: 10px; font-size: 1.5rem; text-align: center; }
+
+        /* --- Sidebar Navigation --- */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px; /* Hidden by default */
+            width: 300px;
+            height: 100%;
+            background: var(--sidebar-bg);
+            box-shadow: 2px 0 10px rgba(0,0,0,0.2);
+            overflow-y: auto;
+            transition: left 0.3s ease;
+            z-index: 1000;
+            padding-top: 60px;
+        }
+        .sidebar.open { left: 0; }
         
+        .sidebar-item {
+            padding: 12px 20px;
+            border-bottom: 1px solid var(--bg-color);
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            transition: background 0.2s;
+            color: var(--text-color);
+        }
+        .sidebar-item:hover { background: var(--sidebar-hover); }
+        .sidebar-item.active {
+            background: var(--sidebar-active);
+            border-left: 4px solid var(--accent-color);
+            font-weight: bold;
+        }
+        .sidebar-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--text-color);
+        }
+
+        /* Overlay for sidebar */
+        .overlay {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 900;
+            display: none;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .overlay.show { display: block; opacity: 1; }
+
+        /* --- Flashcard --- */
         .card-container {
-            perspective: 1000px;
             width: 100%;
             max-width: 600px;
-            height: 400px;
+            height: 420px;
+            perspective: 1000px;
             margin-bottom: 20px;
             cursor: pointer;
         }
+
         .card {
             width: 100%;
             height: 100%;
-            position: relative;
-            transform-style: preserve-3d;
             transition: transform 0.6s;
-            border-radius: 15px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            transform-style: preserve-3d;
+            position: relative;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
         }
+
         .card.flipped { transform: rotateY(180deg); }
-        
+
         .face {
             position: absolute;
             width: 100%;
             height: 100%;
+            -webkit-backface-visibility: hidden;
             backface-visibility: hidden;
+            border-radius: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
             justify-content: center;
             padding: 30px;
             box-sizing: border-box;
-            border-radius: 15px;
             text-align: center;
             overflow-y: auto;
-            border: 1px solid #ddd;
         }
-        .front { background: var(--card-bg); color: var(--primary); font-size: 1.3rem; font-weight: 600; }
-        .back { background: var(--primary); color: white; transform: rotateY(180deg); font-size: 1.1rem; line-height: 1.6; }
-        
+
+        /* Scrollbar styles for card content */
+        .face::-webkit-scrollbar { width: 6px; }
+        .face::-webkit-scrollbar-thumb { background: #888; border-radius: 3px; }
+
+        .face.front {
+            background-color: var(--card-bg);
+            color: var(--text-color);
+            font-size: 1.25rem;
+            font-weight: 600;
+            border: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .face.back {
+            background-color: var(--card-back-bg);
+            color: var(--card-back-text);
+            transform: rotateY(180deg);
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
         .label {
-            position: absolute; top: 15px; left: 20px;
-            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; opacity: 0.6;
+            position: absolute; top: 20px; left: 25px;
+            font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.6;
         }
-        
-        .controls { display: flex; gap: 10px; margin-top: 10px; flex-wrap: wrap; justify-content: center; }
-        button {
-            padding: 10px 20px; border: none; border-radius: 25px;
-            background: var(--primary); color: white; cursor: pointer;
-            font-size: 1rem; transition: transform 0.1s;
+
+        /* --- Controls --- */
+        .controls {
+            display: flex; gap: 15px; margin-bottom: 10px; flex-wrap: wrap; justify-content: center;
         }
-        button:hover { opacity: 0.9; transform: translateY(-2px); }
-        button:active { transform: scale(0.95); }
-        button.secondary { background: white; color: var(--primary); border: 2px solid var(--primary); }
+
+        .ctrl-btn {
+            background: var(--card-bg);
+            border: 2px solid var(--text-color);
+            color: var(--text-color);
+            padding: 10px 25px;
+            border-radius: 50px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-weight: bold;
+        }
+        .ctrl-btn:hover { background: var(--text-color); color: var(--bg-color); }
+        .ctrl-btn.primary { border-color: var(--accent-color); color: var(--accent-color); }
+        .ctrl-btn.primary:hover { background: var(--accent-color); color: white; }
+
+        .progress-container {
+            width: 100%; max-width: 600px; height: 6px; background: #ccc;
+            border-radius: 10px; margin-bottom: 25px; overflow: hidden; opacity: 0.5;
+        }
+        .progress-bar { height: 100%; background: var(--accent-color); width: 0%; transition: width 0.3s; }
         
-        .progress { width: 100%; max-width: 600px; height: 6px; background: #ddd; border-radius: 3px; margin-bottom: 20px; overflow: hidden; }
-        .bar { height: 100%; background: var(--accent); width: 0%; transition: width 0.3s; }
-        .counter { margin-top: 10px; color: #666; font-weight: bold; }
+        .counter { font-size: 1rem; font-weight: bold; opacity: 0.8; margin-top: 5px; }
 
     </style>
 </head>
 <body>
 
-    <h1>🫀 Ανατομία</h1>
-    
-    <div class="progress"><div class="bar" id="progressBar"></div></div>
+    <div class="header-tools">
+        <button class="tool-btn" onclick="toggleSidebar()">☰ Λίστα</button>
+        <button class="tool-btn" onclick="toggleTheme()">🌙 Night Mode</button>
+    </div>
 
-    <div class="card-container" onclick="flip()">
+    <div class="overlay" id="overlay" onclick="toggleSidebar()"></div>
+    <div class="sidebar" id="sidebar">
+        <button class="sidebar-close" onclick="toggleSidebar()">×</button>
+        <div id="sidebarContent">
+            </div>
+    </div>
+
+    <h1>🫀 Ανατομία</h1>
+
+    <div class="progress-container"><div class="progress-bar" id="progressBar"></div></div>
+
+    <div class="card-container" onclick="flipCard()">
         <div class="card" id="flashcard">
             <div class="face front">
                 <span class="label">Ερώτηση</span>
@@ -104,18 +263,18 @@
     </div>
 
     <div class="controls">
-        <button class="secondary" onclick="prev(event)">← Πίσω</button>
-        <button onclick="flip()">Απάντηση</button>
-        <button class="secondary" onclick="next(event)">Επόμενο →</button>
+        <button class="ctrl-btn" onclick="prevCard(event)">← Πίσω</button>
+        <button class="ctrl-btn" onclick="flipCard()">Απάντηση ↻</button>
+        <button class="ctrl-btn" onclick="nextCard(event)">Επόμενο →</button>
     </div>
     <div class="controls">
-        <button style="background:var(--accent);" onclick="shuffle(event)">🔀 Ανακάτεμα</button>
+        <button class="ctrl-btn primary" onclick="shuffleCards(event)">🔀 Ανακάτεμα</button>
     </div>
 
-    <div class="counter" id="counter">1 / --</div>
+    <div class="counter" id="counterDisplay">1 / --</div>
 
 <script>
-    // Τα δεδομένα είναι ήδη καθαρισμένα και μορφοποιημένα εδώ:
+    // --- ΔΕΔΟΜΕΝΑ ---
     const cards = [
     { q: "Μύες της έξω ρίνας (2)", a: "Ρινικός μυς και καθελκτήρας μυς διαφράγματος" },
     { q: "Οστά έξω ρίνας (3)", a: "Άνω γνάθος, κάθετο πέταλο ηθμοειδούς, ρινικά οστά" },
@@ -739,26 +898,32 @@
     const cardEl = document.getElementById('flashcard');
     const qEl = document.getElementById('qText');
     const aEl = document.getElementById('aText');
-    const counterEl = document.getElementById('counter');
+    const counterEl = document.getElementById('counterDisplay');
     const progressEl = document.getElementById('progressBar');
+    const sidebar = document.getElementById('sidebar');
+    const sidebarContent = document.getElementById('sidebarContent');
+    const overlay = document.getElementById('overlay');
 
+    // --- Core Logic ---
     function update() {
         cardEl.classList.remove('flipped');
         
-        // Μικρή καθυστέρηση για να προλάβει να γυρίσει η κάρτα πριν αλλάξει το κείμενο
+        // Populate content with delay
         setTimeout(() => {
             qEl.innerHTML = cards[current].q;
             aEl.innerHTML = cards[current].a;
             counterEl.innerText = `${current + 1} / ${cards.length}`;
             progressEl.style.width = `${((current + 1) / cards.length) * 100}%`;
+            
+            updateSidebarActive();
         }, 200);
     }
 
-    function flip() {
+    function flipCard() {
         cardEl.classList.toggle('flipped');
     }
 
-    function next(e) {
+    function nextCard(e) {
         if(e) e.stopPropagation();
         if (current < cards.length - 1) {
             current++;
@@ -771,7 +936,7 @@
         }
     }
 
-    function prev(e) {
+    function prevCard(e) {
         if(e) e.stopPropagation();
         if (current > 0) {
             current--;
@@ -779,7 +944,7 @@
         }
     }
 
-    function shuffle(e) {
+    function shuffleCards(e) {
         if(e) e.stopPropagation();
         if(confirm("Θες να ανακατέψεις τις κάρτες;")) {
             for (let i = cards.length - 1; i > 0; i--) {
@@ -788,17 +953,56 @@
             }
             current = 0;
             update();
+            renderSidebar(); // Re-render list order
         }
     }
 
-    // Πληκτρολόγιο
+    // --- Sidebar Logic ---
+    function toggleSidebar() {
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    }
+
+    function renderSidebar() {
+        sidebarContent.innerHTML = '';
+        cards.forEach((card, index) => {
+            const div = document.createElement('div');
+            div.className = 'sidebar-item';
+            div.innerText = `${index + 1}. ${card.q}`;
+            div.onclick = () => {
+                current = index;
+                update();
+                toggleSidebar(); // Close sidebar on selection
+            };
+            sidebarContent.appendChild(div);
+        });
+    }
+
+    function updateSidebarActive() {
+        const items = document.querySelectorAll('.sidebar-item');
+        items.forEach((item, index) => {
+            if (index === current) {
+                item.classList.add('active');
+                item.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            } else {
+                item.classList.remove('active');
+            }
+        });
+    }
+
+    // --- Theme Logic ---
+    function toggleTheme() {
+        document.body.classList.toggle('dark-mode');
+    }
+
+    // --- Init ---
     document.addEventListener('keydown', (e) => {
-        if (e.code === 'Space') { e.preventDefault(); flip(); }
-        if (e.code === 'ArrowRight') next();
-        if (e.code === 'ArrowLeft') prev();
+        if (e.code === 'Space') { e.preventDefault(); flipCard(); }
+        if (e.code === 'ArrowRight') nextCard();
+        if (e.code === 'ArrowLeft') prevCard();
     });
 
-    // Εκκίνηση
+    renderSidebar();
     update();
 
 </script>
