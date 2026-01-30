@@ -1,0 +1,530 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ανατομία ΙΙ - Flashcards (Αγγεία & Νεύρα)</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #34495e;
+            --accent: #3498db;
+            --text: #333;
+            --bg: #f4f6f7;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        h1 {
+            color: var(--primary);
+            font-size: 1.8rem;
+            margin-bottom: 10px;
+        }
+
+        .controls-top {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .btn {
+            background-color: var(--secondary);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .btn:hover {
+            background-color: var(--accent);
+        }
+
+        .btn-outline {
+            background-color: transparent;
+            border: 2px solid var(--secondary);
+            color: var(--secondary);
+        }
+
+        .btn-outline:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+
+        /* Flashcard Container */
+        .scene {
+            width: 100%;
+            max-width: 700px;
+            height: 400px;
+            perspective: 1000px;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            padding: 30px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            background-color: var(--card-bg);
+            overflow-y: auto; /* Allow scrolling for long content */
+        }
+
+        .card-face-front {
+            border-bottom: 5px solid var(--accent);
+        }
+
+        .card-face-back {
+            background-color: #fff;
+            transform: rotateY(180deg);
+            border-bottom: 5px solid #27ae60;
+            text-align: left;
+            align-items: flex-start; /* Align text to top-left for lists */
+            justify-content: flex-start;
+        }
+
+        .card-content {
+            width: 100%;
+        }
+
+        .label {
+            text-transform: uppercase;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+            color: #7f8c8d;
+            margin-bottom: 15px;
+            text-align: center;
+            width: 100%;
+            display: block;
+        }
+
+        .question-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.4;
+        }
+
+        .answer-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+        }
+
+        .answer-text ul {
+            padding-left: 20px;
+            margin: 0;
+        }
+
+        .answer-text li {
+            margin-bottom: 5px;
+        }
+
+        /* Navigation */
+        .navigation {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+
+        .progress {
+            font-size: 0.9rem;
+            color: #7f8c8d;
+        }
+
+        /* Responsive */
+        @media (max-width: 600px) {
+            .scene {
+                height: 500px; /* Taller on mobile for scrolling */
+            }
+            .question-text {
+                font-size: 1.2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <h1>Ανατομία ΙΙ: Αγγεία & Νεύρα</h1>
+        <p>Βάσει των σημειώσεων "Κ.ΑΝ.ΤΑ.Ι.Φ.Ι."</p>
+    </header>
+
+    <div class="controls-top">
+        <button class="btn btn-outline" onclick="shuffleCards()">🔀 Ανακάτεμα</button>
+        <button class="btn btn-outline" onclick="resetCards()">↺ Αρχή</button>
+    </div>
+
+    <div class="scene">
+        <div class="card" onclick="flipCard()">
+            <div class="card-face card-face-front">
+                <span class="label">Ερώτηση</span>
+                <div class="question-text" id="q-text">Φόρτωση...</div>
+                <p style="margin-top:20px; font-size:0.8rem; color:#999;">(Κλικ για απάντηση)</p>
+            </div>
+            <div class="card-face card-face-back">
+                <span class="label">Απάντηση</span>
+                <div class="answer-text" id="a-text"></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="btn" onclick="prevCard()">← Προηγούμενο</button>
+        <span class="progress" id="progress">1 / 100</span>
+        <button class="btn" onclick="nextCard()">Επόμενο →</button>
+    </div>
+
+    <script>
+        // DATASET: Generated strictly from the provided PDF text
+        const flashcardsData = [
+            [cite_start]// --- ΕΣΩ ΚΑΡΩΤΙΔΑ [cite: 6-20] ---
+            {
+                q: "Έσω Καρωτίδα: Όρια (Αρχή και Τέλος)",
+                a: "<strong>Αρχίζει:</strong> Διχασμός κοινής καρωτίδας (άνω χείλος θυρεοειδούς χόνδρου).<br><strong>Καταλήγει:</strong> Στο σφηνοειδές οστό (με δύο ακρεμόνες)."
+            },
+            {
+                q: "Έσω Καρωτίδα: Κλάδοι Τραχηλικής Μοίρας",
+                a: "Κανένας."
+            },
+            {
+                q: "Έσω Καρωτίδα: Κλάδοι Λιθοειδούς Μοίρας",
+                a: "Καρωτιδοτυμπανική αρτηρία."
+            },
+            {
+                q: "Έσω Καρωτίδα: Κλάδοι Ενδοκράνιας Μοίρας",
+                a: "<ul><li>Μέση εγκεφαλική</li><li>Πρόσθια εγκεφαλική (δίνει πρόσθια αναστομωτική)</li><li>Πρόσθια χοριοειδής</li><li>Οπίσθια αναστομωτική</li><li>Οφθαλμική</li><li>+ Άνω υποφυσιακή, αποκλίματος, άγκιστρου, μηνιγγικός κλάδος</li></ul>"
+            },
+            [cite_start]// --- ΕΞΩ ΚΑΡΩΤΙΔΑ [cite: 21-32] ---
+            {
+                q: "Έξω Καρωτίδα: Όρια",
+                a: "<strong>Αρχίζει:</strong> Διχασμός κοινής καρωτίδας (άνω χείλος θυρεοειδούς χόνδρου).<br><strong>Καταλήγει:</strong> Ύψος κονδύλου της κάτω γνάθου."
+            },
+            {
+                q: "Έξω Καρωτίδα: Κλάδοι (Λίστα)",
+                a: "<ul><li>Άνω θυρεοειδής</li><li>Ανιούσα φαρυγγική</li><li>Γλωσσική</li><li>Προσωπική (έξω γναθιαία)</li><li>Ινιακή</li><li>Στερνοκλειδομαστοειδής</li><li>Οπίσθια ωτιαία</li><li>Επιπολής κροταφική</li><li>Έσω γναθιαία</li></ul>"
+            },
+            [cite_start]// --- ΕΣΩ ΓΝΑΘΙΑΙΑ [cite: 35-49] ---
+            {
+                q: "Έσω Γναθιαία: Κλάδοι Κάτω Γναθιαίας Μοίρας",
+                a: "<ul><li>Πρόσθια τυμπανική</li><li>Μέση μηνιγγική</li><li>Κάτω φατνιακή</li><li>Εν τω βάθει ωτιαία</li></ul>"
+            },
+            {
+                q: "Έσω Γναθιαία: Κλάδοι Πτερυγοειδούς Μοίρας",
+                a: "<ul><li>Μασητήριος</li><li>Εν τω βάθει κροταφικές</li><li>Βυκανητική</li><li>Πτερυγοειδείς κλάδοι</li></ul>"
+            },
+            {
+                q: "Έσω Γναθιαία: Κλάδοι Άνω Γναθιαίας Μοίρας",
+                a: "<ul><li>Οπίσθια άνω φατνιακή</li><li>Υποκόγχιος</li><li>Τελικοί κλάδοι</li></ul>"
+            },
+            {
+                q: "Έσω Γναθιαία: Κλάδοι Πτερυγοϋπερώιας Μοίρας",
+                a: "<ul><li>Κατιούσα Υπερώιος</li><li>Σφηνοϋπερώιος</li></ul>"
+            },
+            [cite_start]// --- ΥΠΟΚΛΕΙΔΙΑ [cite: 51-63] ---
+            {
+                q: "Υποκλείδια Αρτηρία: Ορισμός Μοιρών",
+                a: "<ul><li><strong>Έσω μοίρα:</strong> Έκφυση έως πρόσθιο σκαληνό.</li><li><strong>Μέση μοίρα:</strong> Πίσω από τον πρόσθιο σκαληνό (έως τον μέσο).</li><li><strong>Έξω μοίρα:</strong> Έως το έξω χείλος της 1ης πλευράς.</li></ul>"
+            },
+            {
+                q: "Υποκλείδια Αρτηρία: Κλάδοι",
+                a: "<ul><li>Θυρεοαυχενικό στέλεχος</li><li>Πλευροαυχενικό στέλεχος</li><li>Έσω μαστική (μαστική)</li><li>Εγκάρσια τραχηλική</li><li>Σπονδυλική</li></ul>"
+            },
+            [cite_start]// --- ΜΑΣΧΑΛΙΑΙΑ [cite: 65-75] ---
+            {
+                q: "Μασχαλιαία Αρτηρία: Όρια Μοιρών",
+                a: "<ul><li><strong>1η μοίρα:</strong> Υποκλείδιο τρίγωνο (άνω του ελάσσονος θωρακικού).</li><li><strong>2η μοίρα:</strong> Πίσω από τον ελάσσονα θωρακικό.</li><li><strong>3η μοίρα:</strong> Από κάτω χείλος ελάσσονος θωρακικού ως κάτω χείλος μείζονα θωρακικού.</li></ul>"
+            },
+            {
+                q: "Μασχαλιαία Αρτηρία: Κλάδοι",
+                a: "<ul><li>Ανώτατη θωρακική</li><li>Ακρωμιοθωρακική</li><li>Πλάγια θωρακική</li><li>Υποπλάτια</li><li>Πρόσθια περισπώμενη του βραχίονα</li><li>Οπίσθια περισπώμενη του βραχίονα</li></ul>"
+            },
+            [cite_start]// --- ΒΡΑΧΙΟΝΙΑ & ΑΓΚΩΝΑΣ [cite: 77-87] ---
+            {
+                q: "Βραχιόνια Αρτηρία: Όρια και Κλάδοι",
+                a: "<strong>Όρια:</strong> Κάτω χείλος μείζονα θωρακικού -> Αυχένας κερκίδας.<br><strong>Κλάδοι:</strong> Εν τω βάθει βραχιόνιος, Επιπολής του αγκώνα, Άνω ωλένιος παράπλευρος, Κάτω ωλένιος παράπλευρος."
+            },
+            {
+                q: "Αρθρικό δίκτυο αγκώνα: Ποιες αρτηρίες το σχηματίζουν;",
+                a: "<ul><li>Κερκιδική παράπλευρη</li><li>Μέση παράπλευρη</li><li>Άνω ωλένια παράπλευρη</li><li>Κάτω ωλένια παράπλευρη</li></ul>"
+            },
+            [cite_start]// --- ΚΕΡΚΙΔΙΚΗ & ΩΛΕΝΙΑ [cite: 89-114] ---
+            {
+                q: "Κερκιδική Αρτηρία: Κλάδοι Πηχυαίας Μοίρας",
+                a: "<ul><li>Μυϊκοί κλάδοι</li><li>Παλίνδρομος κερκιδική</li><li>Παλαμιαίος καρπικός κλάδος</li><li>Επιπολής παλαμιαίος κλάδος</li></ul>"
+            },
+            {
+                q: "Κερκιδική Αρτηρία: Κλάδοι Ραχιαίας & Παλαμιαίας Μοίρας",
+                a: "<strong>Ραχιαία:</strong> Ραχιαίος καρπικός, 1η ραχιαία μετακάρπιος.<br><strong>Παλαμιαία:</strong> Κύρια αρτηρία αντίχειρα, Εν τω βάθει παλαμιαίος κλάδος."
+            },
+            {
+                q: "Ωλένια Αρτηρία: Κλάδοι Πηχυαίας Μοίρας",
+                a: "<ul><li>Πρόσθια & Οπίσθια παλίνδρομη ωλένια</li><li>Ραχιαίος καρπικός</li><li>Παλαμιαίος καρπικός</li><li>Κοινή μεσόστεος</li></ul>"
+            },
+            [cite_start]// --- ΠΑΛΑΜΙΑΙΑ ΤΟΞΑ [cite: 115-117] ---
+            {
+                q: "Επιπολής Παλαμιαίο Τόξο: Σχηματισμός",
+                a: "Αναστόμωση της <strong>ωλένιας αρτηρίας</strong> με τον <strong>επιπολής παλαμιαίο κλάδο</strong> της κερκιδικής."
+            },
+            {
+                q: "Εν τω βάθει Παλαμιαίο Τόξο: Σχηματισμός",
+                a: "Αναστόμωση της <strong>παλαμιαίας μοίρας της κερκιδικής</strong> με τον <strong>εν τω βάθει παλαμιαίο κλάδο</strong> της ωλένιας."
+            },
+            [cite_start]// --- ΘΩΡΑΚΙΚΗ ΑΟΡΤΗ [cite: 119-128] ---
+            {
+                q: "Θωρακική Αορτή: Σπλαγχνικοί Κλάδοι",
+                a: "<ul><li>Βρογχικές αρτηρίες</li><li>Οισοφαγικές αρτηρίες</li><li>Περικαρδιακοί κλάδοι</li><li>Οπίσθιοι μεσοπνευμόνιοι κλάδοι</li></ul>"
+            },
+            {
+                q: "Θωρακική Αορτή: Τοιχικοί Κλάδοι",
+                a: "Μεσοπλεύριες αρτηρίες."
+            },
+            [cite_start]// --- ΚΟΙΛΙΑΚΗ ΑΟΡΤΗ [cite: 130-145] ---
+            {
+                q: "Κοιλιακή Αορτή: Μονοφυείς Σπλαγχνικοί Κλάδοι",
+                a: "<ul><li>Κοιλιακή αρτηρία</li><li>Άνω μεσεντέριος</li><li>Κάτω μεσεντέριος</li></ul>"
+            },
+            {
+                q: "Κοιλιακή Αορτή: Διφυείς Σπλαγχνικοί Κλάδοι",
+                a: "<ul><li>Νεφρική</li><li>Μέση επινεφρίδιος</li><li>Έσω σπερματική (ορχική)</li></ul>"
+            },
+            {
+                q: "Κοιλιακή Αορτή: Τοιχικοί Κλάδοι",
+                a: "<ul><li>Κάτω φρενική</li><li>Οσφυϊκές</li><li>Μέση ιερή</li></ul>"
+            },
+            [cite_start]// --- ΚΑΤΩ ΜΕΣΕΝΤΕΡΙΟΣ & ΚΟΙΛΙΑΚΗ ΑΡΤΗΡΙΑ [cite: 147-167] ---
+            {
+                q: "Κάτω Μεσεντέρια: Κλάδοι",
+                a: "<ul><li>Αριστερή κολική</li><li>Σιγμοειδής</li><li>Άνω αιμορροϊδική</li></ul>"
+            },
+            {
+                q: "Κοιλιακή Αρτηρία (Τρίποδας Haller): 3 Κύριοι Κλάδοι",
+                a: "1. Αριστερή γαστρική<br>2. Κοινή ηπατική<br>3. Σπληνική"
+            },
+            {
+                q: "Κλάδοι της Κοινής Ηπατικής",
+                a: "<ul><li>Δεξιά γαστρική</li><li>Δεξιά γαστροεπιπλοϊκή</li><li>Γαστροδωδεκαδακτυλική (-> Άνω παγκρεατοδωδεκαδακτυλική)</li><li>Ιδίως ηπατική</li></ul>"
+            },
+            {
+                q: "Κλάδοι της Σπληνικής Αρτηρίας",
+                a: "<ul><li>Αριστερή γαστροεπιπλοϊκή</li><li>Βραχείες γαστρικές</li><li>Σπληνικοί και παγκρεατικοί κλάδοι</li></ul>"
+            },
+            [cite_start]// --- ΕΣΩ ΛΑΓΟΝΙΑ [cite: 169-177] ---
+            {
+                q: "Έσω Λαγόνια: Τοιχικοί Κλάδοι",
+                a: "<ul><li>Λαγονοοσφυϊκή</li><li>Θυρεοειδής</li><li>Πλάγια ιερή</li><li>Άνω γλουτιαία</li></ul>"
+            },
+            {
+                q: "Έσω Λαγόνια: Σπλαγχνικοί Κλάδοι",
+                a: "<ul><li>Ομφαλική</li><li>Μητριαία</li><li>Κυστικές</li><li>Έσω αιδιοική</li></ul>"
+            },
+            [cite_start]// --- ΦΛΕΒΕΣ ΚΡΑΝΙΟΥ [cite: 201-227] ---
+            {
+                q: "Φλεβώδεις Κόλποι Θόλου Κρανίου",
+                a: "1. Άνω οβελιαίος<br>2. Κάτω οβελιαίος<br>3. Ευθύς<br>4. Σφηνοβρεγματικός<br>5. Ληνός του Ηροφίλου"
+            },
+            {
+                q: "Φλεβώδεις Κόλποι Βάσης Κρανίου",
+                a: "<ul><li>Εγκάρσιος</li><li>Σιγμοειδής</li><li>Ινιακός</li><li>Σηραγγώδης</li><li>Βασικό πλέγμα</li><li>Άνω & Κάτω λιθοειδής</li></ul>"
+            },
+            [cite_start]// --- ΦΛΕΒΕΣ ΤΡΑΧΗΛΟΥ & ΠΡΟΣΩΠΟΥ [cite: 229-239] ---
+            {
+                q: "Προσωπική Φλέβα: Σχηματισμός & Εκβολή",
+                a: "<strong>Σχηματίζεται:</strong> Από εκβολή οπισθογνάθιας (γωνία κάτω γνάθου).<br><strong>Εκβάλλει:</strong> Στην έσω σφαγίτιδα."
+            },
+            {
+                q: "Έξω Σφαγίτιδα: Σχηματισμός",
+                a: "Συμβολή της <strong>οπίσθιας ωτιαίας</strong> και της <strong>οπισθογνάθιας</strong> φλέβας."
+            },
+            {
+                q: "Υποκλείδια Φλέβα: Όρια",
+                a: "Από το έξω χείλος της 1ης πλευράς έως πίσω από τη στερνοκλειδική άρθρωση (όπου ενώνεται με την έσω σφαγίτιδα)."
+            },
+            [cite_start]// --- ΦΛΕΒΕΣ ΑΝΩ ΑΚΡΟΥ [cite: 241-254] ---
+            {
+                q: "Μασχαλιαία Φλέβα: Σχηματισμός",
+                a: "Συμβολή των δύο βραχιονίων φλεβών."
+            },
+            {
+                q: "Κεφαλική Φλέβα: Πορεία & Εκβολή",
+                a: "Ξεκινά από στυλοειδή κερκίδας -> έξω αύλακα δικεφάλου -> θωρακοδελτοειδές διάστημα -> <strong>Εκβάλλει στη Μασχαλιαία</strong>."
+            },
+            {
+                q: "Βασιλική Φλέβα: Πορεία & Εκβολή",
+                a: "Συνέχεια της 4ης ραχιαίας μετακάρπιας -> <strong>Εκβάλλει στην έσω βραχιόνια</strong>."
+            },
+            {
+                q: "Ποια φλέβα αναστομώνει κεφαλική και βασιλική στον αγκώνα;",
+                a: "Η Μέση φλέβα του αγκώνα (στο 70% των ανθρώπων)."
+            },
+            [cite_start]// --- ΑΝΑΣΤΟΜΩΣΕΙΣ & ΑΖΥΓΟΣ [cite: 255-266] ---
+            {
+                q: "Φυσιολογικές Πυλαιοσυστηματικές Αναστομώσεις",
+                a: "1. Στεφανιαία φλέβα στομάχου<br>2. Παρομφάλιες φλέβες (Κεφαλή Μεδούσης)<br>3. Αιμορροϊδικό πλέγμα"
+            },
+            {
+                q: "Άνω Ημιάζυγος Φλέβα",
+                a: "Από συμβολή ανώτερων αριστερών μεσοπλεύριων. Εκβάλλει επάνω στην αριστερή ανώνυμη και κάτω στην κάτω ημιάζυγο."
+            },
+            {
+                q: "Κάτω Ημιάζυγος Φλέβα",
+                a: "Συνέχεια αριστερής ανιούσας οσφυϊκής. Στο Θ8 στρέφει δεξιά και εκβάλλει στην άζυγο."
+            },
+            [cite_start]// --- ΦΛΕΒΕΣ ΚΑΤΩ ΑΚΡΟΥ [cite: 275-283] ---
+            {
+                q: "Μείζων Σαφηνής Φλέβα: Εκβολή & Συνοδό Νεύρο",
+                a: "<strong>Εκβάλλει:</strong> Στη μηριαία φλέβα (Σαφηνές τρήμα).<br><strong>Συνοδεύεται:</strong> Από το μείζον σαφηνές νεύρο."
+            },
+            {
+                q: "Ελάσσων Σαφηνής Φλέβα: Εκβολή & Συνοδό Νεύρο",
+                a: "<strong>Εκβάλλει:</strong> Στην ιγνυακή (κυρίως).<br><strong>Συνοδεύεται:</strong> Από το γαστροκνημιαίο νεύρο."
+            },
+            [cite_start]// --- ΛΕΜΦΑΓΓΕΙΑ [cite: 285-305] ---
+            {
+                q: "Μείζων Θωρακικός Πόρος: Αρχή",
+                a: "Ξεκινά από τη <strong>χυλοφόρο δεξαμενή</strong> (Ο2 σπόνδυλος)."
+            },
+            {
+                q: "Μείζων Θωρακικός Πόρος: Εκβολή",
+                a: "Στην <strong>αριστερή φλεβώδη γωνία</strong>."
+            },
+            {
+                q: "Ελάσσων Θωρακικός Πόρος: Εκβολή",
+                a: "Στη <strong>δεξιά φλεβώδη γωνία</strong>."
+            },
+            {
+                q: "Μασχαλιαία Λεμφογάγγλια: Ομάδες",
+                a: "<ul><li>Έξω (βραχιόνια)</li><li>Έσω (θωρακικά)</li><li>Οπίσθια (υποπλάτια)</li><li>Κεντρικά</li><li>Κορυφαία</li></ul>"
+            },
+            {
+                q: "Αποχέτευση Λέμφου Μαστού",
+                a: "75% στα <strong>Μασχαλιαία</strong> λεμφογάγγλια.<br>25% στα <strong>Παραστερνικά</strong> λεμφογάγγλια."
+            }
+        ];
+
+        // State variables
+        let currentIndex = 0;
+        let isFlipped = false;
+        const cardElement = document.querySelector('.card');
+        const qText = document.getElementById('q-text');
+        const aText = document.getElementById('a-text');
+        const progressText = document.getElementById('progress');
+
+        // Functions
+        function renderCard() {
+            const currentCard = flashcardsData[currentIndex];
+            
+            // Reset state securely without animation glitch
+            if(isFlipped) {
+                cardElement.classList.remove('is-flipped');
+                isFlipped = false;
+                // Wait for flip back before changing content
+                setTimeout(() => {
+                    updateContent(currentCard);
+                }, 300);
+            } else {
+                updateContent(currentCard);
+            }
+        }
+
+        function updateContent(card) {
+            qText.innerHTML = card.q;
+            aText.innerHTML = card.a;
+            progressText.innerText = `${currentIndex + 1} / ${flashcardsData.length}`;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            cardElement.classList.toggle('is-flipped');
+        }
+
+        function nextCard() {
+            if (currentIndex < flashcardsData.length - 1) {
+                currentIndex++;
+                renderCard();
+            } else {
+                alert("Τέλος καρτών! Πάμε πάλι στην αρχή.");
+                currentIndex = 0;
+                renderCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderCard();
+            }
+        }
+
+        function shuffleCards() {
+            for (let i = flashcardsData.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [flashcardsData[i], flashcardsData[j]] = [flashcardsData[j], flashcardsData[i]];
+            }
+            currentIndex = 0;
+            renderCard();
+        }
+
+        function resetCards() {
+            currentIndex = 0;
+            renderCard();
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space') {
+                e.preventDefault(); // Prevent scrolling
+                flipCard();
+            } else if (e.code === 'ArrowRight') {
+                nextCard();
+            } else if (e.code === 'ArrowLeft') {
+                prevCard();
+            }
+        });
+
+        // Initialize
+        renderCard();
+
+    </script>
+</body>
+</html>
