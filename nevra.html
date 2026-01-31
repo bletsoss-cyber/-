@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomy Quiz Pro - Μυϊκό Σύστημα</title>
+    <title>Anatomy Quiz Pro</title>
     <style>
-        /* === CSS VARIABLES (Για εύκολη αλλαγή θεμάτων) === */
+        /* === ΡΥΘΜΙΣΕΙΣ ΧΡΩΜΑΤΩΝ (ΜΕΤΑΒΛΗΤΕΣ) === */
         :root {
             --bg-color: #f0f2f5;
             --container-bg: #ffffff;
             --text-color: #333333;
             --heading-color: #2c3e50;
-            --accent-color: #3498db; /* Μπλε */
+            --accent-color: #3498db;
             --accent-hover: #2980b9;
             --question-box-bg: #eaf2f8;
             --border-color: #bdc3c7;
@@ -20,13 +20,13 @@
             --shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
 
-        /* === DARK MODE VARIABLES === */
+        /* === ΡΥΘΜΙΣΕΙΣ NIGHT MODE === */
         body.dark-mode {
             --bg-color: #121212;
             --container-bg: #1e1e1e;
             --text-color: #e0e0e0;
             --heading-color: #ecf0f1;
-            --accent-color: #4fa3e0; /* Πιο φωτεινό μπλε για dark mode */
+            --accent-color: #4fa3e0;
             --accent-hover: #357abd;
             --question-box-bg: #2a2a2a;
             --border-color: #444;
@@ -40,13 +40,14 @@
             background-color: var(--bg-color);
             color: var(--text-color);
             margin: 0;
+            padding: 0;
             transition: background-color 0.3s, color 0.3s;
             display: flex;
             flex-direction: column;
             min-height: 100vh;
         }
 
-        /* === NAVIGATION BAR === */
+        /* === NAVIGATION BAR (Η ΜΠΑΡΑ ΠΟΥ ΣΟΥ ΕΛΕΙΠΕ) === */
         .navbar {
             background-color: var(--nav-bg);
             color: var(--nav-text);
@@ -54,57 +55,48 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
-            position: sticky;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            position: sticky; /* Κλειδώνει στο πάνω μέρος */
             top: 0;
-            z-index: 100;
+            z-index: 1000; /* Εξασφαλίζει ότι είναι πάνω από όλα */
+            width: 100%;
+            box-sizing: border-box; /* Για να μην βγαίνει έξω από την οθόνη */
         }
 
         .nav-title {
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             font-weight: bold;
             display: flex;
             align-items: center;
         }
 
-        .nav-title span {
-            color: var(--accent-color);
-            margin-right: 8px;
-        }
-
-        /* Theme Toggle Button */
         .theme-btn {
-            background: none;
-            border: 2px solid var(--nav-text);
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.2);
             color: var(--nav-text);
-            padding: 8px 15px;
+            padding: 8px 16px;
             border-radius: 20px;
             cursor: pointer;
             display: flex;
             align-items: center;
             gap: 8px;
-            font-weight: 600;
-            transition: all 0.3s ease;
+            font-size: 0.9rem;
+            transition: all 0.2s ease;
         }
 
         .theme-btn:hover {
-            background-color: rgba(255,255,255,0.1);
+            background-color: rgba(255,255,255,0.2);
         }
 
-        /* SVG Icons for theme */
-        .theme-icon {
-            width: 20px;
-            height: 20px;
-            fill: currentColor;
-        }
-
-        /* === MAIN LAYOUT === */
+        /* === ΚΥΡΙΩΣ ΠΕΡΙΕΧΟΜΕΝΟ === */
         .main-content {
             flex: 1;
             display: flex;
             justify-content: center;
             align-items: center;
             padding: 20px;
+            width: 100%;
+            box-sizing: border-box;
         }
 
         .quiz-container {
@@ -115,43 +107,21 @@
             width: 100%;
             max-width: 600px;
             text-align: center;
-            transition: background-color 0.3s, box-shadow 0.3s;
         }
 
-        h1 {
-            color: var(--heading-color);
-            margin-bottom: 10px;
-            font-size: 1.8rem;
-        }
-
-        .stats {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 20px;
-            font-weight: bold;
-            color: var(--text-color);
-            opacity: 0.8;
-        }
+        h1 { margin-top: 0; color: var(--heading-color); }
 
         .question-box {
             background-color: var(--question-box-bg);
             padding: 20px;
             border-radius: 10px;
-            margin-bottom: 25px;
+            margin: 20px 0;
             border-left: 5px solid var(--accent-color);
-            transition: background-color 0.3s;
+            font-size: 1.2rem;
+            font-weight: bold;
         }
 
-        .question-text {
-            font-size: 1.3rem;
-            font-weight: 600;
-            color: var(--text-color);
-        }
-
-        .options-grid {
-            display: grid;
-            gap: 10px;
-        }
+        .options-grid { display: grid; gap: 10px; }
 
         button.option-btn {
             background-color: var(--container-bg);
@@ -160,28 +130,18 @@
             border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
-            transition: all 0.2s;
             color: var(--text-color);
             font-weight: 500;
+            transition: 0.2s;
         }
 
-        button.option-btn:hover:not([disabled]) {
-            background-color: var(--bg-color);
+        button.option-btn:hover {
             border-color: var(--accent-color);
-            transform: translateY(-2px);
+            background-color: var(--bg-color);
         }
 
-        button.correct {
-            background-color: #2ecc71 !important;
-            border-color: #27ae60 !important;
-            color: white !important;
-        }
-
-        button.wrong {
-            background-color: #e74c3c !important;
-            border-color: #c0392b !important;
-            color: white !important;
-        }
+        button.correct { background-color: #2ecc71 !important; color: white !important; border-color: #27ae60 !important; }
+        button.wrong { background-color: #e74c3c !important; color: white !important; border-color: #c0392b !important; }
 
         #next-btn {
             margin-top: 20px;
@@ -192,35 +152,20 @@
             font-size: 1.1rem;
             border-radius: 8px;
             cursor: pointer;
-            display: none; /* Κρυφό στην αρχή */
-            transition: background-color 0.2s;
+            display: none;
         }
         
-        #next-btn:hover {
-            background-color: var(--accent-hover);
-        }
-
-        .feedback {
-            margin-top: 15px;
-            font-weight: bold;
-            min-height: 25px;
-        }
+        .feedback { margin-top: 15px; font-weight: bold; min-height: 24px; }
+        .stats { display: flex; justify-content: space-between; color: var(--text-color); opacity: 0.8; font-weight: bold;}
 
     </style>
 </head>
 <body>
 
     <nav class="navbar">
-        <div class="nav-title">
-            <span>⚡</span> Anatomy Quiz Pro
-        </div>
+        <div class="nav-title">🩺 Anatomy Quiz</div>
         <button class="theme-btn" id="theme-toggle">
-            <svg class="theme-icon" id="moon-icon" viewBox="0 0 24 24">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path>
-            </svg>
-            <svg class="theme-icon" id="sun-icon" viewBox="0 0 24 24" style="display:none;">
-                 <circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line>
-            </svg>
+            <span id="theme-icon">🌙</span> 
             <span id="theme-text">Night Mode</span>
         </button>
     </nav>
@@ -235,22 +180,18 @@
             </div>
 
             <div class="question-box">
-                <div class="question-text" id="question">Φόρτωση...</div>
+                <div id="question">Φόρτωση...</div>
             </div>
 
-            <div class="options-grid" id="options-container">
-                </div>
-
+            <div class="options-grid" id="options-container"></div>
             <div class="feedback" id="feedback"></div>
-
             <button id="next-btn" onclick="nextQuestion()">Επόμενη Ερώτηση</button>
         </div>
     </div>
 
 <script>
-    // === ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ (Η ίδια με πριν) ===
+    // === ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ (Οι 100+ μύες σου) ===
     const database = [
-        // ΚΕΦΑΛΗ
         {m: "Μετωπιαίος (Ινιακός)", n: "Προσωπικό ν. (VII)"},
         {m: "Σφιγκτήρας των βλεφάρων", n: "Προσωπικό ν. (VII)"},
         {m: "Σφιγκτήρας του στόματος", n: "Προσωπικό ν. (VII)"},
@@ -263,8 +204,6 @@
         {m: "Έσω πτερυγοειδής", n: "Τρίδυμο ν. (V3)"},
         {m: "Στερνοκλειδομαστοειδής", n: "Παραπληρωματικό ν. (XI)"},
         {m: "Τραπεζοειδής", n: "Παραπληρωματικό ν. (XI)"},
-
-        // ΑΝΩ ΑΚΡΟ - ΩΜΟΣ & ΒΡΑΧΙΟΝΑΣ
         {m: "Δελτοειδής", n: "Μασχαλιαίο ν."},
         {m: "Ελάσσων στρογγύλος", n: "Μασχαλιαίο ν."},
         {m: "Υπερακάνθιος", n: "Υπερπλάτιο ν."},
@@ -279,8 +218,6 @@
         {m: "Κορακοβραχιόνιος", n: "Μυοδερματικό ν."},
         {m: "Τρικέφαλος βραχιόνιος", n: "Κερκιδικό ν."},
         {m: "Αγκωνιαίος", n: "Κερκιδικό ν."},
-
-        // ΑΝΤΙΒΡΑΧΙΟ & ΧΕΡΙ
         {m: "Στρογγύλος πρηνιστής", n: "Μέσο ν."},
         {m: "Κερκιδικός καμπτήρας καρπού", n: "Μέσο ν."},
         {m: "Μακρός παλαμικός", n: "Μέσο ν."},
@@ -297,8 +234,6 @@
         {m: "Ραχιαίοι μεσόστεοι", n: "Ωλένιο ν."},
         {m: "Παλαμιαίοι μεσόστεοι", n: "Ωλένιο ν."},
         {m: "Αντιθετικός αντίχειρα", n: "Μέσο ν."},
-
-        // ΚΑΤΩ ΑΚΡΟ
         {m: "Τετρακέφαλος μηριαίος", n: "Μηριαίο ν."},
         {m: "Ραπτικός", n: "Μηριαίο ν."},
         {m: "Κτενίτης", n: "Μηριαίο ν."},
@@ -312,8 +247,6 @@
         {m: "Δικέφαλος μηριαίος", n: "Ισχιακό ν."},
         {m: "Ημιτενοντώδης", n: "Ισχιακό ν. (Κνημιαίο)"},
         {m: "Ημιυμενώδης", n: "Ισχιακό ν. (Κνημιαίο)"},
-        
-        // ΚΝΗΜΗ & ΠΟΔΙ
         {m: "Πρόσθιος κνημιαίος", n: "Εν τω βάθει περονιαίο ν."},
         {m: "Μακρός εκτείνων δακτύλων", n: "Εν τω βάθει περονιαίο ν."},
         {m: "Μακρός εκτείνων μεγάλο δάκτυλο", n: "Εν τω βάθει περονιαίο ν."},
@@ -326,61 +259,44 @@
     ];
 
     const allNerves = [...new Set(database.map(item => item.n))];
-    let currentQuestionIndex = 0;
     let score = 0;
     let questionsPlayed = 0;
     let currentQuestionData = null;
 
+    // Στοιχεία HTML
     const questionEl = document.getElementById('question');
     const optionsContainer = document.getElementById('options-container');
     const scoreEl = document.getElementById('score-display');
     const countEl = document.getElementById('question-count');
     const nextBtn = document.getElementById('next-btn');
     const feedbackEl = document.getElementById('feedback');
-
-    // === LOGIC ΓΙΑ NIGHT MODE ===
     const themeToggleBtn = document.getElementById('theme-toggle');
-    const bodyElement = document.body;
-    const moonIcon = document.getElementById('moon-icon');
-    const sunIcon = document.getElementById('sun-icon');
+    const themeIcon = document.getElementById('theme-icon');
     const themeText = document.getElementById('theme-text');
+    const bodyElement = document.body;
 
-    // Έλεγχος αν υπάρχει αποθηκευμένη προτίμηση
+    // === ΛΕΙΤΟΥΡΓΙΑ DARK MODE ===
     const currentTheme = localStorage.getItem('theme');
     if (currentTheme === 'dark') {
         bodyElement.classList.add('dark-mode');
-        updateThemeIcon(true);
+        themeIcon.textContent = '☀️';
+        themeText.textContent = 'Light Mode';
     }
 
     themeToggleBtn.addEventListener('click', () => {
         bodyElement.classList.toggle('dark-mode');
-        let isDark = bodyElement.classList.contains('dark-mode');
+        const isDark = bodyElement.classList.contains('dark-mode');
         
-        // Αποθήκευση προτίμησης
         localStorage.setItem('theme', isDark ? 'dark' : 'light');
-        updateThemeIcon(isDark);
+        themeIcon.textContent = isDark ? '☀️' : '🌙';
+        themeText.textContent = isDark ? 'Light Mode' : 'Night Mode';
     });
 
-    function updateThemeIcon(isDark) {
-        if (isDark) {
-            moonIcon.style.display = 'none';
-            sunIcon.style.display = 'block';
-            themeText.textContent = 'Light Mode';
-        } else {
-            moonIcon.style.display = 'block';
-            sunIcon.style.display = 'none';
-            themeText.textContent = 'Night Mode';
-        }
-    }
-
-    // === LOGIC ΤΟΥ QUIZ (Ίδιο με πριν) ===
-    function startGame() {
-        nextQuestion();
-    }
+    // === ΛΕΙΤΟΥΡΓΙΑ QUIZ ===
+    function startGame() { nextQuestion(); }
 
     function nextQuestion() {
         feedbackEl.textContent = '';
-        feedbackEl.style.color = 'inherit';
         nextBtn.style.display = 'none';
         
         const randomIndex = Math.floor(Math.random() * database.length);
@@ -393,9 +309,7 @@
         let options = [currentQuestionData.n];
         while (options.length < 4) {
             const randomNerve = allNerves[Math.floor(Math.random() * allNerves.length)];
-            if (!options.includes(randomNerve)) {
-                options.push(randomNerve);
-            }
+            if (!options.includes(randomNerve)) options.push(randomNerve);
         }
         options.sort(() => Math.random() - 0.5);
 
@@ -403,37 +317,34 @@
         options.forEach(opt => {
             const btn = document.createElement('button');
             btn.textContent = opt;
-            btn.className = 'option-btn'; // Προσθήκη κλάσης για CSS
+            btn.className = 'option-btn';
             btn.onclick = () => checkAnswer(opt, btn);
             optionsContainer.appendChild(btn);
         });
     }
 
-    function checkAnswer(selectedAnswer, btnElement) {
+    function checkAnswer(selected, btn) {
         const buttons = optionsContainer.querySelectorAll('button');
         buttons.forEach(b => b.disabled = true);
 
-        if (selectedAnswer === currentQuestionData.n) {
-            btnElement.classList.add('correct');
+        if (selected === currentQuestionData.n) {
+            btn.classList.add('correct');
             score++;
             scoreEl.textContent = `Σκορ: ${score}`;
             feedbackEl.textContent = "Σωστά! Μπράβο!";
             feedbackEl.style.color = "#27ae60";
         } else {
-            btnElement.classList.add('wrong');
+            btn.classList.add('wrong');
             feedbackEl.textContent = `Λάθος. Το σωστό είναι: ${currentQuestionData.n}`;
-            feedbackEl.style.color = "#c0392b";
+            feedbackEl.style.color = "#e74c3c";
             buttons.forEach(b => {
-                if (b.textContent === currentQuestionData.n) {
-                    b.classList.add('correct');
-                }
+                if (b.textContent === currentQuestionData.n) b.classList.add('correct');
             });
         }
         nextBtn.style.display = 'inline-block';
     }
 
     startGame();
-
 </script>
 </body>
 </html>
