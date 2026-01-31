@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Anatomy Quiz - Μυϊκό Σύστημα</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            color: #333;
+        }
+
+        .quiz-container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        h1 {
+            color: #2c3e50;
+            margin-bottom: 10px;
+            font-size: 1.8rem;
+        }
+
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        .question-box {
+            background-color: #eaf2f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 25px;
+            border-left: 5px solid #3498db;
+        }
+
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+        }
+
+        .options-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        button {
+            background-color: #fff;
+            border: 2px solid #bdc3c7;
+            padding: 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+            color: #2c3e50;
+        }
+
+        button:hover:not([disabled]) {
+            background-color: #f7f9fa;
+            border-color: #3498db;
+        }
+
+        button.correct {
+            background-color: #2ecc71;
+            border-color: #27ae60;
+            color: white;
+        }
+
+        button.wrong {
+            background-color: #e74c3c;
+            border-color: #c0392b;
+            color: white;
+        }
+
+        #next-btn {
+            margin-top: 20px;
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            display: none; /* Κρυφό στην αρχή */
+        }
+        
+        #next-btn:hover {
+            background-color: #2980b9;
+        }
+
+        .feedback {
+            margin-top: 15px;
+            font-weight: bold;
+            height: 20px;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="quiz-container">
+    <h1>Ανατομία: Νεύρωση Μυών</h1>
+    
+    <div class="stats">
+        <span id="question-count">Ερώτηση: 0</span>
+        <span id="score-display">Σκορ: 0</span>
+    </div>
+
+    <div class="question-box">
+        <div class="question-text" id="question">Φόρτωση...</div>
+    </div>
+
+    <div class="options-grid" id="options-container">
+        </div>
+
+    <div class="feedback" id="feedback"></div>
+
+    <button id="next-btn" onclick="nextQuestion()">Επόμενη Ερώτηση</button>
+</div>
+
+<script>
+    // === ΒΑΣΗ ΔΕΔΟΜΕΝΩΝ (Αντιγραφή από C++) ===
+    const database = [
+        // ΚΕΦΑΛΗ
+        {m: "Μετωπιαίος (Ινιακός)", n: "Προσωπικό ν. (VII)"},
+        {m: "Σφιγκτήρας των βλεφάρων", n: "Προσωπικό ν. (VII)"},
+        {m: "Σφιγκτήρας του στόματος", n: "Προσωπικό ν. (VII)"},
+        {m: "Βυκανητής", n: "Προσωπικό ν. (VII)"},
+        {m: "Ζυγωματικός (Μείζων/Ελάσσων)", n: "Προσωπικό ν. (VII)"},
+        {m: "Πλατύσμα", n: "Προσωπικό ν. (VII)"},
+        {m: "Μασητήρας", n: "Τρίδυμο ν. (V3)"},
+        {m: "Κροταφίτης", n: "Τρίδυμο ν. (V3)"},
+        {m: "Έξω πτερυγοειδής", n: "Τρίδυμο ν. (V3)"},
+        {m: "Έσω πτερυγοειδής", n: "Τρίδυμο ν. (V3)"},
+        {m: "Στερνοκλειδομαστοειδής", n: "Παραπληρωματικό ν. (XI)"},
+        {m: "Τραπεζοειδής", n: "Παραπληρωματικό ν. (XI)"},
+
+        // ΑΝΩ ΑΚΡΟ - ΩΜΟΣ & ΒΡΑΧΙΟΝΑΣ
+        {m: "Δελτοειδής", n: "Μασχαλιαίο ν."},
+        {m: "Ελάσσων στρογγύλος", n: "Μασχαλιαίο ν."},
+        {m: "Υπερακάνθιος", n: "Υπερπλάτιο ν."},
+        {m: "Υπακάνθιος", n: "Υπερπλάτιο ν."},
+        {m: "Υποπλάτιος", n: "Υποπλάτιο ν."},
+        {m: "Μείζων στρογγύλος", n: "Υποπλάτιο ν."},
+        {m: "Πλατύς ραχιαίος", n: "Θωρακοραχιαίο ν."},
+        {m: "Πρόσθιος οδοντωτός", n: "Μακρό θωρακικό ν."},
+        {m: "Μείζων θωρακικός", n: "Έξω & Έσω θωρακικό ν."},
+        {m: "Δικέφαλος βραχιόνιος", n: "Μυοδερματικό ν."},
+        {m: "Πρόσθιος βραχιόνιος", n: "Μυοδερματικό ν."},
+        {m: "Κορακοβραχιόνιος", n: "Μυοδερματικό ν."},
+        {m: "Τρικέφαλος βραχιόνιος", n: "Κερκιδικό ν."},
+        {m: "Αγκωνιαίος", n: "Κερκιδικό ν."},
+
+        // ΑΝΤΙΒΡΑΧΙΟ & ΧΕΡΙ
+        {m: "Στρογγύλος πρηνιστής", n: "Μέσο ν."},
+        {m: "Κερκιδικός καμπτήρας καρπού", n: "Μέσο ν."},
+        {m: "Μακρός παλαμικός", n: "Μέσο ν."},
+        {m: "Επιπολής καμπτήρας δακτύλων", n: "Μέσο ν."},
+        {m: "Τετράγωνος πρηνιστής", n: "Μέσο ν."},
+        {m: "Ωλένιος καμπτήρας καρπού", n: "Ωλένιο ν."},
+        {m: "Εν τω βάθει καμπτήρας (Ωλένια μοίρα)", n: "Ωλένιο ν."},
+        {m: "Εν τω βάθει καμπτήρας (Κερκιδική μοίρα)", n: "Μέσο ν."},
+        {m: "Βραχιονοκερκιδικός", n: "Κερκιδικό ν."},
+        {m: "Μακρός/Βραχύς κερκιδικός εκτείνων", n: "Κερκιδικό ν."},
+        {m: "Εκτείνων τους δακτύλους", n: "Κερκιδικό ν."},
+        {m: "Υπτιστής", n: "Κερκιδικό ν."},
+        {m: "Προσαγωγός του αντίχειρα", n: "Ωλένιο ν."},
+        {m: "Ραχιαίοι μεσόστεοι", n: "Ωλένιο ν."},
+        {m: "Παλαμιαίοι μεσόστεοι", n: "Ωλένιο ν."},
+        {m: "Αντιθετικός αντίχειρα", n: "Μέσο ν."},
+
+        // ΚΑΤΩ ΑΚΡΟ
+        {m: "Τετρακέφαλος μηριαίος", n: "Μηριαίο ν."},
+        {m: "Ραπτικός", n: "Μηριαίο ν."},
+        {m: "Κτενίτης", n: "Μηριαίο ν."},
+        {m: "Λαγονοψοΐτης", n: "Μηριαίο ν."},
+        {m: "Μακρός προσαγωγός", n: "Θυρεοειδές ν."},
+        {m: "Βραχύς προσαγωγός", n: "Θυρεοειδές ν."},
+        {m: "Ισχνός προσαγωγός", n: "Θυρεοειδές ν."},
+        {m: "Μείζων γλουτιαίος", n: "Κάτω γλουτιαίο ν."},
+        {m: "Μέσος/Μικρός γλουτιαίος", n: "Άνω γλουτιαίο ν."},
+        {m: "Τείνων την πλατεία περιτονία", n: "Άνω γλουτιαίο ν."},
+        {m: "Δικέφαλος μηριαίος", n: "Ισχιακό ν."},
+        {m: "Ημιτενοντώδης", n: "Ισχιακό ν. (Κνημιαίο)"},
+        {m: "Ημιυμενώδης", n: "Ισχιακό ν. (Κνημιαίο)"},
+        
+        // ΚΝΗΜΗ & ΠΟΔΙ
+        {m: "Πρόσθιος κνημιαίος", n: "Εν τω βάθει περονιαίο ν."},
+        {m: "Μακρός εκτείνων δακτύλων", n: "Εν τω βάθει περονιαίο ν."},
+        {m: "Μακρός εκτείνων μεγάλο δάκτυλο", n: "Εν τω βάθει περονιαίο ν."},
+        {m: "Μακρός περονιαίος", n: "Επιπολής περονιαίο ν."},
+        {m: "Βραχύς περονιαίος", n: "Επιπολής περονιαίο ν."},
+        {m: "Γαστροκνήμιος", n: "Κνημιαίο ν."},
+        {m: "Υποκνημίδιος", n: "Κνημιαίο ν."},
+        {m: "Οπίσθιος κνημιαίος", n: "Κνημιαίο ν."},
+        {m: "Μακρός καμπτήρας δακτύλων", n: "Κνημιαίο ν."}
+    ];
+
+    // Λήψη όλων των μοναδικών νεύρων για λάθος απαντήσεις
+    const allNerves = [...new Set(database.map(item => item.n))];
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+    let questionsPlayed = 0;
+    let currentQuestionData = null;
+
+    // Στοιχεία HTML
+    const questionEl = document.getElementById('question');
+    const optionsContainer = document.getElementById('options-container');
+    const scoreEl = document.getElementById('score-display');
+    const countEl = document.getElementById('question-count');
+    const nextBtn = document.getElementById('next-btn');
+    const feedbackEl = document.getElementById('feedback');
+
+    function startGame() {
+        nextQuestion();
+    }
+
+    function nextQuestion() {
+        // Reset UI
+        feedbackEl.textContent = '';
+        feedbackEl.style.color = 'black';
+        nextBtn.style.display = 'none';
+        
+        // Επιλογή τυχαίας ερώτησης
+        const randomIndex = Math.floor(Math.random() * database.length);
+        currentQuestionData = database[randomIndex];
+        
+        questionsPlayed++;
+        countEl.textContent = `Ερώτηση: ${questionsPlayed}`;
+        
+        questionEl.textContent = `Ποιο νεύρο νευρώνει τον: ${currentQuestionData.m};`;
+
+        // Δημιουργία απαντήσεων (1 σωστή + 3 λάθος)
+        let options = [currentQuestionData.n];
+        
+        while (options.length < 4) {
+            const randomNerve = allNerves[Math.floor(Math.random() * allNerves.length)];
+            if (!options.includes(randomNerve)) {
+                options.push(randomNerve);
+            }
+        }
+
+        // Ανακάτεμα απαντήσεων
+        options.sort(() => Math.random() - 0.5);
+
+        // Εμφάνιση κουμπιών
+        optionsContainer.innerHTML = '';
+        options.forEach(opt => {
+            const btn = document.createElement('button');
+            btn.textContent = opt;
+            btn.onclick = () => checkAnswer(opt, btn);
+            optionsContainer.appendChild(btn);
+        });
+    }
+
+    function checkAnswer(selectedAnswer, btnElement) {
+        // Απενεργοποίηση όλων των κουμπιών
+        const buttons = optionsContainer.querySelectorAll('button');
+        buttons.forEach(b => b.disabled = true);
+
+        if (selectedAnswer === currentQuestionData.n) {
+            // ΣΩΣΤΟ
+            btnElement.classList.add('correct');
+            score++;
+            scoreEl.textContent = `Σκορ: ${score}`;
+            feedbackEl.textContent = "Σωστά! Μπράβο!";
+            feedbackEl.style.color = "#27ae60";
+        } else {
+            // ΛΑΘΟΣ
+            btnElement.classList.add('wrong');
+            feedbackEl.textContent = `Λάθος. Το σωστό είναι: ${currentQuestionData.n}`;
+            feedbackEl.style.color = "#c0392b";
+            
+            // Βρες και χρωμάτισε το σωστό
+            buttons.forEach(b => {
+                if (b.textContent === currentQuestionData.n) {
+                    b.classList.add('correct');
+                }
+            });
+        }
+
+        nextBtn.style.display = 'inline-block';
+    }
+
+    // Εκκίνηση
+    startGame();
+
+</script>
+
+</body>
+</html>
