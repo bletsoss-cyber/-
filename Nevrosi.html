@@ -3,349 +3,401 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Anatomy Flashcards - Νεύρωση Μυών</title>
+    <title>Ανατομία: Μύες & Νευρώσεις (Full)</title>
     <style>
         :root {
-            --bg-color: #f4f7f6;
-            --text-color: #333;
-            --card-bg: #ffffff;
-            --accent-color: #2c3e50;
-            --button-bg: #3498db;
-            --button-text: white;
-            --grid-gap: 15px;
-        }
-
-        body.night-mode {
-            --bg-color: #1a1a1a;
-            --text-color: #e0e0e0;
-            --card-bg: #2d2d2d;
-            --accent-color: #ecf0f1;
-            --button-bg: #2980b9;
+            --bg-color: #121212;
+            --card-bg: #1e1e1e;
+            --text-main: #e0e0e0;
+            --text-muted: #a0a0a0;
+            --accent: #bb86fc;
+            --correct: #03dac6;
+            --wrong: #cf6679;
         }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--bg-color);
-            color: var(--text-color);
+            color: var(--text-main);
             margin: 0;
+            padding: 20px;
             display: flex;
             flex-direction: column;
             align-items: center;
-            transition: 0.3s;
             min-height: 100vh;
         }
 
-        header {
-            width: 100%;
-            padding: 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            max-width: 1000px;
-        }
+        h1 { margin-bottom: 30px; color: var(--accent); text-align: center; }
+        button { cursor: pointer; border: none; outline: none; transition: 0.3s; font-family: inherit; }
 
-        /* Grid Navigation */
-        .menu-grid {
+        /* MENU GRID */
+        #menu-view {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: var(--grid-gap);
-            width: 90%;
-            max-width: 1000px;
-            margin-top: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 15px;
+            width: 100%;
+            max-width: 1100px;
         }
 
-        .menu-btn {
+        .nerve-btn {
+            background-color: var(--card-bg);
+            color: var(--text-main);
             padding: 20px;
-            font-size: 16px;
-            font-weight: bold;
-            border: none;
-            border-radius: 10px;
-            background-color: var(--button-bg);
-            color: var(--button-text);
-            cursor: pointer;
-            transition: transform 0.2s, background 0.2s;
+            border-radius: 12px;
+            font-size: 1.1em;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.3);
             text-align: center;
+            border: 1px solid #333;
         }
+        .nerve-btn:hover { background-color: var(--accent); color: #000; transform: translateY(-2px); }
 
-        .menu-btn:hover {
-            transform: translateY(-3px);
-            filter: brightness(1.1);
+        .quiz-btn-main {
+            grid-column: 1 / -1;
+            background-color: var(--accent);
+            color: #000;
+            font-weight: bold;
+            padding: 20px;
+            font-size: 1.3em;
+            border-radius: 12px;
+            margin-bottom: 20px;
         }
+        .quiz-btn-main:hover { background-color: var(--correct); }
 
-        /* Flashcard Container */
-        #game-container {
+        /* FLASHCARDS & QUIZ */
+        #flashcard-view, #quiz-view {
             display: none;
+            width: 100%;
+            max-width: 700px;
+            text-align: center;
             flex-direction: column;
             align-items: center;
-            margin-top: 50px;
-            width: 100%;
         }
 
-        .flashcard {
-            width: 350px;
-            height: 250px;
-            perspective: 1000px;
-            cursor: pointer;
-        }
-
-        .card-inner {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            text-align: center;
-            transition: transform 0.6s;
-            transform-style: preserve-3d;
-            box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+        .card {
+            background-color: var(--card-bg);
+            padding: 40px;
             border-radius: 15px;
-        }
-
-        .flashcard.flipped .card-inner {
-            transform: rotateY(180deg);
-        }
-
-        .card-front, .card-back {
-            position: absolute;
+            margin: 20px 0;
             width: 100%;
-            height: 100%;
-            backface-visibility: hidden;
+            min-height: 250px;
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
-            padding: 20px;
-            box-sizing: border-box;
-            border-radius: 15px;
-            font-size: 22px;
-            font-weight: bold;
-            background: var(--card-bg);
-            border: 2px solid var(--button-bg);
-        }
-
-        .card-back {
-            transform: rotateY(180deg);
-            background: var(--accent-color);
-            color: var(--card-bg);
-            font-size: 18px;
-        }
-
-        /* Controls */
-        .controls {
-            margin-top: 30px;
-            display: flex;
-            gap: 20px;
-        }
-
-        .control-btn {
-            padding: 10px 25px;
-            border-radius: 5px;
-            border: none;
-            background: var(--button-bg);
-            color: white;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.5);
             cursor: pointer;
         }
 
-        .back-btn {
-            background: #95a5a6;
-        }
+        .card-content { font-size: 1.6em; font-weight: bold; color: var(--text-main); }
+        .sub-text { font-size: 0.9em; color: var(--text-muted); margin-top: 15px; }
 
-        .night-toggle {
-            padding: 10px;
-            border-radius: 50%;
-            border: none;
-            cursor: pointer;
-            background: var(--accent-color);
-            color: var(--bg-color);
-            font-size: 20px;
-        }
+        .controls { display: flex; gap: 15px; margin-top: 20px; flex-wrap: wrap; justify-content: center; }
+        .ctrl-btn { background-color: #333; color: white; padding: 12px 24px; border-radius: 8px; font-size: 1em; }
+        .ctrl-btn:hover { background-color: #555; }
+        .back-btn { background-color: var(--wrong); }
 
-        .progress {
-            margin-bottom: 15px;
-            font-size: 14px;
-        }
+        /* QUIZ OPTIONS */
+        .options-grid { display: grid; grid-template-columns: 1fr; gap: 10px; width: 100%; margin-top: 20px; }
+        @media(min-width: 600px) { .options-grid { grid-template-columns: 1fr 1fr; } }
+
+        .option-btn { background-color: #333; color: white; padding: 15px; border-radius: 8px; font-size: 1em; text-align: left; }
+        .option-btn:hover { background-color: #444; }
+        .option-btn.correct { background-color: var(--correct); color: #000; }
+        .option-btn.wrong { background-color: var(--wrong); }
     </style>
 </head>
 <body>
 
-<header>
-    <h2>Anatomy Flashcards</h2>
-    <button class="night-toggle" onclick="toggleNightMode()">🌓</button>
-</header>
+    <h1>Ανατομία: Πλήρης Λίστα Μυών</h1>
 
-<div class="menu-grid" id="menu">
-    <button class="menu-btn" onclick="startGroup('facial')">Προσωπικό Νεύρο (VII)</button>
-    <button class="menu-btn" onclick="startGroup('hypoglossal')">Υπογλώσσιο (XII)</button>
-    <button class="menu-btn" onclick="startGroup('trigeminal')">Τρίδυμο / Κάτω Γναθικό (V3)</button>
-    <button class="menu-btn" onclick="startGroup('oculomotor')">Κοινό Κινητικό (III)</button>
-    <button class="menu-btn" onclick="startGroup('vagus')">Πνευμονογαστρικό / Πλέγμα (X)</button>
-    <button class="menu-btn" onclick="startGroup('laryngeal')">Παλίνδρομο Λαρυγγικό</button>
-    <button class="menu-btn" onclick="startGroup('cervical')">Αυχενικά / Αυχενική Αγκύλη</button>
-    <button class="menu-btn" onclick="startGroup('other')">Λοιπά Νεύρα (IV, VI, IX, XI)</button>
-</div>
+    <div id="menu-view">
+        <button class="quiz-btn-main" onclick="startQuiz()">🧠 Γενικό Κουίζ (Όλοι οι μύες)</button>
+        </div>
 
-<div id="game-container">
-    <button class="control-btn back-btn" onclick="showMenu()">← Πίσω στο Μενού</button>
-    <h3 id="group-title">Ομάδα</h3>
-    <div class="progress" id="progress">1 / 10</div>
-    
-    <div class="flashcard" id="card" onclick="flipCard()">
-        <div class="card-inner">
-            <div class="card-front" id="card-muscle">Μυς</div>
-            <div class="card-back" id="card-nerve">Νεύρωση</div>
+    <div id="flashcard-view">
+        <h2 id="category-title" style="color: var(--text-muted);"></h2>
+        <div class="card" onclick="flipCard()">
+            <div class="card-content" id="card-front"></div>
+            <div class="sub-text" id="card-hint">(Πάτα για απάντηση)</div>
+        </div>
+        <div class="controls">
+            <button class="ctrl-btn back-btn" onclick="showMenu()">🔙 Μενού</button>
+            <button class="ctrl-btn" onclick="prevCard()">⬅️ Προηγούμενο</button>
+            <button class="ctrl-btn" onclick="nextCard()">Επόμενο ➡️</button>
         </div>
     </div>
 
-    <div class="controls">
-        <button class="control-btn" onclick="prevCard()">Προηγούμενο</button>
-        <button class="control-btn" onclick="nextCard()">Επόμενο</button>
+    <div id="quiz-view">
+        <div id="quiz-score" style="font-size:1.5em; margin-bottom:15px; color:var(--correct)">Score: 0</div>
+        <div class="card" style="cursor: default; min-height: 150px;">
+            <div class="card-content" id="quiz-question"></div>
+            <div class="sub-text">Ποιο νεύρο νευρώνει αυτόν τον μυ;</div>
+        </div>
+        <div class="options-grid" id="quiz-options"></div>
+        <div class="controls">
+            <button class="ctrl-btn back-btn" onclick="showMenu()">🔙 Έξοδος</button>
+            <button class="ctrl-btn" id="next-quiz-btn" onclick="nextQuizQuestion()" style="display:none; background-color: var(--accent); color:black;">Επόμενη Ερώτηση ➡️</button>
+        </div>
     </div>
-</div>
 
-<script>
-    // Δεδομένα Μυών από τις εικόνες σας
-    const musclesData = {
-        facial: [
-            {m: "Πρόσθιος Ωτιαίος", n: "Οπίσθιο ωτιαίο νεύρο & κροταφικοί κλάδοι προσωπικού"},
-            {m: "Οπίσθιος Ωτιαίος", n: "Οπίσθιο ωτιαίο νεύρο & κροταφικοί κλάδοι προσωπικού"},
-            {m: "Άνω Ωτιαίος", n: "Οπίσθιο ωτιαίο νεύρο & κροταφικοί κλάδοι προσωπικού"},
-            {m: "Βυκανητής", n: "Βυκανητικοί κλάδοι του προσωπικού νεύρου"},
-            {m: "Επισκήνιος", n: "Ζυγωματικοί και κροταφικοί κλάδοι του προσωπικού"},
-            {m: "Καθελκτήρας της γωνίας του στόματος", n: "Κάτω γναθικό & βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Καθελκτήρας του κάτω χείλους", n: "Κάτω γναθικό & βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Καθελκτήρας του ρινικού διαφράγματος", n: "Ζυγωματικοί και βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Διγάστορας (Οπίσθια γαστέρα)", n: "Προσωπικό νεύρο"},
-            {m: "Πρόσθια γαστέρα μετωποϊνιακού", n: "Κροταφικοί κλάδοι του προσωπικού"},
-            {m: "Ανελκτήρας γωνίας στόματος", n: "Ζυγωματικοί και βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Ανελκτήρας άνω χείλους/πτερυγίου ρινός", n: "Ζυγωματικοί και βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Ανελκτήρας του άνω χείλους", n: "Ζυγωματικοί και βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Γενειακός", n: "Κάτω γναθικός κλάδος του προσωπικού νεύρου"},
-            {m: "Ρινικός", n: "Ζυγωματικοί και βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Ινιακή γαστέρα επικράνιου", n: "Οπίσθιοι ωτιαίοι κλάδοι του προσωπικού"},
-            {m: "Σφιγκτήρας των βλεφάρων", n: "Προσωπικό νεύρο (VII)"},
-            {m: "Σφιγκτήρας του στόματος", n: "Ζυγωματικοί, βυκανητικοί & κάτω γναθικοί κλάδοι"},
-            {m: "Πλάτυσμα", n: "Προσωπικό νεύρο"},
-            {m: "Πυραμοειδής", n: "Κροταφικοί και ζυγωματικοί κλάδοι του προσωπικού"},
-            {m: "Γελαστήριος", n: "Ζυγωματικοί και βυκανητικοί κλάδοι προσωπικού"},
-            {m: "Μυς του αναβολέα", n: "Προσωπικό νεύρο"},
-            {m: "Βελονοϋοειδής", n: "Προσωπικό νεύρο"},
-            {m: "Μείζων ζυγωματικός", n: "Ζυγωματικός και βυκανητικός κλάδος προσωπικού"},
-            {m: "Ελάσσων ζυγωματικός", n: "Ζυγωματικός και βυκανητικός κλάδος προσωπικού"}
-        ],
-        hypoglossal: [
-            {m: "Γενειογλωσσικός", n: "Υπογλώσσιο νεύρο (XII)"},
-            {m: "Υογλωσσικός", n: "Υπογλώσσιο νεύρο (XII)"},
-            {m: "Κάτω επιμήκης μυς γλώσσας", n: "Υπογλώσσιο νεύρο (XII)"},
-            {m: "Βελονογλωσσικός", n: "Υπογλώσσιο νεύρο (XII)"},
-            {m: "Άνω επιμήκης μυς γλώσσας", n: "Υπογλώσσιο νεύρο (XII)"},
-            {m: "Εγκάρσιος (της γλώσσας)", n: "Υπογλώσσιο νεύρο (XII)"},
-            {m: "Κάθετος (της γλώσσας)", n: "Υπογλώσσιο νεύρο (XII)"}
-        ],
-        trigeminal: [
-            {m: "Διγάστορας (Πρόσθια γαστέρα)", n: "Νεύρο για το γναθοϋοειδή (V3)"},
-            {m: "Πλάγιος πτερυγοειδής", n: "Κάτω γναθικό νεύρο (V3) - Πρόσθιος κλάδος"},
-            {m: "Μασητήρας", n: "Κάτω γναθικό νεύρο (V3) - Μασητήριο νεύρο"},
-            {m: "Έσω πτερυγοειδής", n: "Κάτω γναθικό νεύρο (V3) - Νεύρο προς έσω πτερυγοειδή"},
-            {m: "Γναθοϋοειδής", n: "Νεύρο προς το γναθοϋοειδές (V)"},
-            {m: "Κροταφίτης", n: "Κάτω γναθικό νεύρο (V3) - Εν τω βάθει κροταφικά"},
-            {m: "Τείνων το τύμπανο", n: "Κάτω γναθικός κλάδος τριδύμου (V3)"},
-            {m: "Τείνων το υπερώιο ιστίο", n: "Κάτω γναθικό νεύρο (V3)"}
-        ],
-        oculomotor: [
-            {m: "Ακτινωτός", n: "Παρασυμπαθητικές ίνες (III) - Βραχέα ακτινωτά"},
-            {m: "Κάτω λοξός", n: "Κοινό κινητικό νεύρο (III) - Κάτω κλάδος"},
-            {m: "Κάτω ορθός", n: "Κοινό κινητικό νεύρο (III) - Κάτω κλάδος"},
-            {m: "Ανελκτήρας άνω βλεφάρου", n: "Κοινό κινητικό νεύρο (III) - Άνω κλάδος"},
-            {m: "Έσω ορθός", n: "Κοινό κινητικό νεύρο (III) - Κάτω κλάδος"},
-            {m: "Σφιγκτήρας κόρης οφθαλμού", n: "Παρασυμπαθητικές ίνες (III)"},
-            {m: "Άνω ορθός", n: "Κοινό κινητικό νεύρο (III) - Άνω κλάδος"}
-        ],
-        vagus: [
-            {m: "Κάτω φαρυγγικός σφιγκτήρας", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Ανελκτήρας υπερώιου ιστίου", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Μέσος φαρυγγικός σφιγκτήρας", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Υπερωϊογλωσσικός", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Υπερωϊοφαρυγγικός", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Σαλπιγγοφαρυγγικός", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Άνω φαρυγγικός σφιγκτήρας", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"},
-            {m: "Σταφυλίτης", n: "Πνευμονογαστρικό (X) - Φαρυγγικό πλέγμα"}
-        ],
-        laryngeal: [
-            {m: "Πλάγιος κρικαρυταινοειδής", n: "Παλίνδρομο λαρυγγικό νεύρο"},
-            {m: "Οπίσθιος κρικαρυταινοειδής", n: "Παλίνδρομο λαρυγγικό νεύρο"},
-            {m: "Θυρεοαρυταινοειδής", n: "Παλίνδρομο λαρυγγικό νεύρο"},
-            {m: "Εγκάρσιος/Λοξός Αρυταινοειδής", n: "Παλίνδρομο λαρυγγικό νεύρο"},
-            {m: "Φωνητικός", n: "Παλίνδρομο λαρυγγικό νεύρο"}
-        ],
-        cervical: [
-            {m: "Γενειοϋοειδής", n: "Κλάδος Α1 δια του υπογλώσσιου (XII)"},
-            {m: "Επιμήκης κεφαλικός", n: "Κοιλιακοί κλάδοι αυχενικών (Α1-Α4)"},
-            {m: "Επιμήκης τραχηλικός", n: "Κοιλιακοί κλάδοι αυχενικών (Α2-Α8)"},
-            {m: "Ωμοϋοειδής", n: "Αυχενική αγκύλη"},
-            {m: "Πρόσθιος ορθός κεφαλικός", n: "Κοιλιακοί κλάδοι αυχενικών (Α1-Α2)"},
-            {m: "Έξω ορθός κεφαλικός", n: "Κοιλιακοί κλάδοι αυχενικών (Α1-Α2)"},
-            {m: "Σκαληνός (πρόσθιος)", n: "Πρόσθιοι κλάδοι αυχενικών (Α5-Α8)"},
-            {m: "Σκαληνός (μέσος)", n: "Πρόσθιοι κλάδοι αυχενικών (Α3-Α7)"},
-            {m: "Σκαληνός (οπίσθιος)", n: "Πρόσθιοι κλάδοι κατώτερων 4 αυχενικών"},
-            {m: "Στερνοϋοειδής", n: "Αυχενική αγκύλη"},
-            {m: "Στερνοθυρεοειδής", n: "Αυχενική αγκύλη"},
-            {m: "Θυρεοϋοειδής", n: "Κλάδος Α1 μέσω του υπογλώσσιου (XII)"}
-        ],
-        other: [
-            {m: "Κρικοθυρεοειδής", n: "Έξω κλάδος του άνω λαρυγγικού"},
-            {m: "Έξω ορθός", n: "Απαγωγό νεύρο (VI)"},
-            {m: "Διαστολέας κόρης οφθαλμού", n: "Συμπαθητικές ίνες (Άνω ακτινωτό γάγγλιο)"},
-            {m: "Στερνοκλειδομαστοειδής", n: "Παραπληρωματικό νεύρο (XI)"},
-            {m: "Βελονοφαρυγγικός", n: "Γλωσσοφαρυγγικό νεύρο (IX)"},
-            {m: "Υποκλείδιος", n: "Νεύρο για τον υποκλείδιο"},
-            {m: "Άνω λοξός", n: "Τροχιλιακό νεύρο (IV)"}
-        ]
-    };
+    <script>
+        // Πλήρη δεδομένα (χωρισμένα ένα-προς-ένα)
+        const anatomyData = {
+            "Θωρακικά & Μεσοπλεύρια": [
+                { m: "Διάφραγμα", n: "Φρενικό νεύρο" },
+                { m: "Έξω μεσοπλεύριος", n: "Μεσοπλεύρια νεύρα" },
+                { m: "Εσώτατος μεσοπλεύριος", n: "Μεσοπλεύρια νεύρα" },
+                { m: "Έσω μεσοπλεύριος", n: "Μεσοπλεύρια νεύρα" },
+                { m: "Ανελκτήρας των Πλευρών", n: "Οπίσθιοι κλάδοι των κατώτερων θωρακικών νεύρων" },
+                { m: "Μείζων Θωρακικός", n: "Έσω και έξω θωρακικά νεύρα" },
+                { m: "Ελάσσων Θωρακικός", n: "Έσω θωρακικό νεύρο" },
+                { m: "Πρόσθιος οδοντωτός", n: "Μακρό θωρακικό νεύρο" },
+                { m: "Κάτω οπίσθιος οδοντωτός", n: "Πρόσθιοι κλάδοι κατώτερων θωρακικών" },
+                { m: "Άνω οπίσθιος οδοντωτός", n: "Πρόσθιοι κλάδοι άνω θωρακικών" },
+                { m: "Υποπλεύριος", n: "Μεσοπλεύρια νεύρα" },
+                { m: "Εγκάρσιος Θωρακικός", n: "Μεσοπλεύρια νεύρα" },
+                { m: "Υποκλείδιος", n: "Νεύρο για τον υποκλείδιο" },
+                { m: "Πλατύς ραχιαίος", n: "Θωρακοραχιαίο νεύρο" }
+            ],
+            "Αυχένας & Πλάτη (Ραχιαίοι Κλάδοι κ.α.)": [
+                { m: "Κάτω λοξός κεφαλικός", n: "Υπινιακό νεύρο / Ραχιαίοι κλάδοι" },
+                { m: "Άνω λοξός κεφαλικός", n: "Υπινιακό νεύρο / Ραχιαίοι κλάδοι" },
+                { m: "Οπίσθιος μείζων ορθός κεφαλικός", n: "Υπινιακό νεύρο / Ραχιαίοι κλάδοι" },
+                { m: "Έλασσον οπίσθιος ορθός κεφαλικός", n: "Υπινιακό νεύρο / Ραχιαίοι κλάδοι" },
+                { m: "Ορθωτήρας των σπονδύλων", n: "Ραχιαίοι κλάδοι κάθε περιοχής" },
+                { m: "Μεσοσπονδύλιοι (αυχ/θωρ/οσφ)", n: "Ραχιαίοι κλάδοι" },
+                { m: "Μεσεγκάρσιοι (αυχ/θωρ/οσφ)", n: "Ραχιαίοι κλάδοι" },
+                { m: "Πολυσχιδής", n: "Ραχιαίοι κλάδοι" },
+                { m: "Στροφικός", n: "Ραχιαίοι κλάδοι" },
+                { m: "Ημιακανθώδης", n: "Ραχιαίοι κλάδοι αυχενικών νεύρων" },
+                { m: "Σπληνιοειδής κεφαλικός", n: "Μέσοι αυχενικοί κλάδοι" },
+                { m: "Σπληνιοειδής τραχηλικός", n: "Κατώτεροι αυχενικοί κλάδοι" },
+                { m: "Ανελκτήρας της ωμοπλάτης", n: "Ραχιαίο ωμοπλάτης & κλάδοι Α3-Α4" },
+                { m: "Μείζων ρομβοειδής", n: "Ραχιαίο νεύρο της ωμοπλάτης" },
+                { m: "Έλασσον ρομβοειδής", n: "Ραχιαίο νεύρο της ωμοπλάτης" },
+                { m: "Τραπεζοειδής", n: "Παραπληρωματικό νεύρο (XI)" }
+            ],
+            "Προσωπικό Νεύρο (VII)": [
+                { m: "Πρόσθιος Ωτιαίος", n: "Οπίσθιο ωτιαίο & κροταφικοί κλάδοι VII" },
+                { m: "Οπίσθιος Ωτιαίος", n: "Οπίσθιο ωτιαίο & κροταφικοί κλάδοι VII" },
+                { m: "Άνω Ωτιαίος", n: "Οπίσθιο ωτιαίο & κροταφικοί κλάδοι VII" },
+                { m: "Βυκανητής", n: "Βυκανητικοί κλάδοι VII" },
+                { m: "Επισκήνιος", n: "Ζυγωματικοί & κροταφικοί κλάδοι VII" },
+                { m: "Καθελκτήρας γωνίας στόματος", n: "Κάτω γναθικός & βυκανητικοί VII" },
+                { m: "Καθελκτήρας κάτω χείλους", n: "Κάτω γναθικός & βυκανητικοί VII" },
+                { m: "Καθελκτήρας ρινικού διαφράγματος", n: "Ζυγωματικοί & βυκανητικοί VII" },
+                { m: "Διγάστορας (Οπίσθια γαστέρα)", n: "Προσωπικό νεύρο (VII)" },
+                { m: "Πρόσθια γαστέρα μετωποϊνιακού", n: "Κροταφικοί κλάδοι VII" },
+                { m: "Ανελκτήρας γωνίας στόματος", n: "Ζυγωματικοί & βυκανητικοί VII" },
+                { m: "Ανελκτήρας άνω χείλους & πτερυγίου", n: "Ζυγωματικοί & βυκανητικοί VII" },
+                { m: "Ανελκτήρας άνω χείλους", n: "Ζυγωματικοί & βυκανητικοί VII" },
+                { m: "Γενειακός", n: "Κάτω γναθικός κλάδος VII" },
+                { m: "Ρινικός", n: "Ζυγωματικοί & βυκανητικοί VII" },
+                { m: "Ινιακή γαστέρα επικράνιου", n: "Οπίσθιοι ωτιαίοι κλάδοι VII" },
+                { m: "Σφιγκτήρας των βλεφάρων", n: "Προσωπικό νεύρο (VII)" },
+                { m: "Σφιγκτήρας του στόματος", n: "Ζυγωματικοί, βυκανητικοί, κατ. γναθικοί VII" },
+                { m: "Πλάτυσμα", n: "Προσωπικό νεύρο (VII)" },
+                { m: "Πυραμοειδής", n: "Κροταφικοί & ζυγωματικοί VII" },
+                { m: "Γελαστήριος", n: "Ζυγωματικοί & βυκανητικοί VII" },
+                { m: "Μυς του αναβολέα", n: "Προσωπικό νεύρο (VII)" },
+                { m: "Βελονοϋοειδής", n: "Προσωπικό νεύρο (VII)" },
+                { m: "Μείζων ζυγωματικός", n: "Ζυγωματικός & βυκανητικός VII" },
+                { m: "Ελάσσων ζυγωματικός", n: "Ζυγωματικός & βυκανητικός VII" }
+            ],
+            "Υπογλώσσιο (XII) & Γλώσσα": [
+                { m: "Γενειογλωσσικός", n: "Υπογλώσσιο νεύρο (XII)" },
+                { m: "Υογλωσσικός", n: "Υπογλώσσιο νεύρο (XII)" },
+                { m: "Βελονογλωσσικός", n: "Υπογλώσσιο νεύρο (XII)" },
+                { m: "Κάτω επιμήκης γλώσσας", n: "Υπογλώσσιο νεύρο (XII)" },
+                { m: "Άνω επιμήκης γλώσσας", n: "Υπογλώσσιο νεύρο (XII)" },
+                { m: "Εγκάρσιος γλώσσας", n: "Υπογλώσσιο νεύρο (XII)" },
+                { m: "Κάθετος γλώσσας", n: "Υπογλώσσιο νεύρο (XII)" }
+            ],
+            "Κάτω Γναθικό (V3)": [
+                { m: "Διγάστορας (Πρόσθια γαστέρα)", n: "Νεύρο για το γναθοϋοειδή (V3)" },
+                { m: "Πλάγιος πτερυγοειδής", n: "Πρόσθιος κλάδος V3" },
+                { m: "Μασητήρας", n: "Μασητήριο νεύρο (V3)" },
+                { m: "Έσω πτερυγοειδής", n: "Νεύρο προς έσω πτερυγοειδή (V3)" },
+                { m: "Γναθοϋοειδής", n: "Γναθοϋοειδές νεύρο (V3)" },
+                { m: "Κροταφίτης", n: "Εν τω βάθει κροταφικά (V3)" },
+                { m: "Τείνων το τύμπανο", n: "Κάτω γναθικό (V3)" },
+                { m: "Τείνων το υπερώιο ιστίο", n: "Κάτω γναθικό (V3)" }
+            ],
+            "Οφθαλμός (III, IV, VI)": [
+                { m: "Ακτινωτός", n: "Παρασυμπαθητικές ίνες μέσω III (Βραχέα ακτινωτά)" },
+                { m: "Σφιγκτήρας κόρης", n: "Παρασυμπαθητικές ίνες μέσω III" },
+                { m: "Διαστολέας κόρης", n: "Συμπαθητικές ίνες (Άνω ακτινωτό γάγγλιο)" },
+                { m: "Κάτω λοξός", n: "Κοινό κινητικό (III), κάτω κλάδος" },
+                { m: "Κάτω ορθός", n: "Κοινό κινητικό (III), κάτω κλάδος" },
+                { m: "Έσω ορθός", n: "Κοινό κινητικό (III), κάτω κλάδος" },
+                { m: "Άνω ορθός", n: "Κοινό κινητικό (III), άνω κλάδος" },
+                { m: "Ανελκτήρας άνω βλεφάρου", n: "Κοινό κινητικό (III), άνω κλάδος" },
+                { m: "Έξω ορθός", n: "Απαγωγό νεύρο (VI)" },
+                { m: "Άνω λοξός", n: "Τροχιλιακό νεύρο (IV)" }
+            ],
+            "Πνευμονογαστρικό (X) & Φάρυγγας": [
+                { m: "Κάτω φαρυγγικός σφιγκτήρας", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Μέσος φαρυγγικός σφιγκτήρας", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Άνω φαρυγγικός σφιγκτήρας", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Ανελκτήρας υπερώιου ιστίου", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Υπερωϊογλωσσικός", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Υπερωϊοφαρυγγικός", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Σαλπιγγοφαρυγγικός", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Σταφυλίτης", n: "Πνευμονογαστρικό (Φαρυγγικό πλέγμα)" },
+                { m: "Βελονοφαρυγγικός", n: "Γλωσσοφαρυγγικό νεύρο (IX)" }
+            ],
+            "Λάρυγγας (Παλίνδρομο & Άνω Λαρυγγικό)": [
+                { m: "Πλάγιος κρικαρυταινοειδής", n: "Παλίνδρομο λαρυγγικό" },
+                { m: "Οπίσθιος κρικαρυταινοειδής", n: "Παλίνδρομο λαρυγγικό" },
+                { m: "Θυρεοαρυταινοειδής", n: "Παλίνδρομο λαρυγγικό" },
+                { m: "Εγκάρσιος & Λοξός Αρυταινοειδής", n: "Παλίνδρομο λαρυγγικό" },
+                { m: "Φωνητικός", n: "Παλίνδρομο λαρυγγικό" },
+                { m: "Κρικοθυρεοειδής", n: "Έξω κλάδος του άνω λαρυγγικού (X)" }
+            ],
+            "Αυχενικό Πλέγμα (Α1-Α8)": [
+                { m: "Γενειοϋοειδής", n: "Κλάδος Α1 δια του υπογλώσσιου (XII)" },
+                { m: "Θυρεοϋοειδής", n: "Κλάδος Α1 δια του υπογλώσσιου (XII)" },
+                { m: "Επιμήκης κεφαλικός", n: "Κοιλιακοί κλάδοι Α1-Α4" },
+                { m: "Επιμήκης τραχηλικός", n: "Κοιλιακοί κλάδοι Α2-Α8" },
+                { m: "Ωμοϋοειδής", n: "Αυχενική αγκύλη" },
+                { m: "Στερνοϋοειδής", n: "Αυχενική αγκύλη" },
+                { m: "Στερνοθυρεοειδής", n: "Αυχενική αγκύλη" },
+                { m: "Πρόσθιος ορθός κεφαλικός", n: "Κοιλιακοί κλάδοι Α1-Α2" },
+                { m: "Έξω ορθός κεφαλικός", n: "Κοιλιακοί κλάδοι Α1-Α2" },
+                { m: "Σκαληνός (πρόσθιος)", n: "Πρόσθιοι κλάδοι Α5-Α8" },
+                { m: "Σκαληνός (μέσος)", n: "Πρόσθιοι κλάδοι Α3-Α7" },
+                { m: "Σκαληνός (οπίσθιος)", n: "Πρόσθιοι κλάδοι κατώτερων 4 αυχενικών" },
+                { m: "Στερνοκλειδομαστοειδής", n: "Παραπληρωματικό (XI)" }
+            ]
+        };
 
-    let currentGroup = [];
-    let currentIndex = 0;
+        // Λογική (ίδια με πριν)
+        let currentList = [];
+        let currentIndex = 0;
+        let isFlipped = false;
+        let quizScore = 0;
+        let correctAnswer = "";
 
-    function toggleNightMode() {
-        document.body.classList.toggle('night-mode');
-    }
+        window.onload = function() { renderMenu(); };
 
-    function startGroup(groupId) {
-        currentGroup = musclesData[groupId];
-        currentIndex = 0;
-        document.getElementById('menu').style.display = 'none';
-        document.getElementById('game-container').style.display = 'flex';
-        document.getElementById('group-title').innerText = document.querySelector(`[onclick="startGroup('${groupId}')"]`).innerText;
-        updateCard();
-    }
-
-    function showMenu() {
-        document.getElementById('menu').style.display = 'grid';
-        document.getElementById('game-container').style.display = 'none';
-    }
-
-    function updateCard() {
-        const card = document.getElementById('card');
-        card.classList.remove('flipped');
-        document.getElementById('card-muscle').innerText = currentGroup[currentIndex].m;
-        document.getElementById('card-nerve').innerText = currentGroup[currentIndex].n;
-        document.getElementById('progress').innerText = `${currentIndex + 1} / ${currentGroup.length}`;
-    }
-
-    function flipCard() {
-        document.getElementById('card').classList.toggle('flipped');
-    }
-
-    function nextCard() {
-        if (currentIndex < currentGroup.length - 1) {
-            currentIndex++;
-            updateCard();
+        function renderMenu() {
+            const menu = document.getElementById('menu-view');
+            menu.innerHTML = '<button class="quiz-btn-main" onclick="startQuiz()">🧠 Γενικό Κουίζ (Όλοι οι μύες)</button>';
+            for (let nerve in anatomyData) {
+                let btn = document.createElement('button');
+                btn.className = 'nerve-btn';
+                btn.innerText = nerve;
+                btn.onclick = () => startFlashcards(nerve);
+                menu.appendChild(btn);
+            }
         }
-    }
 
-    function prevCard() {
-        if (currentIndex > 0) {
-            currentIndex--;
-            updateCard();
+        function showMenu() {
+            document.getElementById('menu-view').style.display = 'grid';
+            document.getElementById('flashcard-view').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'none';
         }
-    }
-</script>
 
+        function startFlashcards(nerveKey) {
+            currentList = anatomyData[nerveKey];
+            currentIndex = 0;
+            isFlipped = false;
+            document.getElementById('menu-view').style.display = 'none';
+            document.getElementById('flashcard-view').style.display = 'flex';
+            document.getElementById('category-title').innerText = nerveKey;
+            showCard();
+        }
+
+        function showCard() {
+            const item = currentList[currentIndex];
+            const front = document.getElementById('card-front');
+            const hint = document.getElementById('card-hint');
+            isFlipped = false;
+            front.innerText = item.m;
+            front.style.color = "var(--text-main)";
+            hint.innerText = "(Πάτα για απάντηση)";
+            hint.style.display = "block";
+        }
+
+        function flipCard() {
+            const item = currentList[currentIndex];
+            const front = document.getElementById('card-front');
+            const hint = document.getElementById('card-hint');
+            if (!isFlipped) {
+                front.innerText = item.n;
+                front.style.color = "var(--accent)";
+                hint.innerText = "Μυς: " + item.m;
+                isFlipped = true;
+            } else { showCard(); }
+        }
+
+        function nextCard() { currentIndex = (currentIndex + 1) % currentList.length; showCard(); }
+        function prevCard() { currentIndex = (currentIndex - 1 + currentList.length) % currentList.length; showCard(); }
+
+        function startQuiz() {
+            document.getElementById('menu-view').style.display = 'none';
+            document.getElementById('quiz-view').style.display = 'flex';
+            quizScore = 0;
+            updateScore();
+            nextQuizQuestion();
+        }
+
+        function nextQuizQuestion() {
+            document.getElementById('next-quiz-btn').style.display = 'none';
+            document.getElementById('quiz-options').innerHTML = '';
+            
+            let allItems = [];
+            for (let nerve in anatomyData) {
+                anatomyData[nerve].forEach(item => {
+                    allItems.push({ muscle: item.m, nerve: nerve, detail: item.n });
+                });
+            }
+
+            let randomItem = allItems[Math.floor(Math.random() * allItems.length)];
+            correctAnswer = randomItem.nerve;
+
+            document.getElementById('quiz-question').innerText = randomItem.muscle;
+
+            let options = new Set();
+            options.add(correctAnswer);
+            const nerveKeys = Object.keys(anatomyData);
+            while(options.size < 4) {
+                let randomKey = nerveKeys[Math.floor(Math.random() * nerveKeys.length)];
+                options.add(randomKey);
+            }
+
+            let shuffledOptions = Array.from(options).sort(() => Math.random() - 0.5);
+
+            shuffledOptions.forEach(opt => {
+                let btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, opt, randomItem.detail);
+                document.getElementById('quiz-options').appendChild(btn);
+            });
+        }
+
+        function checkAnswer(btn, selected, detailText) {
+            let buttons = document.querySelectorAll('.option-btn');
+            buttons.forEach(b => b.disabled = true);
+            if (selected === correctAnswer) {
+                btn.classList.add('correct');
+                quizScore++;
+                updateScore();
+            } else {
+                btn.classList.add('wrong');
+                buttons.forEach(b => { if (b.innerText === correctAnswer) b.classList.add('correct'); });
+            }
+            let detailDiv = document.createElement('div');
+            detailDiv.style.marginTop = "15px";
+            detailDiv.style.color = "var(--text-muted)";
+            detailDiv.style.fontSize = "0.8em";
+            detailDiv.innerText = "Σωστή απάντηση: " + detailText;
+            document.getElementById('quiz-question').appendChild(detailDiv);
+            document.getElementById('next-quiz-btn').style.display = 'inline-block';
+        }
+
+        function updateScore() { document.getElementById('quiz-score').innerText = "Score: " + quizScore; }
+    </script>
 </body>
 </html>
