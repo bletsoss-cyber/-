@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Μελέτη Νεύρωσης: Θώρακας & Κοιλία</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&display=swap');
+        
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc;
+        }
+
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 200px;
+            perspective: 1000px;
+        }
+
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 1rem;
+            padding: 1.5rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+
+        .flip-card-front {
+            background-color: white;
+            color: #1e293b;
+            border: 2px solid #e2e8f0;
+        }
+
+        .flip-card-back {
+            background-color: #3b82f6;
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="p-4 md:p-8">
+
+    <div class="max-w-4xl mx-auto">
+        <header class="text-center mb-12">
+            <h1 class="text-3xl md:text-4xl font-bold text-slate-800 mb-2">Νεύρωση Μυών Θώρακα & Κοιλίας</h1>
+            <p class="text-slate-600 text-lg">Διαδραστικές Flashcards και Quiz για την Ανατομία</p>
+        </header>
+
+        <!-- Navigation Tabs -->
+        <div class="flex justify-center space-x-4 mb-8">
+            <button onclick="showSection('flashcards')" id="btn-flashcards" class="px-6 py-2 rounded-full bg-blue-600 text-white font-semibold transition shadow-md">Flashcards</button>
+            <button onclick="showSection('quiz')" id="btn-quiz" class="px-6 py-2 rounded-full bg-white text-blue-600 border border-blue-600 font-semibold transition hover:bg-blue-50">Full Quiz</button>
+        </div>
+
+        <!-- Flashcards Section -->
+        <div id="section-flashcards" class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <!-- Cards will be injected by JS -->
+        </div>
+
+        <!-- Quiz Section -->
+        <div id="section-quiz" class="hidden space-y-8">
+            <div id="quiz-container" class="space-y-6">
+                <!-- Questions will be injected by JS -->
+            </div>
+            <div class="text-center pt-8">
+                <button onclick="calculateScore()" class="bg-green-600 text-white px-10 py-4 rounded-xl font-bold text-xl hover:bg-green-700 transition shadow-lg w-full md:w-auto">
+                    Υποβολή & Έλεγχος Αποτελεσμάτων
+                </button>
+                <div id="score-display" class="mt-6 text-2xl font-bold text-slate-800"></div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const anatomyData = [
+            // Θώρακας - Επιπολής
+            { muscle: "Μείζων Θωρακικός", nerve: "Έσω και Έξω Θωρακικά Νεύρα (C5-T1)", options: ["Έσω και Έξω Θωρακικά Νεύρα", "Μακρύ Θωρακικό", "Μεσοπλεύρια Νεύρα", "Φρενικό Νεύρο"] },
+            { muscle: "Ελάσσων Θωρακικός", nerve: "Έσω Θωρακικό Νεύρο (C8-T1)", options: ["Έσω Θωρακικό Νεύρο", "Έξω Θωρακικό Νεύρο", "Μασχαλιαίο Νεύρο", "Υποπλάτιο Νεύρο"] },
+            { muscle: "Πρόσθιος Οδοντωτός", nerve: "Μακρύ Θωρακικό Νεύρο (Bell) (C5-C7)", options: ["Μακρύ Θωρακικό Νεύρο", "Θωρακορραχιαίο Νεύρο", "Μεσοπλεύρια Νεύρα", "Φρενικό Νεύρο"] },
+            
+            // Θώρακας - Αυτόχθονες (Αναπνευστικοί)
+            { muscle: "Έξω Μεσοπλεύριοι", nerve: "Μεσοπλεύρια Νεύρα (T1-T11)", options: ["Μεσοπλεύρια Νεύρα", "Φρενικό Νεύρο", "Υποπλεύριο Νεύρο", "Πρόσθιοι κλάδοι οσφυϊκών νεύρων"] },
+            { muscle: "Έσω Μεσοπλεύριοι", nerve: "Μεσοπλεύρια Νεύρα (T1-T11)", options: ["Μεσοπλεύρια Νεύρα", "Συμπαθητικό στέλεχος", "Φρενικό Νεύρο", "Πνευμονογαστρικό"] },
+            { muscle: "Ενδότατοι Μεσοπλεύριοι", nerve: "Μεσοπλεύρια Νεύρα (T1-T11)", options: ["Μεσοπλεύρια Νεύρα", "Έσω Θωρακικό Νεύρο", "Φρενικό Νεύρο", "Θωρακικό στέλεχος"] },
+            { muscle: "Εγκάρσιος Θώρακα", nerve: "Μεσοπλεύρια Νεύρα (T2-T6)", options: ["Μεσοπλεύρια Νεύρα", "Φρενικό Νεύρο", "Έσω θωρακικό", "Υποκλείδιο νεύρο"] },
+            { muscle: "Υποπλεύριοι Μύες", nerve: "Μεσοπλεύρια Νεύρα", options: ["Μεσοπλεύρια Νεύρα", "Οπίσθιοι κλάδοι νωτιαίων νεύρων", "Φρενικό Νεύρο", "Θωρακικά γάγγλια"] },
+            { muscle: "Ανελκυστήρες των Πλευρών", nerve: "Οπίσθιοι Πρωτεύοντες κλάδοι (C8-T11)", options: ["Οπίσθιοι κλάδοι νωτιαίων νεύρων", "Μεσοπλεύρια Νεύρα", "Μακρύ θωρακικό", "Εξωτερικά θωρακικά"] },
+
+            // Θώρακας - Οπίσθιοι (Εν τω βάθει στρώματα)
+            { muscle: "Οπίσθιος Άνω Οδοντωτός", nerve: "Μεσοπλεύρια Νεύρα (T2-T5)", options: ["Μεσοπλεύρια Νεύρα (T2-T5)", "Ραχιαίο νεύρο της ωμοπλάτης", "Φρενικό Νεύρο", "Έσω θωρακικό"] },
+            { muscle: "Οπίσθιος Κάτω Οδοντωτός", nerve: "Μεσοπλεύρια Νεύρα (T9-T12)", options: ["Μεσοπλεύρια Νεύρα (T9-T12)", "Υποπλεύριο νεύρο", "Οσφυϊκό πλέγμα", "Ιερό πλέγμα"] },
+            
+            // Διάφραγμα
+            { muscle: "Διάφραγμα", nerve: "Φρενικό Νεύρο (C3-C5)", options: ["Φρενικό Νεύρο", "Πνευμονογαστρικό Νεύρο", "Μεσοπλεύρια Νεύρα", "Σπλαχνικά Νεύρα"] },
+
+            // Κοιλία - Πρόσθιοι & Πλάγιοι
+            { muscle: "Ορθός Κοιλιακός", nerve: "Μεσοπλεύρια (T7-T11) & Υποπλεύριο (T12)", options: ["Μεσοπλεύρια (T7-T11) & Υποπλεύριο", "Ειλεοβουβωνικό", "Μηριαίο Νεύρο", "Φρενικό Νεύρο"] },
+            { muscle: "Έξω Λοξός Κοιλιακός", nerve: "Μεσοπλεύρια (T7-T11) & Υποπλεύριο (T12)", options: ["Μεσοπλεύρια (T7-T11) & Υποπλεύριο", "Οσφυϊκό πλέγμα", "Φρενικό", "Πυελικό νεύρο"] },
+            { muscle: "Έσω Λοξός Κοιλιακός", nerve: "Μεσοπλεύρια, Υποπλεύριο, Ειλεοϋπογάστριο & Ειλεοβουβωνικό (L1)", options: ["Μεσοπλεύρια, Υποπλεύριο, Ειλεοϋπογάστριο & Ειλεοβουβωνικό", "Μόνο Μεσοπλεύρια", "Μηρογεννητικό νεύρο", "Θυροειδές νεύρο"] },
+            { muscle: "Εγκάρσιος Κοιλιακός", nerve: "Μεσοπλεύρια, Υποπλεύριο, Ειλεοϋπογάστριο & Ειλεοβουβωνικό (L1)", options: ["Μεσοπλεύρια, Υποπλεύριο, Ειλεοϋπογάστριο & Ειλεοβουβωνικό", "Φρενικό και Υποπλεύριο", "Οσφυϊκό πλέγμα μόνο", "Έσω θωρακικό"] },
+            { muscle: "Πυραμοειδής Μυς", nerve: "Υποπλεύριο Νεύρο (T12)", options: ["Υποπλεύριο Νεύρο", "Ειλεοϋπογάστριο", "Ειλεοβουβωνικό", "Γεννητομηρικό"] },
+
+            // Κοιλία - Οπίσθιο Τοίχωμα
+            { muscle: "Τετράγωνος Οσφυϊκός", nerve: "Υποπλεύριο (T12) & Πρόσθιοι κλάδοι L1-L4", options: ["Υποπλεύριο & Πρόσθιοι κλάδοι L1-L4", "Μηριαίο Νεύρο", "Ισχιακό Νεύρο", "Μεσοπλεύρια T7-T11"] },
+            { muscle: "Μείζων Ψοΐτης", nerve: "Πρόσθιοι κλάδοι Οσφυϊκού πλέγματος (L1-L3)", options: ["Πρόσθιοι κλάδοι Οσφυϊκού πλέγματος (L1-L3)", "Μηριαίο Νεύρο", "Θυροειδές Νεύρο", "Υποπλεύριο"] },
+            { muscle: "Ψοΐτης Μικρός", nerve: "Κλάδος από το L1 νεύρο", options: ["Κλάδος από το L1 νεύρο", "Κλάδος από το L5 νεύρο", "Υποπλεύριο νεύρο", "Μηριαίο νεύρο"] },
+            { muscle: "Λαγόνιος Μυς", nerve: "Μηριαίο Νεύρο (L2, L3)", options: ["Μηριαίο Νεύρο", "Θυροειδές Νεύρο", "Ειλεοβουβωνικό", "Ιερό πλέγμα"] }
+        ];
+
+        // Initialize Sections
+        function initApp() {
+            const flashcardSection = document.getElementById('section-flashcards');
+            const quizContainer = document.getElementById('quiz-container');
+
+            anatomyData.forEach((item, index) => {
+                // Create Flashcard
+                const card = document.createElement('div');
+                card.className = 'flip-card';
+                card.innerHTML = `
+                    <div class="flip-card-inner" onclick="this.parentElement.classList.toggle('flipped')">
+                        <div class="flip-card-front font-bold text-xl uppercase tracking-wide">
+                            ${item.muscle}
+                        </div>
+                        <div class="flip-card-back italic text-lg leading-relaxed">
+                            ${item.nerve}
+                        </div>
+                    </div>
+                `;
+                flashcardSection.appendChild(card);
+
+                // Create Quiz Question
+                const questionBox = document.createElement('div');
+                questionBox.className = 'bg-white p-6 rounded-2xl border border-slate-200 shadow-sm';
+                
+                // Shuffle options
+                const shuffledOptions = [...item.options].sort(() => Math.random() - 0.5);
+                
+                questionBox.innerHTML = `
+                    <h3 class="text-lg font-bold text-slate-800 mb-4">${index + 1}. Ποιο νεύρο νευρώνει τον <span class="text-blue-600">"${item.muscle}"</span>;</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+                        ${shuffledOptions.map(opt => `
+                            <label class="flex items-center p-3 border rounded-xl cursor-pointer hover:bg-slate-50 transition">
+                                <input type="radio" name="q${index}" value="${opt}" class="w-4 h-4 text-blue-600 focus:ring-blue-500 mr-3">
+                                <span class="text-slate-700">${opt}</span>
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div id="feedback-${index}" class="hidden mt-3 font-medium"></div>
+                `;
+                quizContainer.appendChild(questionBox);
+            });
+        }
+
+        function showSection(section) {
+            const fSection = document.getElementById('section-flashcards');
+            const qSection = document.getElementById('section-quiz');
+            const btnF = document.getElementById('btn-flashcards');
+            const btnQ = document.getElementById('btn-quiz');
+
+            if (section === 'flashcards') {
+                fSection.classList.remove('hidden');
+                qSection.classList.add('hidden');
+                btnF.className = "px-6 py-2 rounded-full bg-blue-600 text-white font-semibold transition shadow-md";
+                btnQ.className = "px-6 py-2 rounded-full bg-white text-blue-600 border border-blue-600 font-semibold transition hover:bg-blue-50";
+            } else {
+                fSection.classList.add('hidden');
+                qSection.classList.remove('hidden');
+                btnQ.className = "px-6 py-2 rounded-full bg-blue-600 text-white font-semibold transition shadow-md";
+                btnF.className = "px-6 py-2 rounded-full bg-white text-blue-600 border border-blue-600 font-semibold transition hover:bg-blue-50";
+            }
+        }
+
+        function calculateScore() {
+            let score = 0;
+            anatomyData.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const feedback = document.getElementById(`feedback-${index}`);
+                feedback.classList.remove('hidden');
+                
+                if (selected && selected.value === item.nerve.split(' (')[0]) {
+                    // This comparison logic handles the split from the formal notation in the array
+                    score++;
+                    feedback.innerText = "✓ Σωστό!";
+                    feedback.className = "mt-3 font-medium text-green-600";
+                } else if (selected && item.nerve.includes(selected.value)) {
+                    // Fallback comparison for partial matches in the label
+                    score++;
+                    feedback.innerText = "✓ Σωστό!";
+                    feedback.className = "mt-3 font-medium text-green-600";
+                }
+                else {
+                    feedback.innerText = `✗ Λάθος. Η σωστή απάντηση είναι: ${item.nerve}`;
+                    feedback.className = "mt-3 font-medium text-red-600";
+                }
+            });
+
+            const scoreDisplay = document.getElementById('score-display');
+            scoreDisplay.innerHTML = `Το σκορ σου: <span class="text-blue-600">${score} / ${anatomyData.length}</span>`;
+            
+            window.scrollTo({ top: document.body.scrollHeight, behavior: 'smooth' });
+        }
+
+        window.onload = initApp;
+    </script>
+</body>
+</html>
