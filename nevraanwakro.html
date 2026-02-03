@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Νεύρωση Μυών Άνω Άκρου - Flashcards & Quiz</title>
+    <title>Νεύρωση Μυών Άνω Άκρου - Πλήρης Οδηγός</title>
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -39,6 +39,7 @@
             justify-content: center;
             margin-bottom: 20px;
             gap: 10px;
+            flex-wrap: wrap;
         }
 
         .tab-btn {
@@ -73,14 +74,14 @@
         /* Flashcards Styles */
         .flashcard-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+            gap: 15px;
             padding: 10px;
         }
 
         .flashcard {
             background-color: transparent;
-            height: 150px;
+            height: 140px;
             perspective: 1000px;
             cursor: pointer;
         }
@@ -109,10 +110,11 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            padding: 15px;
+            padding: 10px;
             box-sizing: border-box;
             border-radius: 10px;
             font-weight: bold;
+            font-size: 0.95rem;
         }
 
         .flashcard-front {
@@ -137,31 +139,34 @@
         /* Quiz Styles */
         .quiz-card {
             background: var(--card-bg);
-            padding: 20px;
+            padding: 15px;
             border-radius: 10px;
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            margin-bottom: 20px;
+            margin-bottom: 15px;
+            border-left: 5px solid var(--accent-color);
         }
 
         .question {
-            font-size: 1.1rem;
-            margin-bottom: 15px;
+            font-size: 1.05rem;
+            margin-bottom: 10px;
             color: var(--primary-color);
+            font-weight: 600;
         }
 
         .options {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 8px;
         }
 
         .option-label {
-            padding: 10px;
+            padding: 8px 12px;
             background: #f8f9fa;
             border: 1px solid #ddd;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.2s;
+            font-size: 0.95rem;
         }
 
         .option-label:hover {
@@ -178,6 +183,7 @@
             padding: 10px;
             border-radius: 5px;
             display: none;
+            font-size: 0.9rem;
         }
 
         .feedback.correct {
@@ -195,6 +201,7 @@
         .quiz-controls {
             text-align: center;
             margin-top: 20px;
+            margin-bottom: 40px;
         }
 
         .check-btn {
@@ -202,10 +209,11 @@
             color: white;
             border: none;
             padding: 12px 25px;
-            font-size: 1rem;
+            font-size: 1.1rem;
             border-radius: 5px;
             cursor: pointer;
             transition: background 0.3s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
         .check-btn:hover {
@@ -214,10 +222,18 @@
 
         .score-display {
             text-align: center;
-            font-size: 1.2rem;
+            font-size: 1.5rem;
             font-weight: bold;
             margin-top: 20px;
             color: var(--primary-color);
+        }
+        
+        .section-header {
+            background-color: #e9ecef;
+            padding: 10px;
+            border-radius: 5px;
+            margin: 20px 0 10px 0;
+            color: #444;
         }
 
         /* Footer */
@@ -226,6 +242,7 @@
             text-align: center;
             font-size: 0.9rem;
             color: #777;
+            padding-bottom: 20px;
         }
     </style>
 </head>
@@ -235,8 +252,8 @@
     <h1>Ανατομία Άνω Άκρου</h1>
     
     <div class="tabs">
-        <button class="tab-btn active" onclick="openTab('flashcards')">Flashcards</button>
-        <button class="tab-btn" onclick="openTab('quiz')">Quiz</button>
+        <button class="tab-btn active" onclick="openTab('flashcards')">Μελέτη (Flashcards)</button>
+        <button class="tab-btn" onclick="openTab('quiz')">Τεστ (Quiz)</button>
     </div>
 
     <!-- FLASHCARDS SECTION -->
@@ -244,100 +261,51 @@
         <h2>Κάρτες Μνήμης: Νεύρωση</h2>
         <p class="instruction-text">Κάντε κλικ σε μια κάρτα για να δείτε την απάντηση.</p>
 
-        <h3>Ωμική Ζώνη</h3>
+        <h3 class="section-header">Ωμική Ζώνη</h3>
         <div class="flashcard-grid">
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Δελτοειδής</div>
-                    <div class="flashcard-back">Μασχαλιαίο Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Υπερακάνθιος & Υπακάνθιος</div>
-                    <div class="flashcard-back">Υπερπλάτιο Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Ελάσσων Στρογγύλος</div>
-                    <div class="flashcard-back">Μασχαλιαίο Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Υποπλάτιος</div>
-                    <div class="flashcard-back">Άνω & Κάτω Υποπλάτιο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Πρόσθιος Οδοντωτός</div>
-                    <div class="flashcard-back">Μακρό Θωρακικό Νεύρο</div>
-                </div>
-            </div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Δελτοειδής</div><div class="flashcard-back">Μασχαλιαίο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Υπερακάνθιος</div><div class="flashcard-back">Υπερπλάτιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Υπακάνθιος</div><div class="flashcard-back">Υπερπλάτιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Ελάσσων Στρογγύλος</div><div class="flashcard-back">Μασχαλιαίο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Μείζων Στρογγύλος</div><div class="flashcard-back">Κάτω Υποπλάτιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Υποπλάτιος</div><div class="flashcard-back">Άνω & Κάτω Υποπλάτιο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Πρόσθιος Οδοντωτός</div><div class="flashcard-back">Μακρό Θωρακικό Νεύρο</div></div></div>
         </div>
 
-        <h3>Βραχίονας</h3>
+        <h3 class="section-header">Βραχίονας</h3>
         <div class="flashcard-grid">
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Δικέφαλος Βραχιονίος</div>
-                    <div class="flashcard-back">Μυοδερματικό Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Κορακοβραχιονίος & Πρόσθιος Βραχιονίος</div>
-                    <div class="flashcard-back">Μυοδερματικό Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Τρικέφαλος Βραχιονίος</div>
-                    <div class="flashcard-back">Κερκιδικό Νεύρο</div>
-                </div>
-            </div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Δικέφαλος Βραχιονίος</div><div class="flashcard-back">Μυοδερματικό Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Κορακοβραχιονίος</div><div class="flashcard-back">Μυοδερματικό Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Πρόσθιος Βραχιονίος</div><div class="flashcard-back">Μυοδερματικό Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Τρικέφαλος Βραχιονίος</div><div class="flashcard-back">Κερκιδικό Νεύρο</div></div></div>
         </div>
 
-        <h3>Αντιβράχιο & Χέρι</h3>
+        <h3 class="section-header">Αντιβράχιο</h3>
         <div class="flashcard-grid">
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Πρόσθιοι Μύες Αντιβραχίου (Οι περισσότεροι)</div>
-                    <div class="flashcard-back">Μέσο Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Καμπτήρας του Καρπού (Ωλένιος) & 1/2 Βαθύς Καμπτήρας</div>
-                    <div class="flashcard-back">Ωλένιο Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Οπίσθιοι Μύες Αντιβραχίου (Εκτείνοντες)</div>
-                    <div class="flashcard-back">Κερκιδικό Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Μύες Παλάμης (Οι περισσότεροι)</div>
-                    <div class="flashcard-back">Ωλένιο Νεύρο</div>
-                </div>
-            </div>
-            <div class="flashcard" onclick="flipCard(this)">
-                <div class="flashcard-inner">
-                    <div class="flashcard-front">Θέναρ (Αντίχειρας) & 1ος/2ος Ελμινθοειδής</div>
-                    <div class="flashcard-back">Μέσο Νεύρο</div>
-                </div>
-            </div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Πρηνιστής Στρογγύλος</div><div class="flashcard-back">Μέσο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Κερκιδικός Καμπτήρας Καρπού</div><div class="flashcard-back">Μέσο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Μακρός Παλαμικός</div><div class="flashcard-back">Μέσο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Ωλένιος Καμπτήρας Καρπού</div><div class="flashcard-back">Ωλένιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Εν τω βάθει Καμπτήρας (Έσω μισό)</div><div class="flashcard-back">Ωλένιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Εν τω βάθει Καμπτήρας (Έξω μισό)</div><div class="flashcard-back">Μέσο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Βραχιονοκερκιδικός</div><div class="flashcard-back">Κερκιδικό Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Εκτείνοντες (Οπίσθιοι)</div><div class="flashcard-back">Κερκιδικό Νεύρο</div></div></div>
+        </div>
+        
+        <h3 class="section-header">Άκρο Χέρι</h3>
+        <div class="flashcard-grid">
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Μύες Θέναρος (Απαγωγός/Καμπτήρας)</div><div class="flashcard-back">Μέσο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Προσαγωγός Αντίχειρα</div><div class="flashcard-back">Ωλένιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Μύες Οπισθέναρος (Μικρού δακτύλου)</div><div class="flashcard-back">Ωλένιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">1ος & 2ος Ελμινθοειδής</div><div class="flashcard-back">Μέσο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">3ος & 4ος Ελμινθοειδής</div><div class="flashcard-back">Ωλένιο Νεύρο</div></div></div>
+            <div class="flashcard" onclick="flipCard(this)"><div class="flashcard-inner"><div class="flashcard-front">Μεσοόστεοι (Ραχιαίοι & Παλαμιαίοι)</div><div class="flashcard-back">Ωλένιο Νεύρο</div></div></div>
         </div>
     </div>
 
     <!-- QUIZ SECTION -->
     <div id="quiz" class="tab-content">
-        <h2>Κουίζ Γνώσεων</h2>
+        <h2>Κουίζ Γνώσεων (Αναλυτικό)</h2>
         <div id="quiz-container">
             <!-- Questions generated by JS -->
         </div>
@@ -349,7 +317,7 @@
 </div>
 
 <footer>
-    Δημιουργήθηκε για εκπαιδευτικούς σκοπούς - Ανατομία Άνω Άκρου
+    Εκπαιδευτικό υλικό Ανατομίας - Άνω Άκρο
 </footer>
 
 <script>
@@ -370,38 +338,34 @@
         card.classList.toggle('flipped');
     }
 
-    // Quiz Logic
+    // Updated and Expanded Questions List
     const questions = [
-        {
-            id: 1,
-            text: "Ποιο νεύρο νευρώνει αποκλειστικά τους εκτείνοντες μύες του αντιβραχίου;",
-            options: ["Μέσο Νεύρο", "Κερκιδικό Νεύρο", "Ωλένιο Νεύρο", "Μυοδερματικό Νεύρο"],
-            correct: 1 // Index 1 = Κερκιδικό
-        },
-        {
-            id: 2,
-            text: "Ποιο νεύρο περνάει μέσα από τον σωλήνα του καρπού;",
-            options: ["Ωλένιο Νεύρο", "Κερκιδικό Νεύρο", "Μέσο Νεύρο", "Μασχαλιαίο Νεύρο"],
-            correct: 2 // Index 2 = Μέσο
-        },
-        {
-            id: 3,
-            text: "Σε βλάβη ποιου νεύρου παρατηρείται το 'Πτώση Καρπού' (Wrist Drop);",
-            options: ["Κερκιδικού", "Μέσου", "Ωλένιου", "Μυοδερματικού"],
-            correct: 0 // Index 0 = Κερκιδικού
-        },
-        {
-            id: 4,
-            text: "Ποιο νεύρο νευρώνει τον Δικέφαλο Βραχιόνιο;",
-            options: ["Μασχαλιαίο", "Μυοδερματικό", "Μέσο", "Κερκιδικό"],
-            correct: 1 // Index 1 = Μυοδερματικό
-        },
-        {
-            id: 5,
-            text: "Ποιο νεύρο νευρώνει τους περισσότερους μικρούς μύες του χεριού (παλάμη);",
-            options: ["Μέσο", "Κερκιδικό", "Ωλένιο", "Μασχαλιαίο"],
-            correct: 2 // Index 2 = Ωλένιο
-        }
+        // Ωμική Ζώνη
+        { text: "Ποιο νεύρο νευρώνει τον Δελτοειδή;", options: ["Μασχαλιαίο", "Κερκιδικό", "Υπερπλάτιο", "Μυοδερματικό"], correct: 0 },
+        { text: "Ποιο νεύρο νευρώνει τον Υπερακάνθιο;", options: ["Μασχαλιαίο", "Υπερπλάτιο", "Ραχιαίο της Ωμοπλάτης", "Μακρό Θωρακικό"], correct: 1 },
+        { text: "Ποιο νεύρο νευρώνει τον Υπακάνθιο;", options: ["Υπερπλάτιο", "Μασχαλιαίο", "Υποπλάτιο", "Κερκιδικό"], correct: 0 },
+        { text: "Ποιο νεύρο νευρώνει τον Ελάσσονα Στρογγύλο;", options: ["Κάτω Υποπλάτιο", "Μασχαλιαίο", "Κερκιδικό", "Μέσο"], correct: 1 },
+        { text: "Ποιο νεύρο νευρώνει τον Μείζονα Στρογγύλο;", options: ["Μασχαλιαίο", "Άνω Υποπλάτιο", "Κάτω Υποπλάτιο", "Θωρακοραχιαίο"], correct: 2 },
+        { text: "Ποιο νεύρο νευρώνει τον Υποπλάτιο;", options: ["Μακρό Θωρακικό", "Άνω & Κάτω Υποπλάτιο", "Υπερπλάτιο", "Μασχαλιαίο"], correct: 1 },
+        { text: "Ποιο νεύρο νευρώνει τον Πρόσθιο Οδοντωτό;", options: ["Μακρό Θωρακικό", "Ραχιαίο της Ωμοπλάτης", "Θωρακοραχιαίο", "Μασχαλιαίο"], correct: 0 },
+        
+        // Βραχίονας
+        { text: "Ποιο νεύρο νευρώνει τον Δικέφαλο Βραχιονίο;", options: ["Κερκιδικό", "Μέσο", "Μυοδερματικό", "Ωλένιο"], correct: 2 },
+        { text: "Ποιο νεύρο νευρώνει τον Κορακοβραχιονίο;", options: ["Μυοδερματικό", "Μασχαλιαίο", "Μέσο", "Κερκιδικό"], correct: 0 },
+        { text: "Ποιο νεύρο νευρώνει τον Πρόσθιο Βραχιονίο;", options: ["Μέσο", "Ωλένιο", "Κερκιδικό", "Μυοδερματικό"], correct: 3 },
+        { text: "Ποιο νεύρο νευρώνει τον Τρικέφαλο Βραχιονίο;", options: ["Μασχαλιαίο", "Κερκιδικό", "Ωλένιο", "Μυοδερματικό"], correct: 1 },
+        
+        // Αντιβράχιο
+        { text: "Ποιο νεύρο νευρώνει τον Βραχιονοκερκιδικό;", options: ["Μυοδερματικό", "Μέσο", "Κερκιδικό", "Ωλένιο"], correct: 2 },
+        { text: "Ποιο νεύρο νευρώνει τον Πρηνιστή Στρογγύλο;", options: ["Μέσο", "Κερκιδικό", "Ωλένιο", "Μυοδερματικό"], correct: 0 },
+        { text: "Ποιο νεύρο νευρώνει τον Κερκιδικό Καμπτήρα του Καρπού;", options: ["Κερκιδικό", "Μέσο", "Ωλένιο", "Πρόσθιο Μεσοόστεο"], correct: 1 },
+        { text: "Ποιο νεύρο νευρώνει τον Ωλένιο Καμπτήρα του Καρπού;", options: ["Ωλένιο", "Μέσο", "Κερκιδικό", "Μασχαλιαίο"], correct: 0 },
+        { text: "Ποιο νεύρο νευρώνει τον Κοινό Εκτείνοντα των Δακτύλων;", options: ["Μέσο", "Ωλένιο", "Κερκιδικό", "Μυοδερματικό"], correct: 2 },
+        
+        // Χέρι
+        { text: "Ποιο νεύρο νευρώνει τον Βραχύ Απαγωγό του Αντίχειρα (Θέναρ);", options: ["Μέσο", "Ωλένιο", "Κερκιδικό", "Μασχαλιαίο"], correct: 0 },
+        { text: "Ποιο νεύρο νευρώνει τον Προσαγωγό του Αντίχειρα;", options: ["Μέσο", "Ωλένιο", "Κερκιδικό", "Μυοδερματικό"], correct: 1 },
+        { text: "Ποιο νεύρο νευρώνει τους Ραχιαίους Μεσοόστεους;", options: ["Κερκιδικό", "Μέσο", "Ωλένιο", "Πρόσθιο Μεσοόστεο"], correct: 2 }
     ];
 
     function renderQuiz() {
@@ -429,12 +393,14 @@
 
     function submitQuiz() {
         let score = 0;
+        let answered = 0;
         
         questions.forEach((q, index) => {
             const selected = document.querySelector(`input[name="q${index}"]:checked`);
             const feedbackEl = document.getElementById(`feedback-${index}`);
             
             if (selected) {
+                answered++;
                 const answer = parseInt(selected.value);
                 if (answer === q.correct) {
                     score++;
