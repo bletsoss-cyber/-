@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Νεύρωση Μυών Άνω Άκρου - Flashcards & Quiz</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        h1, h2 {
+            text-align: center;
+            color: var(--primary-color);
+        }
+
+        /* Tabs Navigation */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            gap: 10px;
+        }
+
+        .tab-btn {
+            padding: 10px 20px;
+            border: none;
+            background-color: #ddd;
+            cursor: pointer;
+            border-radius: 5px;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        .tab-btn.active {
+            background-color: var(--accent-color);
+            color: white;
+        }
+
+        .tab-content {
+            display: none;
+            animation: fadeIn 0.5s;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        /* Flashcards Styles */
+        .flashcard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 10px;
+        }
+
+        .flashcard {
+            background-color: transparent;
+            height: 150px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+
+        .flashcard-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            border-radius: 10px;
+        }
+
+        .flashcard.flipped .flashcard-inner {
+            transform: rotateY(180deg);
+        }
+
+        .flashcard-front, .flashcard-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            box-sizing: border-box;
+            border-radius: 10px;
+            font-weight: bold;
+        }
+
+        .flashcard-front {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--accent-color);
+        }
+
+        .flashcard-back {
+            background-color: var(--accent-color);
+            color: white;
+            transform: rotateY(180deg);
+        }
+
+        .instruction-text {
+            text-align: center;
+            color: #666;
+            margin-bottom: 15px;
+            font-style: italic;
+        }
+
+        /* Quiz Styles */
+        .quiz-card {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .question {
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .option-label {
+            padding: 10px;
+            background: #f8f9fa;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.2s;
+        }
+
+        .option-label:hover {
+            background: #e9ecef;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+        }
+
+        .feedback.correct {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+
+        .feedback.incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
+
+        .quiz-controls {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .check-btn {
+            background-color: var(--success-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .check-btn:hover {
+            background-color: #219150;
+        }
+
+        .score-display {
+            text-align: center;
+            font-size: 1.2rem;
+            font-weight: bold;
+            margin-top: 20px;
+            color: var(--primary-color);
+        }
+
+        /* Footer */
+        footer {
+            margin-top: 40px;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Ανατομία Άνω Άκρου</h1>
+    
+    <div class="tabs">
+        <button class="tab-btn active" onclick="openTab('flashcards')">Flashcards</button>
+        <button class="tab-btn" onclick="openTab('quiz')">Quiz</button>
+    </div>
+
+    <!-- FLASHCARDS SECTION -->
+    <div id="flashcards" class="tab-content active">
+        <h2>Κάρτες Μνήμης: Νεύρωση</h2>
+        <p class="instruction-text">Κάντε κλικ σε μια κάρτα για να δείτε την απάντηση.</p>
+
+        <h3>Ωμική Ζώνη</h3>
+        <div class="flashcard-grid">
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Δελτοειδής</div>
+                    <div class="flashcard-back">Μασχαλιαίο Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Υπερακάνθιος & Υπακάνθιος</div>
+                    <div class="flashcard-back">Υπερπλάτιο Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Ελάσσων Στρογγύλος</div>
+                    <div class="flashcard-back">Μασχαλιαίο Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Υποπλάτιος</div>
+                    <div class="flashcard-back">Άνω & Κάτω Υποπλάτιο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Πρόσθιος Οδοντωτός</div>
+                    <div class="flashcard-back">Μακρό Θωρακικό Νεύρο</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Βραχίονας</h3>
+        <div class="flashcard-grid">
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Δικέφαλος Βραχιονίος</div>
+                    <div class="flashcard-back">Μυοδερματικό Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Κορακοβραχιονίος & Πρόσθιος Βραχιονίος</div>
+                    <div class="flashcard-back">Μυοδερματικό Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Τρικέφαλος Βραχιονίος</div>
+                    <div class="flashcard-back">Κερκιδικό Νεύρο</div>
+                </div>
+            </div>
+        </div>
+
+        <h3>Αντιβράχιο & Χέρι</h3>
+        <div class="flashcard-grid">
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Πρόσθιοι Μύες Αντιβραχίου (Οι περισσότεροι)</div>
+                    <div class="flashcard-back">Μέσο Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Καμπτήρας του Καρπού (Ωλένιος) & 1/2 Βαθύς Καμπτήρας</div>
+                    <div class="flashcard-back">Ωλένιο Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Οπίσθιοι Μύες Αντιβραχίου (Εκτείνοντες)</div>
+                    <div class="flashcard-back">Κερκιδικό Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Μύες Παλάμης (Οι περισσότεροι)</div>
+                    <div class="flashcard-back">Ωλένιο Νεύρο</div>
+                </div>
+            </div>
+            <div class="flashcard" onclick="flipCard(this)">
+                <div class="flashcard-inner">
+                    <div class="flashcard-front">Θέναρ (Αντίχειρας) & 1ος/2ος Ελμινθοειδής</div>
+                    <div class="flashcard-back">Μέσο Νεύρο</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- QUIZ SECTION -->
+    <div id="quiz" class="tab-content">
+        <h2>Κουίζ Γνώσεων</h2>
+        <div id="quiz-container">
+            <!-- Questions generated by JS -->
+        </div>
+        <div class="quiz-controls">
+            <button class="check-btn" onclick="submitQuiz()">Υποβολή Απαντήσεων</button>
+        </div>
+        <div id="score" class="score-display"></div>
+    </div>
+</div>
+
+<footer>
+    Δημιουργήθηκε για εκπαιδευτικούς σκοπούς - Ανατομία Άνω Άκρου
+</footer>
+
+<script>
+    // Tab Logic
+    function openTab(tabName) {
+        const contents = document.getElementsByClassName('tab-content');
+        const buttons = document.getElementsByClassName('tab-btn');
+        
+        for (let content of contents) content.classList.remove('active');
+        for (let btn of buttons) btn.classList.remove('active');
+
+        document.getElementById(tabName).classList.add('active');
+        event.currentTarget.classList.add('active');
+    }
+
+    // Flashcard Logic
+    function flipCard(card) {
+        card.classList.toggle('flipped');
+    }
+
+    // Quiz Logic
+    const questions = [
+        {
+            id: 1,
+            text: "Ποιο νεύρο νευρώνει αποκλειστικά τους εκτείνοντες μύες του αντιβραχίου;",
+            options: ["Μέσο Νεύρο", "Κερκιδικό Νεύρο", "Ωλένιο Νεύρο", "Μυοδερματικό Νεύρο"],
+            correct: 1 // Index 1 = Κερκιδικό
+        },
+        {
+            id: 2,
+            text: "Ποιο νεύρο περνάει μέσα από τον σωλήνα του καρπού;",
+            options: ["Ωλένιο Νεύρο", "Κερκιδικό Νεύρο", "Μέσο Νεύρο", "Μασχαλιαίο Νεύρο"],
+            correct: 2 // Index 2 = Μέσο
+        },
+        {
+            id: 3,
+            text: "Σε βλάβη ποιου νεύρου παρατηρείται το 'Πτώση Καρπού' (Wrist Drop);",
+            options: ["Κερκιδικού", "Μέσου", "Ωλένιου", "Μυοδερματικού"],
+            correct: 0 // Index 0 = Κερκιδικού
+        },
+        {
+            id: 4,
+            text: "Ποιο νεύρο νευρώνει τον Δικέφαλο Βραχιόνιο;",
+            options: ["Μασχαλιαίο", "Μυοδερματικό", "Μέσο", "Κερκιδικό"],
+            correct: 1 // Index 1 = Μυοδερματικό
+        },
+        {
+            id: 5,
+            text: "Ποιο νεύρο νευρώνει τους περισσότερους μικρούς μύες του χεριού (παλάμη);",
+            options: ["Μέσο", "Κερκιδικό", "Ωλένιο", "Μασχαλιαίο"],
+            correct: 2 // Index 2 = Ωλένιο
+        }
+    ];
+
+    function renderQuiz() {
+        const container = document.getElementById('quiz-container');
+        let html = '';
+
+        questions.forEach((q, index) => {
+            html += `
+                <div class="quiz-card" id="q-card-${index}">
+                    <div class="question"><strong>${index + 1}.</strong> ${q.text}</div>
+                    <div class="options">
+                        ${q.options.map((opt, i) => `
+                            <label class="option-label">
+                                <input type="radio" name="q${index}" value="${i}"> ${opt}
+                            </label>
+                        `).join('')}
+                    </div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                </div>
+            `;
+        });
+
+        container.innerHTML = html;
+    }
+
+    function submitQuiz() {
+        let score = 0;
+        
+        questions.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const feedbackEl = document.getElementById(`feedback-${index}`);
+            
+            if (selected) {
+                const answer = parseInt(selected.value);
+                if (answer === q.correct) {
+                    score++;
+                    feedbackEl.textContent = "Σωστά!";
+                    feedbackEl.className = "feedback correct";
+                } else {
+                    feedbackEl.textContent = `Λάθος. Η σωστή απάντηση είναι: ${q.options[q.correct]}`;
+                    feedbackEl.className = "feedback incorrect";
+                }
+            } else {
+                feedbackEl.textContent = "Δεν δόθηκε απάντηση.";
+                feedbackEl.className = "feedback incorrect";
+            }
+        });
+
+        const scoreEl = document.getElementById('score');
+        scoreEl.textContent = `Σκορ: ${score} / ${questions.length}`;
+        
+        if (score === questions.length) {
+            scoreEl.style.color = "green";
+        } else if (score < questions.length / 2) {
+            scoreEl.style.color = "red";
+        } else {
+            scoreEl.style.color = "orange";
+        }
+    }
+
+    // Initialize
+    window.onload = renderQuiz;
+</script>
+
+</body>
+</html>
