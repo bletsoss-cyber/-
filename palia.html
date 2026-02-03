@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κουίζ Ανατομίας - Επανάληψη</title>
+    <style>
+        :root {
+            --primary: #3b82f6; /* Modern Blue */
+            --primary-dark: #2563eb;
+            --success: #10b981; /* Emerald Green */
+            --success-bg: #d1fae5;
+            --error: #ef4444; /* Red */
+            --error-bg: #fee2e2;
+            --bg: #f8fafc; /* Slate 50 */
+            --card: #ffffff;
+            --text-main: #1e293b; /* Slate 800 */
+            --text-muted: #64748b; /* Slate 500 */
+            --border: #e2e8f0;
+        }
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: system-ui, -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text-main);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 700px;
+            background: var(--card);
+            border-radius: 16px;
+            box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 600px; /* Σταθερό ύψος για να μην 'χοροπηδάει' */
+            position: relative;
+        }
+
+        /* Header Area */
+        header {
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            padding: 25px 30px;
+            text-align: center;
+            position: relative;
+        }
+
+        h1 { margin: 0; font-size: 1.6rem; font-weight: 700; letter-spacing: -0.025em; }
+        .subtitle { font-size: 0.95rem; opacity: 0.9; margin-top: 6px; font-weight: 300; }
+
+        /* Progress Bar */
+        .progress-track {
+            width: 100%;
+            height: 6px;
+            background-color: #e2e8f0;
+        }
+        .progress-fill {
+            height: 100%;
+            background-color: var(--success);
+            width: 0%;
+            transition: width 0.4s ease-out;
+        }
+
+        /* Main Content */
+        .content {
+            padding: 30px;
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            overflow-y: auto;
+        }
+
+        /* Intro Screen */
+        #intro-screen {
+            text-align: center;
+            padding: 40px 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+        }
+        .intro-icon { 
+            font-size: 5rem; 
+            margin-bottom: 25px; 
+            background: #eff6ff;
+            width: 120px;
+            height: 120px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+        }
+
+        /* Question Layout */
+        .question-meta {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .question-text {
+            font-size: 1.35rem;
+            font-weight: 700;
+            margin-bottom: 25px;
+            line-height: 1.4;
+            color: var(--text-main);
+        }
+
+        .options-grid {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .option-btn {
+            padding: 18px 20px;
+            border: 2px solid var(--border);
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            text-align: left;
+            font-size: 1.05rem;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+            color: var(--text-main);
+            position: relative;
+            outline: none;
+        }
+
+        .option-btn:hover:not(:disabled) {
+            border-color: var(--primary);
+            background-color: #f0f9ff;
+            transform: translateY(-1px);
+        }
+
+        .option-btn:active:not(:disabled) {
+            transform: translateY(0);
+        }
+
+        /* States */
+        .option-btn.correct {
+            background-color: var(--success-bg);
+            border-color: var(--success);
+            color: #064e3b;
+            font-weight: 600;
+        }
+        
+        .option-btn.wrong {
+            background-color: var(--error-bg);
+            border-color: var(--error);
+            color: #7f1d1d;
+            opacity: 0.8;
+        }
+        
+        .option-btn.correct::after {
+            content: "✓";
+            position: absolute;
+            right: 20px;
+            font-weight: bold;
+        }
+
+        .option-btn.wrong::after {
+            content: "✕";
+            position: absolute;
+            right: 20px;
+            font-weight: bold;
+        }
+
+        .option-btn:disabled {
+            cursor: default;
+            pointer-events: none;
+        }
+
+        /* Explanation Box */
+        .explanation {
+            margin-top: 25px;
+            padding: 20px;
+            background-color: #f1f5f9;
+            border-radius: 10px;
+            border-left: 5px solid var(--primary);
+            font-size: 1rem;
+            line-height: 1.6;
+            display: none; /* Hidden by default */
+            animation: fadeIn 0.4s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Bottom Navigation Bar */
+        .nav-bar {
+            padding: 20px 30px;
+            background: white;
+            border-top: 1px solid var(--border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: auto; /* Push to bottom */
+        }
+
+        .btn {
+            background-color: var(--primary);
+            color: white;
+            border: none;
+            padding: 12px 28px;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            box-shadow: 0 4px 6px -1px rgba(59, 130, 246, 0.3);
+        }
+
+        .btn:hover:not(:disabled) {
+            background-color: var(--primary-dark);
+            box-shadow: 0 6px 8px -1px rgba(59, 130, 246, 0.4);
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            background-color: #cbd5e1;
+            cursor: not-allowed;
+            box-shadow: none;
+            transform: none;
+        }
+
+        .btn-secondary {
+            background-color: white;
+            color: var(--text-muted);
+            border: 2px solid var(--border);
+            box-shadow: none;
+        }
+        
+        .btn-secondary:hover:not(:disabled) {
+            background-color: #f8fafc;
+            border-color: var(--text-muted);
+            color: var(--text-main);
+            box-shadow: none;
+        }
+
+        /* Results Screen */
+        #results-screen {
+            text-align: center;
+            padding: 40px;
+            display: none;
+        }
+        
+        .score-circle {
+            width: 140px;
+            height: 140px;
+            background: white;
+            border: 8px solid var(--primary);
+            border-radius: 50%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            margin: 0 auto 30px;
+            color: var(--primary);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+        }
+        .score-val { font-size: 3rem; font-weight: 800; line-height: 1; }
+        .score-label { font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 1px; margin-top: 5px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Ανατομία - Κουίζ</h1>
+        <div class="subtitle">Ερωτήσεις Πολλαπλής Επιλογής</div>
+    </header>
+    
+    <div class="progress-track">
+        <div class="progress-fill" id="progress-bar"></div>
+    </div>
+
+    <!-- Intro Screen -->
+    <div id="intro-screen">
+        <div class="intro-icon">🫀</div>
+        <h2 style="margin-bottom: 10px;">Καλωσήρθες!</h2>
+        <p style="color: var(--text-muted); margin-bottom: 30px;">Τεστ γνώσεων βασισμένο στα θέματα που ανέβασες.<br>Περιλαμβάνει <strong>18 ερωτήσεις</strong>.</p>
+        <button class="btn" onclick="startQuiz()">
+            Έναρξη Κουίζ ➔
+        </button>
+    </div>
+
+    <!-- Main Quiz Area -->
+    <div id="quiz-screen" style="display: none; height: 100%; flex-direction: column; flex-grow: 1;">
+        <div class="content">
+            <div class="question-meta">
+                <span id="q-counter">Ερώτηση 1</span>
+                <span id="status-badge" style="font-size: 0.8rem; background: #e2e8f0; padding: 4px 10px; border-radius: 20px;">Σε εξέλιξη</span>
+            </div>
+            
+            <div class="question-text" id="question-text">
+                Φόρτωση ερώτησης...
+            </div>
+
+            <div class="options-grid" id="options-container">
+                <!-- Options injected via JS -->
+            </div>
+            
+            <div class="explanation" id="explanation-box">
+                <!-- Explanation injected via JS -->
+            </div>
+        </div>
+
+        <!-- Fixed Bottom Navigation -->
+        <div class="nav-bar">
+            <button class="btn btn-secondary" id="prev-btn" onclick="prevQuestion()">← Προηγούμενο</button>
+            <button class="btn" id="next-btn" onclick="nextQuestion()" disabled>Επόμενο →</button>
+        </div>
+    </div>
+
+    <!-- Results Screen -->
+    <div id="results-screen">
+        <div class="score-circle">
+            <span class="score-val" id="final-score">0%</span>
+            <span class="score-label">Επιτυχια</span>
+        </div>
+        <h2 id="feedback-title" style="margin-bottom: 10px;">Ολοκληρώθηκε!</h2>
+        <p id="feedback-text" style="color: var(--text-muted); margin-bottom: 30px;">Δείτε τα αποτελέσματά σας.</p>
+        <div style="display: flex; gap: 15px; justify-content: center;">
+            <button class="btn btn-secondary" onclick="startQuiz()">Επανάληψη</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const questionsDB = [
+        {
+            q: "Η άνω μεσεντέρια αρτηρία χορηγεί:",
+            options: ["Την άνω αιμορροϊδική αρτηρία", "Την σπληνική αρτηρία", "Την αριστερή κολική αρτηρία", "Την κάτω παγκρεατοδωδεκαδακτυλική αρτηρία"],
+            correct: 3,
+            explanation: "Η Κάτω Παγκρεατοδωδεκαδακτυλική είναι ο πρώτος κλάδος της Άνω Μεσεντέριας. Η σπληνική ανήκει στον Κοιλιακό Τρίποδα."
+        },
+        {
+            q: "Η πρόσθια κνημιαία αρτηρία είναι κλάδος της:",
+            options: ["Μηριαίας αρτηρίας", "Ιγνυακής αρτηρίας", "Έσω λαγόνιας αρτηρίας", "Ραχιαίας του ποδιού αρτηρία"],
+            correct: 1,
+            explanation: "Η ιγνυακή αρτηρία διχάζεται σε πρόσθια και οπίσθια κνημιαία αρτηρία στο κάτω χείλος του ιγνυακού μυός."
+        },
+        {
+            q: "Μια από τις αρτηρίες είναι τοιχικός κλάδος της κοιλιακής αορτής:",
+            options: ["Η νεφρική", "Η σπληνική αρτηρία", "Η κάτω φρενική", "Η αριστερή γαστρική αρτηρία"],
+            correct: 2,
+            explanation: "Η κάτω φρενική αιματώνει το διάφραγμα (τοίχωμα), άρα είναι τοιχικός κλάδος. Οι άλλες είναι σπλαχνικοί κλάδοι."
+        },
+        {
+            q: "Ποιο νεύρο δεν είναι κλάδος του προσωπικού;",
+            options: ["Ζυγωματικό νεύρο", "Κροταφικό νεύρο", "Τραχηλικό νεύρο", "Οφθαλμικό νεύρο"],
+            correct: 3,
+            explanation: "Το Οφθαλμικό νεύρο (V1) είναι κλάδος του Τριδύμου, όχι του Προσωπικού."
+        },
+        {
+            q: "Σχετικά με το σύστημα της πυλαίας φλέβας ΔΕΝ ισχύει:",
+            options: ["Οι παρομφάλιες φλέβες εκβάλλουν στην πυλαία", "Η χολοκυστική φλέβα εκβάλλει στην άνω μεσεντέρια", "Σχηματίζεται από τη συμβολή της σπληνικής και άνω μεσεντέριας", "Η στεφανιαία φλέβα του στομάχου εκβάλλει στην πυλαία"],
+            correct: 1,
+            explanation: "Η χολοκυστική φλέβα εκβάλλει συνήθως στον δεξιό κλάδο της Πυλαίας, όχι στην Άνω Μεσεντέρια."
+        },
+        {
+            q: "Ο μείζων θωρακικός πόρος διέρχεται:",
+            options: ["Από το τρήμα της κάτω κοίλης φλέβας", "Από τη στερνοπλευρική σχισμή", "Από το οισοφαγικό τρήμα", "Από το αορτικό τρήμα του διαφράγματος"],
+            correct: 3,
+            explanation: "Εισέρχεται στον θώρακα μέσω του Αορτικού τρήματος (Θ12)."
+        },
+        {
+            q: "Ποιο από τα παρακάτω διέρχεται από το ωοειδές τρήμα;",
+            options: ["Υπογλώσσιο νεύρο", "Παραπληρωματικό νεύρο", "Κάτω γναθικό νεύρο", "Μέση μηνιγγική αρτηρία"],
+            correct: 2,
+            explanation: "Το Κάτω Γναθικό νεύρο (V3) διέρχεται από το ωοειδές τρήμα."
+        },
+        {
+            q: "Τι δεν ισχύει για την έσω μαστική (θωρακική) αρτηρία;",
+            options: ["Αναστομώνεται άμεσα με την ακρωμιοθωρακική", "Είναι κλάδος της υποκλείδιας", "Χορηγεί αίμα στον μαστό", "Χορηγεί κλάδους στον θύμο αδένα"],
+            correct: 0,
+            explanation: "Δεν αναστομώνεται άμεσα με την ακρωμιοθωρακική αρτηρία."
+        },
+        {
+            q: "Ποιο νεύρο διέρχεται διά της παρωτίδας;",
+            options: ["Οφθαλμικό", "Προσωπικό", "Άνω γναθικό", "Κάτω γναθικό"],
+            correct: 1,
+            explanation: "Το Προσωπικό νεύρο (VII) διαπερνά την παρωτίδα και σχηματίζει τον χήνειο πόδα."
+        },
+        {
+            q: "Η στεφανιαία φλέβα του στομάχου εκβάλλει:",
+            options: ["Στην άνω μεσεντέρια φλέβα", "Στην ηπατική φλέβα", "Στην πυλαία φλέβα", "Στην κάτω ημιάζυγη φλέβα"],
+            correct: 2,
+            explanation: "Η στεφανιαία (αρ. γαστρική) φλέβα εκβάλλει απευθείας στο στέλεχος της Πυλαίας."
+        },
+        {
+            q: "Ποιο από τα παρακάτω ΕΙΝΑΙ κλάδος της προσωπικής αρτηρίας;",
+            options: ["Εν τω βάθει ωτιαία αρτηρία", "Άνω χειλική αρτηρία", "Πρόσθια μηνιγγική αρτηρία", "Πρόσθια τυμπανική αρτηρία"],
+            correct: 1,
+            explanation: "Η Άνω χειλική είναι κλάδος της προσωπικής. Τα υπόλοιπα είναι κυρίως κλάδοι της γναθιαίας."
+        },
+        {
+            q: "Το γλωσσικό νεύρο:",
+            options: ["Περιέχει συμπαθητικές ίνες", "Είναι αισθητικό νεύρο της υπερώας", "Είναι κινητικό νεύρο της γλώσσας", "Είναι αισθητικό νεύρο για τα πρόσθια 2/3 της γλώσσας"],
+            correct: 3,
+            explanation: "Παρέχει γενική αισθητικότητα (αφή, πόνος, θερμοκρασία) στα πρόσθια 2/3 της γλώσσας."
+        },
+        {
+            q: "Η λέμφος του μαστού ΔΕΝ εκβάλλει:",
+            options: ["Στα υπερτροχίλια λεμφογάγγλια", "Στα κορυφαία λεμφογάγγλια", "Στα έσω θωρακικά λεμφογάγγλια", "Στα υποπλάτια λεμφογάγγλια"],
+            correct: 0,
+            explanation: "Τα υπερτροχίλια βρίσκονται στον αγκώνα και δέχονται λέμφο από το χέρι/αντιβράχιο."
+        },
+        {
+            q: "Το τρίδυμο νεύρο είναι:",
+            options: ["Μικτό νεύρο", "Αισθητικό νεύρο", "Κινητικό νεύρο", "Τίποτα από τα παραπάνω"],
+            correct: 0,
+            explanation: "Είναι μικτό νεύρο (Κινητικό για μασητήριους, Αισθητικό για πρόσωπο)."
+        },
+        {
+            q: "Οι μασητήριοι μύες νευρώνονται από το:",
+            options: ["Κροταφικό νεύρο", "Κάτω γναθικό νεύρο", "Άνω γναθικό νεύρο", "Προσωπικό νεύρο"],
+            correct: 1,
+            explanation: "Νευρώνονται από το Κάτω Γναθικό (V3), κλάδο του τριδύμου."
+        },
+        {
+            q: "Τι ισχύει για την υπερπλάτια αρτηρία:",
+            options: ["Διέρχεται κάτω από τον εγκάρσιο σύνδεσμο", "Εκφύεται από το πλευραυχενικό στέλεχος", "Αναστομώνεται με τις περισπώμενες", "Είναι κλάδος του θυρεoαυχενικού στελέχους"],
+            correct: 3,
+            explanation: "Είναι κλάδος του θυρεοαυχενικού στελέχους (μαζί με την εγκάρσια τραχηλική κ.α.)."
+        },
+        {
+            q: "Το σφαγιτιδικό στέλεχος φέρει τη λέμφο από:",
+            options: ["Ομόπλευρο ημιμόριο κεφαλής", "Ομόπλευρο ημιμόριο κεφαλής & τραχήλου", "Ετερόπλευρο ημιμόριο κεφαλής & τραχήλου", "Ομόπλευρο ημιμόριο τραχήλου"],
+            correct: 1,
+            explanation: "Παροχετεύει τη λέμφο από την κεφαλή και τον τράχηλο της ίδιας πλευράς."
+        },
+        {
+            q: "Η μηριαία αρτηρία στο μηριαίο τρίγωνο βρίσκεται:",
+            options: ["Επί τα εκτός του μηριαίου νεύρου", "Επί τα εντός της μηριαίας φλέβας", "Μεταξύ νεύρου και φλέβας (Άρα τα a και b λάθος)", "Και τα δύο είναι σωστά"],
+            correct: 2,
+            explanation: "Η διάταξη από έξω προς τα μέσα είναι: Νεύρο - Αρτηρία - Φλέβα. Άρα η αρτηρία είναι Έσω του Νεύρου και Έξω της Φλέβας."
+        }
+    ];
+
+    // State Management
+    let quizState = {
+        questions: [],
+        currentIndex: 0,
+        userAnswers: [], // Stores index of selected answer for each question, or null
+        score: 0
+    };
+
+    // DOM Elements
+    const introScreen = document.getElementById('intro-screen');
+    const quizScreen = document.getElementById('quiz-screen');
+    const resultsScreen = document.getElementById('results-screen');
+    const questionText = document.getElementById('question-text');
+    const optionsContainer = document.getElementById('options-container');
+    const nextBtn = document.getElementById('next-btn');
+    const prevBtn = document.getElementById('prev-btn');
+    const progressBar = document.getElementById('progress-bar');
+    const qCounter = document.getElementById('q-counter');
+    const explanationBox = document.getElementById('explanation-box');
+    const statusBadge = document.getElementById('status-badge');
+
+    function startQuiz() {
+        // Reset state
+        quizState.questions = [...questionsDB].sort(() => Math.random() - 0.5);
+        quizState.currentIndex = 0;
+        quizState.userAnswers = new Array(quizState.questions.length).fill(null);
+        
+        // UI Switch
+        introScreen.style.display = 'none';
+        resultsScreen.style.display = 'none';
+        quizScreen.style.display = 'flex';
+        
+        renderQuestion();
+    }
+
+    function renderQuestion() {
+        const index = quizState.currentIndex;
+        const question = quizState.questions[index];
+        const userAnswer = quizState.userAnswers[index]; // null if not answered yet
+        
+        // Update Meta
+        qCounter.innerText = `Ερώτηση ${index + 1} / ${quizState.questions.length}`;
+        progressBar.style.width = `${((index + 1) / quizState.questions.length) * 100}%`;
+        
+        // Logic for navigation buttons
+        prevBtn.disabled = (index === 0);
+        
+        // "Next" button logic:
+        // If last question, change text to "Finish". 
+        // Disabled until user answers.
+        if (index === quizState.questions.length - 1) {
+            nextBtn.innerHTML = "Ολοκλήρωση 🏁";
+        } else {
+            nextBtn.innerHTML = "Επόμενο →";
+        }
+        
+        nextBtn.disabled = (userAnswer === null);
+
+        // Update Text
+        questionText.innerText = question.q;
+        
+        // Reset/Hide Explanation initially
+        explanationBox.style.display = 'none';
+        statusBadge.style.background = '#e2e8f0';
+        statusBadge.style.color = '#64748b';
+        statusBadge.innerText = 'Σε εξέλιξη';
+
+        // Render Options
+        optionsContainer.innerHTML = '';
+        question.options.forEach((opt, optIndex) => {
+            const btn = document.createElement('button');
+            btn.classList.add('option-btn');
+            btn.innerText = opt;
+            
+            // If already answered, apply styling
+            if (userAnswer !== null) {
+                btn.disabled = true;
+                if (optIndex === question.correct) {
+                    btn.classList.add('correct');
+                } else if (optIndex === userAnswer) {
+                    btn.classList.add('wrong');
+                }
+            } else {
+                // Click handler only if not answered
+                btn.onclick = () => handleAnswer(optIndex, index);
+            }
+            
+            optionsContainer.appendChild(btn);
+        });
+
+        // Show Explanation if answered
+        if (userAnswer !== null) {
+            explanationBox.innerHTML = `<strong>Επεξήγηση:</strong> ${question.explanation}`;
+            explanationBox.style.display = 'block';
+            
+            // Update badge
+            if (userAnswer === question.correct) {
+                statusBadge.style.background = '#d1fae5';
+                statusBadge.style.color = '#065f46';
+                statusBadge.innerText = 'Σωστό';
+            } else {
+                statusBadge.style.background = '#fee2e2';
+                statusBadge.style.color = '#991b1b';
+                statusBadge.innerText = 'Λάθος';
+            }
+        }
+    }
+
+    function handleAnswer(selectedIndex, questionIndex) {
+        // Save answer
+        quizState.userAnswers[questionIndex] = selectedIndex;
+        
+        // Enable next button
+        nextBtn.disabled = false;
+
+        // Re-render to show feedback (lock buttons, show colors, explanation)
+        renderQuestion();
+    }
+
+    function nextQuestion() {
+        if (quizState.currentIndex < quizState.questions.length - 1) {
+            quizState.currentIndex++;
+            renderQuestion();
+        } else {
+            finishQuiz();
+        }
+    }
+
+    function prevQuestion() {
+        if (quizState.currentIndex > 0) {
+            quizState.currentIndex--;
+            renderQuestion();
+        }
+    }
+
+    function finishQuiz() {
+        // Calculate Score
+        let correctCount = 0;
+        quizState.userAnswers.forEach((ans, idx) => {
+            if (ans === quizState.questions[idx].correct) correctCount++;
+        });
+
+        const percentage = Math.round((correctCount / quizState.questions.length) * 100);
+
+        // Update UI
+        quizScreen.style.display = 'none';
+        resultsScreen.style.display = 'block';
+        
+        document.getElementById('final-score').innerText = `${correctCount}/${quizState.questions.length}`;
+        document.getElementById('feedback-text').innerText = `Πετύχατε σκορ ${percentage}%`;
+        
+        const title = document.getElementById('feedback-title');
+        if (percentage === 100) title.innerText = "Άριστα! 🏆";
+        else if (percentage >= 80) title.innerText = "Πολύ καλά! 👏";
+        else if (percentage >= 50) title.innerText = "Καλή προσπάθεια 👍";
+        else title.innerText = "Χρειάζεται επανάληψη 📚";
+    }
+
+</script>
+
+</body>
+</html>
