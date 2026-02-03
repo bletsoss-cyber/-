@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ανατομία: Μύες Ράχης & Γλουτών</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .flip-card {
+            background-color: transparent;
+            perspective: 1000px;
+            height: 200px;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 1.5rem;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);
+        }
+        .flip-card-front {
+            background-color: #ffffff;
+            color: #1e293b;
+            border: 2px solid #3b82f6;
+        }
+        .flip-card-back {
+            background-color: #3b82f6;
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-slate-50 min-h-screen pb-20">
+
+    <nav class="bg-slate-800 text-white p-4 sticky top-0 z-50 shadow-md">
+        <div class="max-w-6xl mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold">📚 AnatomyMaster: Ράχη & Γλουτοί</h1>
+            <div class="space-x-4">
+                <button onclick="showSection('flashcards')" class="hover:text-blue-400 transition">Flashcards</button>
+                <button onclick="showSection('quiz')" class="hover:text-blue-400 transition">Κουίζ</button>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto p-6">
+        
+        <!-- Flashcards Section -->
+        <section id="flashcards-section">
+            <h2 class="text-3xl font-extrabold text-slate-800 mb-8 text-center">Μελέτη με Flashcards</h2>
+            
+            <div id="flashcards-container" class="space-y-12">
+                <!-- Categories will be injected here -->
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz-section" class="hidden max-w-2xl mx-auto">
+            <div class="bg-white rounded-2xl shadow-xl p-8">
+                <div class="flex justify-between items-center mb-6">
+                    <h2 class="text-2xl font-bold text-slate-800">Κουίζ Νεύρωσης</h2>
+                    <span id="quiz-progress" class="text-sm font-semibold text-blue-600 bg-blue-50 px-3 py-1 rounded-full">1 / 10</span>
+                </div>
+                
+                <div id="quiz-content">
+                    <p id="quiz-question" class="text-lg text-slate-700 mb-6 font-medium">Φόρτωση ερώτησης...</p>
+                    <div id="quiz-options" class="grid grid-cols-1 gap-3">
+                        <!-- Options injected here -->
+                    </div>
+                </div>
+
+                <div id="quiz-result" class="hidden text-center py-10">
+                    <h3 class="text-4xl font-bold text-slate-800 mb-4">Τέλος!</h3>
+                    <p class="text-xl text-slate-600 mb-8">Το σκορ σου: <span id="final-score" class="font-bold text-blue-600">0</span></p>
+                    <button onclick="restartQuiz()" class="bg-blue-600 text-white px-8 py-3 rounded-lg font-bold hover:bg-blue-700 transition">Επανεκκίνηση</button>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        const muscleData = [
+            {
+                category: "Επιπολής Μύες (Ετερόχθονες)",
+                muscles: [
+                    { name: "Τραπεζοειδής", nerve: "Παραπληρωματικό νεύρο (XI) και κλάδοι από το αυχενικό πλέγμα (C3, C4)" },
+                    { name: "Πλατύς Ραχιαίος", nerve: "Θωρακορραχιαίο νεύρο (C6, C7, C8)" },
+                    { name: "Ανελκτήρας της Ωμοπλάτης", nerve: "Ραχιαίο νεύρο της ωμοπλάτης (C5) και αυχενικά νεύρα (C3, C4)" },
+                    { name: "Μείζων Ρομβοειδής", nerve: "Ραχιαίο νεύρο της ωμοπλάτης (C5)" },
+                    { name: "Ελάσσων Ρομβοειδής", nerve: "Ραχιαίο νεύρο της ωμοπλάτης (C5)" }
+                ]
+            },
+            {
+                category: "Διάμεσοι Μύες (Αναπνευστικοί)",
+                muscles: [
+                    { name: "Οπίσθιος Άνω Οδοντωτός", nerve: "2ο έως 5ο μεσοπλεύρια νεύρα (Θ1-Θ4)" },
+                    { name: "Οπίσθιος Κάτω Οδοντωτός", nerve: "9ο έως 12ο μεσοπλεύρια νεύρα (Θ9-Θ12)" }
+                ]
+            },
+            {
+                category: "Εν τω βάθει (Αυτόχθονες) Μύες",
+                muscles: [
+                    { name: "Σπληνιοειδής (Κεφαλικός/Αυχενικός)", nerve: "Οπίσθιοι κλάδοι των μέσων αυχενικών νεύρων" },
+                    { name: "Λαγονοπλευρικός (Erector Spinae)", nerve: "Οπίσθιοι κλάδοι των αντίστοιχων νωτιαίων νεύρων" },
+                    { name: "Μήκιστος (Erector Spinae)", nerve: "Οπίσθιοι κλάδοι των αντίστοιχων νωτιαίων νεύρων" },
+                    { name: "Ακανθώδης (Erector Spinae)", nerve: "Οπίσθιοι κλάδοι των αντίστοιχων νωτιαίων νεύρων" },
+                    { name: "Ημιακανθώδης", nerve: "Οπίσθιοι κλάδοι των νωτιαίων νεύρων" },
+                    { name: "Πολυσχιδής", nerve: "Οπίσθιοι κλάδοι των νωτιαίων νεύρων" },
+                    { name: "Περιστροφείς", nerve: "Οπίσθιοι κλάδοι των νωτιαίων νεύρων" }
+                ]
+            },
+            {
+                category: "Γλουτιαίοι Μύες",
+                muscles: [
+                    { name: "Μείζων Γλουτιαίος", nerve: "Κάτω γλουτιαίο νεύρο (O5, I1, I2)" },
+                    { name: "Μέσος Γλουτιαίος", nerve: "Άνω γλουτιαίο νεύρο (O4, O5, I1)" },
+                    { name: "Μικρός Γλουτιαίος", nerve: "Άνω γλουτιαίο νεύρο (O4, O5, I1)" },
+                    { name: "Τείνων την πλατεία περιτονία", nerve: "Άνω γλουτιαίο νεύρο (O4, O5, I1)" }
+                ]
+            }
+        ];
+
+        let quizState = {
+            active: false,
+            currentQuestionIndex: 0,
+            score: 0,
+            questions: []
+        };
+
+        // Initialize App
+        window.onload = () => {
+            renderFlashcards();
+            prepareQuizQuestions();
+        };
+
+        function showSection(section) {
+            document.getElementById('flashcards-section').classList.toggle('hidden', section !== 'flashcards');
+            document.getElementById('quiz-section').classList.toggle('hidden', section !== 'quiz');
+        }
+
+        function renderFlashcards() {
+            const container = document.getElementById('flashcards-container');
+            muscleData.forEach(cat => {
+                const section = document.createElement('div');
+                section.innerHTML = `
+                    <h3 class="text-xl font-bold text-slate-600 mb-6 border-l-4 border-blue-500 pl-4 uppercase tracking-wider">${cat.category}</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                        ${cat.muscles.map(m => `
+                            <div class="flip-card" onclick="this.classList.toggle('flipped')">
+                                <div class="flip-card-inner">
+                                    <div class="flip-card-front font-bold text-lg">${m.name}</div>
+                                    <div class="flip-card-back text-sm leading-relaxed">
+                                        <div>
+                                            <p class="font-bold mb-2">Νεύρωση:</p>
+                                            <p>${m.nerve}</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+                container.appendChild(section);
+            });
+        }
+
+        function prepareQuizQuestions() {
+            const allMuscles = muscleData.flatMap(c => c.muscles);
+            quizState.questions = allMuscles.sort(() => 0.5 - Math.random());
+        }
+
+        function startQuiz() {
+            quizState.active = true;
+            quizState.currentQuestionIndex = 0;
+            quizState.score = 0;
+            document.getElementById('quiz-content').classList.remove('hidden');
+            document.getElementById('quiz-result').classList.add('hidden');
+            loadNextQuestion();
+        }
+
+        function loadNextQuestion() {
+            if (quizState.currentQuestionIndex >= quizState.questions.length) {
+                showFinalResults();
+                return;
+            }
+
+            const question = quizState.questions[quizState.currentQuestionIndex];
+            document.getElementById('quiz-progress').innerText = `${quizState.currentQuestionIndex + 1} / ${quizState.questions.length}`;
+            document.getElementById('quiz-question').innerText = `Ποια είναι η νεύρωση του μυός: "${question.name}";`;
+            
+            const allNerves = [...new Set(quizState.questions.map(q => q.nerve))];
+            let options = [question.nerve];
+            
+            while(options.length < 4) {
+                let randomNerve = allNerves[Math.floor(Math.random() * allNerves.length)];
+                if (!options.includes(randomNerve)) options.push(randomNerve);
+            }
+            options = options.sort(() => 0.5 - Math.random());
+
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "text-left p-4 border-2 border-slate-200 rounded-xl hover:bg-slate-50 hover:border-blue-300 transition-all duration-200";
+                btn.innerText = opt;
+                btn.onclick = () => handleAnswer(opt, question.nerve, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function handleAnswer(selected, correct, element) {
+            const buttons = document.querySelectorAll('#quiz-options button');
+            buttons.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                element.classList.remove('border-slate-200');
+                element.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                quizState.score++;
+            } else {
+                element.classList.remove('border-slate-200');
+                element.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                
+                // Show correct one
+                buttons.forEach(b => {
+                    if (b.innerText === correct) {
+                        b.classList.add('bg-green-50', 'border-green-300');
+                    }
+                });
+            }
+
+            setTimeout(() => {
+                quizState.currentQuestionIndex++;
+                loadNextQuestion();
+            }, 1500);
+        }
+
+        function showFinalResults() {
+            document.getElementById('quiz-content').classList.add('hidden');
+            document.getElementById('quiz-result').classList.remove('hidden');
+            document.getElementById('final-score').innerText = `${quizState.score} / ${quizState.questions.length}`;
+        }
+
+        function restartQuiz() {
+            prepareQuizQuestions();
+            startQuiz();
+        }
+
+        // Initialize quiz on first load
+        startQuiz();
+
+    </script>
+</body>
+</html>
