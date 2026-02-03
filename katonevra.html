@@ -1,0 +1,297 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ανατομία: Μύες & Νεύρωση Κάτω Άκρου</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        .flip-card {
+            background-color: transparent;
+            width: 100%;
+            height: 250px;
+            perspective: 1000px;
+            cursor: pointer;
+        }
+        .flip-card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+        }
+        .flip-card.flipped .flip-card-inner {
+            transform: rotateY(180px);
+        }
+        /* Using a class for the flip state */
+        .is-flipped {
+            transform: rotateY(180deg);
+        }
+        .flip-card-front, .flip-card-back {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            border-radius: 1rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+        }
+        .flip-card-front {
+            background-color: #ffffff;
+            color: #1e293b;
+            border: 2px solid #e2e8f0;
+        }
+        .flip-card-back {
+            background-color: #3b82f6;
+            color: white;
+            transform: rotateY(180deg);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 min-h-screen font-sans">
+
+    <div class="max-w-4xl mx-auto px-4 py-8">
+        <!-- Header -->
+        <div class="text-center mb-10">
+            <h1 class="text-3xl font-bold text-slate-800 mb-2">Μελέτη Ανατομίας Κάτω Άκρου</h1>
+            <p class="text-slate-600">Μύες και Νεύρωση: Από την Πύελο έως το Πέλμα</p>
+        </div>
+
+        <!-- Navigation -->
+        <div class="flex justify-center space-x-4 mb-8">
+            <button onclick="showSection('flashcards')" id="btn-flashcards" class="px-6 py-2 rounded-full font-semibold transition bg-blue-600 text-white">Flashcards</button>
+            <button onclick="showSection('quiz')" id="btn-quiz" class="px-6 py-2 rounded-full font-semibold transition bg-gray-200 text-gray-700 hover:bg-gray-300">Κουίζ (Quiz)</button>
+        </div>
+
+        <!-- Section: Flashcards -->
+        <div id="section-flashcards" class="space-y-6">
+            <div class="flex justify-between items-center bg-white p-4 rounded-lg shadow-sm">
+                <h2 class="font-bold text-lg text-blue-800" id="category-title">Φόρτωση...</h2>
+                <div class="space-x-2">
+                    <button onclick="prevCard()" class="p-2 bg-gray-100 rounded hover:bg-gray-200">←</button>
+                    <span id="card-index" class="text-sm font-medium">1 / 10</span>
+                    <button onclick="nextCard()" class="p-2 bg-gray-100 rounded hover:bg-gray-200">→</button>
+                </div>
+            </div>
+
+            <div class="flip-card" onclick="toggleFlip(this)">
+                <div id="card-inner" class="flip-card-inner">
+                    <div class="flip-card-front">
+                        <div class="text-center">
+                            <span class="block text-xs uppercase tracking-widest text-gray-400 mb-2">ΜΥΣ / ΟΜΑΔΑ</span>
+                            <h3 id="card-question" class="text-2xl font-bold">...</h3>
+                        </div>
+                    </div>
+                    <div class="flip-card-back">
+                        <div class="text-center">
+                            <span class="block text-xs uppercase tracking-widest text-blue-100 mb-2">ΝΕΥΡΩΣΗ</span>
+                            <h3 id="card-answer" class="text-2xl font-bold">...</h3>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <p class="text-center text-sm text-gray-400 italic">Κάντε κλικ στην κάρτα για να δείτε την απάντηση</p>
+        </div>
+
+        <!-- Section: Quiz -->
+        <div id="section-quiz" class="hidden space-y-6">
+            <div class="bg-white p-6 rounded-xl shadow-lg border border-gray-100">
+                <div class="flex justify-between mb-4">
+                    <span id="quiz-progress" class="text-sm font-bold text-blue-600">Ερώτηση 1</span>
+                    <span id="quiz-score" class="text-sm font-bold text-green-600">Σκορ: 0</span>
+                </div>
+                <h3 id="quiz-question" class="text-xl font-bold text-slate-800 mb-6">Ποιο νεύρο νευρώνει τον Μείζονα Γλουτιαίο;</h3>
+                
+                <div id="quiz-options" class="grid grid-cols-1 gap-3">
+                    <!-- Options injected here -->
+                </div>
+
+                <div id="quiz-feedback" class="mt-6 p-4 rounded-lg hidden"></div>
+                
+                <button id="next-quiz-btn" onclick="loadNextQuestion()" class="mt-6 w-full py-3 bg-slate-800 text-white rounded-lg font-bold hidden hover:bg-slate-700 transition">Επόμενη Ερώτηση</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Data Structure
+        const anatomyData = [
+            // Πύελος
+            { muscle: "Μείζων Γλουτιαίος", nerve: "Κάτω γλουτιαίο νεύρο", category: "Πύελος" },
+            { muscle: "Μέσος & Μικρός Γλουτιαίος", nerve: "Άνω γλουτιαίο νεύρο", category: "Πύελος" },
+            { muscle: "Τείνων την πλατεία περιτονία", nerve: "Άνω γλουτιαίο νεύρο", category: "Πύελος" },
+            { muscle: "Απιοειδής", nerve: "Νεύρο για τον απιοειδή (S1-S2)", category: "Πύελος" },
+            // Μηρός
+            { muscle: "Τετρακέφαλος Μηριαίος", nerve: "Μηριαίο νεύρο", category: "Μηρός (Πρόσθιο)" },
+            { muscle: "Ραπτικός", nerve: "Μηριαίο νεύρο", category: "Μηρός (Πρόσθιο)" },
+            { muscle: "Μακρός & Βραχύς Προσαγωγός", nerve: "Θυροειδές νεύρο", category: "Μηρός (Έσω)" },
+            { muscle: "Ισχνός", nerve: "Θυροειδές νεύρο", category: "Μηρός (Έσω)" },
+            { muscle: "Ημιτενοντώδης & Ημιυμενώδης", nerve: "Ισχιακό νεύρο (Κνημιαία μοίρα)", category: "Μηρός (Οπίσθιο)" },
+            { muscle: "Δικέφαλος Μηριαίος (Μακρά κεφαλή)", nerve: "Ισχιακό νεύρο (Κνημιαία μοίρα)", category: "Μηρός (Οπίσθιο)" },
+            // Κνήμη
+            { muscle: "Πρόσθιος Κνημιαίος", nerve: "Εν τω βάθει περονιαίο νεύρο", category: "Κνήμη (Πρόσθιο)" },
+            { muscle: "Μακρός εκτείνων τους δακτύλους", nerve: "Εν τω βάθει περονιαίο νεύρο", category: "Κνήμη (Πρόσθιο)" },
+            { muscle: "Μακρός & Βραχύς Περονιαίος", nerve: "Επιπολής περονιαίο νεύρο", category: "Κνήμη (Έξω)" },
+            { muscle: "Τρικέφαλος Κνήμης (Γαστροκνημία/Υποκνημίδιος)", nerve: "Κνημιαίο νεύρο", category: "Κνήμη (Οπίσθιο)" },
+            { muscle: "Οπίσθιος Κνημιαίος", nerve: "Κνημιαίο νεύρο", category: "Κνήμη (Οπίσθιο)" },
+            // Πέλμα
+            { muscle: "Βραχύς εκτείνων τους δακτύλους", nerve: "Εν τω βάθει περονιαίο νεύρο", category: "Άκρο Πόδι (Ράχη)" },
+            { muscle: "Απαγωγός Μεγάλου Δακτύλου", nerve: "Έσω πελματιαίο νεύρο", category: "Πέλμα" },
+            { muscle: "Βραχύς καμπτήρας των δακτύλων", nerve: "Έσω πελματιαίο νεύρο", category: "Πέλμα" },
+            { muscle: "Απαγωγός Μικρού Δακτύλου", nerve: "Έξω πελματιαίο νεύρο", category: "Πέλμα" },
+            { muscle: "Προσαγωγός Μεγάλου Δακτύλου", nerve: "Έξω πελματιαίο νεύρο", category: "Πέλμα" },
+            { muscle: "Μεσοστέοι Μύες", nerve: "Έξω πελματιαίο νεύρο", category: "Πέλμα" }
+        ];
+
+        // State variables
+        let currentCardIndex = 0;
+        let quizState = {
+            currentIndex: 0,
+            score: 0,
+            questions: []
+        };
+
+        // Navigation logic
+        function showSection(section) {
+            document.getElementById('section-flashcards').classList.toggle('hidden', section !== 'flashcards');
+            document.getElementById('section-quiz').classList.toggle('hidden', section !== 'quiz');
+            
+            document.getElementById('btn-flashcards').className = section === 'flashcards' 
+                ? 'px-6 py-2 rounded-full font-semibold transition bg-blue-600 text-white' 
+                : 'px-6 py-2 rounded-full font-semibold transition bg-gray-200 text-gray-700 hover:bg-gray-300';
+            
+            document.getElementById('btn-quiz').className = section === 'quiz' 
+                ? 'px-6 py-2 rounded-full font-semibold transition bg-blue-600 text-white' 
+                : 'px-6 py-2 rounded-full font-semibold transition bg-gray-200 text-gray-700 hover:bg-gray-300';
+
+            if (section === 'quiz' && quizState.questions.length === 0) {
+                startQuiz();
+            }
+        }
+
+        // Flashcards logic
+        function updateCard() {
+            const card = anatomyData[currentCardIndex];
+            const inner = document.getElementById('card-inner');
+            inner.classList.remove('is-flipped'); // Reset flip state
+
+            document.getElementById('category-title').innerText = card.category;
+            document.getElementById('card-index').innerText = `${currentCardIndex + 1} / ${anatomyData.length}`;
+            document.getElementById('card-question').innerText = card.muscle;
+            document.getElementById('card-answer').innerText = card.nerve;
+        }
+
+        function toggleFlip(el) {
+            const inner = el.querySelector('.flip-card-inner');
+            inner.classList.toggle('is-flipped');
+        }
+
+        function nextCard() {
+            currentCardIndex = (currentCardIndex + 1) % anatomyData.length;
+            updateCard();
+        }
+
+        function prevCard() {
+            currentCardIndex = (currentCardIndex - 1 + anatomyData.length) % anatomyData.length;
+            updateCard();
+        }
+
+        // Quiz Logic
+        function startQuiz() {
+            quizState.questions = [...anatomyData].sort(() => Math.random() - 0.5);
+            quizState.currentIndex = 0;
+            quizState.score = 0;
+            loadQuizQuestion();
+        }
+
+        function loadQuizQuestion() {
+            const questionData = quizState.questions[quizState.currentIndex];
+            const optionsContainer = document.getElementById('quiz-options');
+            const feedback = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('next-quiz-btn');
+            
+            feedback.classList.add('hidden');
+            nextBtn.classList.add('hidden');
+            optionsContainer.innerHTML = '';
+
+            document.getElementById('quiz-progress').innerText = `Ερώτηση ${quizState.currentIndex + 1} / ${quizState.questions.length}`;
+            document.getElementById('quiz-score').innerText = `Σκορ: ${quizState.score}`;
+            document.getElementById('quiz-question').innerText = `Ποιο νεύρο νευρώνει τον μυ: "${questionData.muscle}";`;
+
+            // Generate options
+            let options = [questionData.nerve];
+            while (options.length < 4) {
+                let randomNerve = anatomyData[Math.floor(Math.random() * anatomyData.length)].nerve;
+                if (!options.includes(randomNerve)) {
+                    options.push(randomNerve);
+                }
+            }
+            options.sort(() => Math.random() - 0.5);
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = "w-full p-4 text-left border-2 border-gray-100 rounded-lg hover:border-blue-500 hover:bg-blue-50 transition font-medium";
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(opt, btn, questionData.nerve);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selected, btn, correct) {
+            const feedback = document.getElementById('quiz-feedback');
+            const nextBtn = document.getElementById('next-quiz-btn');
+            const options = document.querySelectorAll('#quiz-options button');
+
+            // Disable all buttons
+            options.forEach(b => b.disabled = true);
+
+            if (selected === correct) {
+                btn.classList.replace('border-gray-100', 'border-green-500');
+                btn.classList.add('bg-green-50');
+                feedback.innerText = "Σωστά!";
+                feedback.className = "mt-6 p-4 rounded-lg bg-green-100 text-green-800 font-bold block";
+                quizState.score++;
+            } else {
+                btn.classList.replace('border-gray-100', 'border-red-500');
+                btn.classList.add('bg-red-50');
+                feedback.innerHTML = `Λάθος. Η σωστή απάντηση είναι: <br><strong>${correct}</strong>`;
+                feedback.className = "mt-6 p-4 rounded-lg bg-red-100 text-red-800 font-bold block";
+            }
+
+            nextBtn.classList.remove('hidden');
+            document.getElementById('quiz-score').innerText = `Σκορ: ${quizState.score}`;
+        }
+
+        function loadNextQuestion() {
+            quizState.currentIndex++;
+            if (quizState.currentIndex < quizState.questions.length) {
+                loadQuizQuestion();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            const container = document.getElementById('section-quiz');
+            const percentage = Math.round((quizState.score / quizState.questions.length) * 100);
+            container.innerHTML = `
+                <div class="bg-white p-10 rounded-xl shadow-lg border border-gray-100 text-center">
+                    <h2 class="text-3xl font-bold mb-4">Το Κουίζ Ολοκληρώθηκε!</h2>
+                    <p class="text-5xl font-black text-blue-600 mb-6">${percentage}%</p>
+                    <p class="text-xl mb-8">Σκορ: ${quizState.score} / ${quizState.questions.length}</p>
+                    <button onclick="location.reload()" class="px-8 py-3 bg-blue-600 text-white rounded-full font-bold hover:bg-blue-700 transition">Επανάληψη</button>
+                </div>
+            `;
+        }
+
+        // Initialize
+        window.onload = updateCard;
+
+    </script>
+</body>
+</html>
