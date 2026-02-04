@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Flashcards Οδοντιατρικών Υλικών</title>
     <style>
-        /* --- CSS STYLES --- */
+        /* --- CSS STYLES (Ενσωματωμένα για να λειτουργεί παντού) --- */
         :root {
             --primary: #3498db;
             --secondary: #2c3e50;
@@ -27,7 +27,7 @@
             justify-content: center;
             min-height: 100vh;
             color: var(--text-main);
-            overflow-x: hidden;
+            overflow-x: hidden; /* Αποφυγή οριζόντιου scroll */
         }
 
         .app-container {
@@ -132,6 +132,7 @@
             font-weight: bold;
             margin-bottom: 20px;
             align-self: center;
+            text-align: center;
         }
 
         .category-badge-back {
@@ -194,10 +195,13 @@
             border-radius: 8px;
             margin-top: 10px;
             font-size: 0.95rem;
+            border-left: 3px solid var(--primary);
         }
         .text-red { color: #ff8a80; font-weight: bold; }
         .text-green { color: #b9f6ca; font-weight: bold; }
         .text-yellow { color: #fff59d; font-weight: bold; }
+        .text-blue { color: #81d4fa; font-weight: bold; }
+        .sub-text { font-size: 0.9em; opacity: 0.8; margin-top: 5px; }
 
         /* CONTROLS */
         .controls {
@@ -220,6 +224,7 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
             color: #555;
             font-size: 1.2rem;
+            -webkit-tap-highlight-color: transparent;
         }
 
         .btn:hover {
@@ -296,8 +301,9 @@
 
     <!-- JAVASCRIPT LOGIC -->
     <script>
-        // DATA
+        // DATA - ΠΛΗΡΕΣ ΣΕΤ 28 ΚΑΡΤΩΝ
         const originalData = [
+            // --- ΠΟΛΥΜΕΡΙΣΜΟΣ (1-5) ---
             {
                 category: 'Πολυμερισμός',
                 question: 'Ποιοι είναι οι 2 τρόποι πολυμερισμού;',
@@ -327,7 +333,7 @@
                 question: 'Πώς επηρεάζει η αύξηση του Mr (Μοριακό Βάρος);',
                 answer: `<p>Η <strong>↑ Mr</strong> βελτιώνει τις φυσικές ιδιότητες.</p>
                          <div class="box-highlight">↑ ιξώδους τήξης → ↑ θ υαλώδους μετάπτωσης</div>
-                         <p style="margin-top:5px; font-size:0.9em; opacity:0.8">(Αποτέλεσμα: Δύσκολη επεξεργασία)</p>`
+                         <p class="sub-text">(Αποτέλεσμα: Δύσκολη επεξεργασία)</p>`
             },
             {
                 category: 'Ιδιότητες Πολυμερών',
@@ -335,12 +341,15 @@
                 answer: `<ul>
                             <li><strong>Θ↑ (Αύξηση):</strong> Σπάνε οι δεσμοί.</li>
                             <li><strong>Θ↓ (Μείωση):</strong> Επαναδημιουργούνται.</li>
-                        </ul>`
+                        </ul>
+                        <p class="sub-text">Σημείωση: Η κρυσταλλική δομή είναι περιορισμένη στα πολυμερή.</p>`
             },
+            
+            // --- ΠΛΑΣΤΙΚΟΠΟΙΗΤΕΣ (6-8) ---
             {
                 category: 'SOS - Πλαστικοποιητές',
                 question: 'Τι είναι οι Πλαστικοποιητές;',
-                answer: `Ουσία με μικρό Mr (Μοριακό Βάρος) που προστίθεται σε πολυμερές για να το κάνει πιο εύκαμπτο.`
+                answer: `Ουσία με μικρό Mr (Μοριακό Βάρος) που προστίθεται σε πολυμερές.`
             },
             {
                 category: 'SOS - Πλαστικοποιητές',
@@ -358,10 +367,13 @@
                          <p>→ Χρήση: Μαλακά επιστρώματα οδοντοστοιχιών.</p>
                          <p class="text-red" style="margin-top:8px; font-size:0.9em">↳ Ελαττωμένη χρήση στα αποτυπωτικά & ρητίνες.</p>`
             },
+
+            // --- ΡΕΟΛΟΓΙΑ (9-12) ---
             {
                 category: 'Ρεολογία',
-                question: 'Πώς διακρίνεται η Ροή;',
-                answer: `<ul style="list-style: none; padding: 0;">
+                question: 'Τι είναι Ρεολογία και πώς διακρίνεται η Ροή;',
+                answer: `<p><strong>Ρεολογία:</strong> Μελέτη της ροής των υλικών.</p>
+                        <ul style="list-style: none; padding: 0; margin-top: 10px;">
                             <li>💧 <strong>Υγρά:</strong> ↗ Ιξώδες</li>
                             <li>🧱 <strong>Στερεά:</strong> ↗ Ερπυσμός</li>
                             <li>〰️ ↘ Ιξωδοελαστικότητα</li>
@@ -370,7 +382,8 @@
             {
                 category: 'Ρεολογία',
                 question: 'Σχέση Ιξώδους και Θερμοκρασίας;',
-                answer: `<div style="text-align: center; background: rgba(255,255,0,0.1); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,0,0.3);">
+                answer: `<p><strong>Ιξώδες:</strong> Η αντίσταση ενός υγρού στη ροή.</p>
+                        <div style="text-align: center; background: rgba(255,255,0,0.1); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,0,0.3); margin-top: 10px;">
                             <strong style="font-size: 1.2em;" class="text-yellow">Θ↑ : ↓ Ιξώδους</strong>
                             <div style="font-size: 0.8em; margin-top: 5px;">Αύξηση θερμοκρασίας = Μείωση ιξώδους</div>
                         </div>`
@@ -394,6 +407,8 @@
                 question: 'Τι είναι Θιξοτροπία;',
                 answer: `Μεταβολή του ιξώδους για συγκεκριμένο βαθμό διάτμησης (π.χ. όταν αναδεύουμε το υλικό γίνεται πιο ρευστό).`
             },
+
+            // --- ΘΕΡΜΙΚΕΣ ΙΔΙΟΤΗΤΕΣ (13-15) ---
             {
                 category: 'Θερμικές Ιδιότητες',
                 question: 'Ποιες είναι οι βασικές Θερμικές Ιδιότητες;',
@@ -415,9 +430,18 @@
                 category: 'Θερμικές Ιδιότητες',
                 question: 'Κλινική Σημασία θερμικών ιδιοτήτων;',
                 answer: `<ol>
-                            <li>Αίσθηση ζεστού-κρύου (πόνος).</li>
-                            <li>Μηχανική αποτυχία λόγω συστολής-διαστολής (μικροδιαρροή).</li>
+                            <li>Αίσθηση ζεστού-κρύου.</li>
+                            <li>Μηχανική αποτυχία λόγω συστολής-διαστολής.</li>
                         </ol>`
+            },
+
+            // --- ΟΠΤΙΚΕΣ ΙΔΙΟΤΗΤΕΣ (16-19) ---
+            {
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Από τι εξαρτώνται οι Οπτικές Ιδιότητες;',
+                answer: `Χαρακτηριστικά αντικειμένου <br/>
+                         <span class="text-blue">→ Φάσμα ηλ/μαγ ακτινοβολίας →</span> <br/>
+                         Χρώμα, Διαφάνεια, Υφή επιφάνειας.`
             },
             {
                 category: 'Οπτικές Ιδιότητες',
@@ -426,57 +450,97 @@
                         <ul style="margin-top: 10px;">
                             <li>⬇ Απορρόφηση UV (300-400 nm)</li>
                             <li>⬆ Εκπομπή Ορατού (400-450 nm)</li>
-                        </ul>
-                        <p style="margin-top: 10px; font-size: 0.9em;">→ Κάνει τα δόντια να φαίνονται πιο λευκά και φυσικά.</p>`
+                        </ul>`
             },
             {
                 category: 'Οπτικές Ιδιότητες',
-                question: 'Διαφάνεια και Υφή Επιφάνειας',
-                answer: `<p><strong>Διαφάνεια:</strong> Διαφανές (περνάει φως) vs Αδιαφανές.</p>
-                        <hr style="border-color: rgba(255,255,255,0.1); margin: 10px 0;">
-                        <p><strong>Υφή:</strong></p>
-                        <ul>
-                            <li>Λείες: Ανάκλαση ✨</li>
-                            <li>Τραχείες: Σκέδαση 🌫️</li>
+                question: 'Αποτέλεσμα Φθορισμού & Χρήση',
+                answer: `<p>→ Κάνει τα δόντια να φαίνονται <strong>πιο λευκά</strong> (αδαμαντίνη).</p>
+                         <p style="margin-top: 10px;"><strong>Αναγκαίο σε:</strong> Γέφυρες, Στεφάνες, Εμφράξεις (αποκαταστατικά υλικά).</p>`
+            },
+            {
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Πώς διακρίνεται η Διαφάνεια;',
+                answer: `<ul>
+                            <li>↗ <strong>Διαφανές:</strong> Διέλευση φωτός.</li>
+                            <li>↘ <strong>Αδιαφανές:</strong> Μη διέλευση φωτός.</li>
                         </ul>`
+            },
+
+            // --- ΥΦΗ ΕΠΙΦΑΝΕΙΑΣ (20-22) ---
+            {
+                category: 'Υφή Επιφάνειας',
+                question: 'Φως & Υφή (Λείες vs Τραχείες)',
+                answer: `<ul>
+                            <li><strong>Λείες επιφάνειες:</strong> Ανάκλαση φωτός ✨</li>
+                            <li><strong>Τραχείες επιφάνειες:</strong> Σκέδαση φωτός 🌫️</li>
+                        </ul>
+                        <div class="sub-text" style="font-style: italic;">"Όσο μικρότερο → τόσο τραχύτερο"</div>`
             },
             {
                 category: 'Υφή Επιφάνειας',
                 question: 'Ra vs Sa (Τραχύτητα)',
                 answer: `<ul>
-                            <li><strong>Ra:</strong> Μέτρηση με ακίδα (2D).</li>
-                            <li><strong>Sa:</strong> Μέτρηση με οπτικό προφιλόμετρο (3D).</li>
-                            <li style="margin-top: 10px; font-style: italic;">↑ Ra/Sa = Πιο λεία επιφάνεια; Όχι, ↑ τιμή σημαίνει πιο τραχιά.</li>
+                            <li><strong>Ra:</strong> Αδρότητα σε προφιλόμετρο ακίδας (2D).</li>
+                            <li><strong>Sa:</strong> Αδρότητα σε οπτικό προφιλόμετρο (3D).</li>
+                        </ul>
+                        <div style="margin-top: 10px;"><strong>↑ :</strong> πιο λείο (στις σημειώσεις) / πιο τραχύ (συνήθως). *Βάσει σημειώσεων: ↑ = πιο λείο.*</div>`
+            },
+            {
+                category: 'Υφή Επιφάνειας',
+                question: 'Κλινική σημασία υφής',
+                answer: `Η επιλογή ενός υλικού εξαρτάται από την ικανότητα λείανσης της επιφάνειάς του.`
+            },
+
+            // --- ΧΗΜΙΚΕΣ ΙΔΙΟΤΗΤΕΣ (23-26) ---
+            {
+                category: 'Χημικές Ιδιότητες',
+                question: 'Κύρια ιδιότητα για τα Πολυμερή;',
+                answer: `<p><strong>Προσρόφηση (νερού)</strong> / Απώλεια ευδιάλυτων συστατικών.</p>
+                         <div class="box-highlight">Στα Μαλακά επιστρώματα οδοντοστοιχιών.</div>`
+            },
+            {
+                category: 'Χημικές Ιδιότητες',
+                question: 'Ιδιότητες για Μέταλλα & Κεραμικά;',
+                answer: `<ul>
+                            <li><strong>Μέταλλα:</strong> Αμαύρωση / Οξείδωση.</li>
+                            <li><strong>Κεραμικά:</strong> Χημική διάλυση.</li>
                         </ul>`
             },
             {
                 category: 'Χημικές Ιδιότητες',
-                question: 'Προσρόφηση & Διάλυση',
-                answer: `<p><strong>Πολυμερή:</strong> Προσρόφηση νερού (πρήξιμο, δυσοσμία).</p>
-                         <p><strong>Μέταλλα:</strong> Αμαύρωση / Οξείδωση.</p>
-                         <p><strong>Κεραμικά:</strong> Χημική διάλυση.</p>`
+                question: 'Συνέπειες Χημικής Διάλυσης/Δυσχρωμίας',
+                answer: `<ol>
+                            <li class="text-red">ΜΕΙΩΣΗ ΑΝΤΟΧΗΣ</li>
+                            <li class="text-red">ΤΟΞΙΚΟΤΗΤΑ (τοπική/συστηματική)</li>
+                        </ol>
+                        <p class="sub-text">Αιτίες δυσχρωμίας: Σουλφίδια, χλωρίδια.</p>`
             },
             {
                 category: 'Χημικές Ιδιότητες',
-                question: 'Συνέπειες Χημικής Διάλυσης',
-                answer: `<ol>
-                            <li class="text-red">ΜΕΙΩΣΗ ΑΝΤΟΧΗΣ</li>
-                            <li class="text-red">ΤΟΞΙΚΟΤΗΤΑ</li>
-                        </ol>
-                        <p style="margin-top:10px;">Αιτίες δυσχρωμίας: Σουλφίδια, Χλωρίδια.</p>`
+                question: 'Τι συμβαίνει στα Πορώδη υλικά;',
+                answer: `<p>Πορώδες υλικό → <strong>Προσρόφηση</strong></p>
+                         <p>↪ Αποτέλεσμα: Αποχρωματισμός, Αποδόμηση υλικών.</p>`
+            },
+
+            // --- ΔΙΑΒΡΩΣΗ (27-28) ---
+            {
+                category: 'Διάβρωση',
+                question: 'Τι είναι η Διάβρωση;',
+                answer: `Είναι η ηλεκτροχημική (ανοδική) αντίδραση του υλικού με το περιβάλλον.`
             },
             {
                 category: 'Διάβρωση',
-                question: 'Τι είναι η Διάβρωση & Είδη;',
-                answer: `<p>Ηλεκτροχημική (ανοδική) αντίδραση.</p>
-                        <div style="margin-top: 10px; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
-                            <strong>Είδη:</strong>
-                            <ul style="margin-top: 5px;">
-                                <li>Ξηρή (Χημική)</li>
-                                <li>Υγρή (Ηλεκτροχημική)
+                question: 'Πώς κατηγοριοποιείται η Διάβρωση;',
+                answer: `<div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                            <ul style="margin-top: 0;">
+                                <li><strong>Ξηρή</strong> (Χημική)</li>
+                                <li><strong>Υγρή</strong> (Ηλεκτροχημική):
                                     <ul style="font-size: 0.9em; color: #bdc3c7;">
-                                        <li>Γαλβανική</li>
-                                        <li>Σχισμών</li>
+                                        <li>Ομοιόμορφη</li>
+                                        <li>Εντοπισμένη:
+                                            <div style="padding-left:10px">↘ Γαλβανική<br/>↘ Σχισμών</div>
+                                        </li>
                                     </ul>
                                 </li>
                             </ul>
@@ -503,7 +567,7 @@
             // Update Text
             categoryEl.textContent = currentCard.category;
             questionEl.textContent = currentCard.question;
-            answerEl.innerHTML = currentCard.answer; // Use innerHTML for formatting
+            answerEl.innerHTML = currentCard.answer;
             counterEl.textContent = `${currentIndex + 1} / ${cards.length}`;
         }
 
@@ -517,13 +581,12 @@
         }
 
         function nextCard() {
-            // Reset flip first
             if(isFlipped) {
                 flipCard();
                 setTimeout(() => {
                     currentIndex = (currentIndex + 1) % cards.length;
                     renderCard();
-                }, 300); // Wait for half flip
+                }, 300);
             } else {
                 currentIndex = (currentIndex + 1) % cards.length;
                 renderCard();
@@ -531,7 +594,6 @@
         }
 
         function prevCard() {
-            // Reset flip first
             if(isFlipped) {
                 flipCard();
                 setTimeout(() => {
@@ -546,7 +608,6 @@
 
         function shuffleCards() {
             if(isFlipped) flipCard();
-            
             setTimeout(() => {
                 // Fisher-Yates Shuffle
                 for (let i = cards.length - 1; i > 0; i--) {
