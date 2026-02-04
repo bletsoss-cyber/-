@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards: Σύνθετες Ρητίνες & Πολυμερισμός</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --secondary-color: #3498db;
+            --accent-color: #e74c3c;
+            --bg-color: #f0f2f5;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+            font-size: 1.5rem;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 600px;
+            perspective: 1000px;
+        }
+
+        .card {
+            background-color: transparent;
+            width: 100%;
+            height: 350px;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.6s;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            box-sizing: border-box;
+            border-radius: 15px;
+            text-align: center;
+            font-size: 1.1rem;
+            line-height: 1.5;
+        }
+
+        .card-front {
+            background-color: var(--card-bg);
+            color: var(--primary-color);
+            border: 2px solid var(--secondary-color);
+        }
+
+        .card-front::after {
+            content: "Πάτα για απάντηση";
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .card-back {
+            background-color: var(--secondary-color);
+            color: white;
+            transform: rotateY(180deg);
+            overflow-y: auto; /* Σε περίπτωση μεγάλου κειμένου */
+        }
+
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            width: 100%;
+            max-width: 600px;
+            margin-top: 20px;
+        }
+
+        button {
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #1a252f;
+        }
+
+        button:disabled {
+            background-color: #ccc;
+            cursor: not-allowed;
+        }
+
+        .counter {
+            font-weight: bold;
+            color: var(--primary-color);
+        }
+
+        .category-tag {
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: rgba(0,0,0,0.1);
+            padding: 4px 10px;
+            border-radius: 10px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        /* Responsive adjustments */
+        @media (max-width: 480px) {
+            .card { height: 300px; }
+            h1 { font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Οδοντιατρικά Υλικά: Σημειώσεις</h1>
+
+    <div class="container">
+        <div class="card" id="flashcard">
+            <div class="card-face card-front">
+                <span class="category-tag" id="category"></span>
+                <p id="question"></p>
+            </div>
+            <div class="card-face card-back">
+                <p id="answer"></p>
+            </div>
+        </div>
+    </div>
+
+    <div class="controls">
+        <button id="prevBtn" onclick="prevCard()">&#8592; Πίσω</button>
+        <span class="counter" id="counter"></span>
+        <button id="nextBtn" onclick="nextCard()">Επόμενο &#8594;</button>
+    </div>
+
+    <script>
+        const flashcards = [
+            // Κεφάλαιο 1.9 & Εισαγωγή
+            { cat: "Κλινική Συμπεριφορά", q: "Γιατί οι υδρόφοβες ρητίνες δεν διαβρέχουν εύκολα το δόντι;", a: "Γιατί το δόντι είναι υδρόφιλη επιφάνεια. Το χαμηλό ιξώδες βοηθάει, καθώς μεγάλο ιξώδες σημαίνει μικρή ικανότητα διαβροχής." },
+            { cat: "Σύνδεση", q: "Από ποιους παράγοντες εξαρτάται η σύνδεση υγρού-στερεού;", a: "1. Από την ικανότητα διαβροχής (ιξώδες).<br>2. Από τη μορφολογία της επιφάνειας (τραχύτητα = μεγαλύτερη επιφάνεια)." },
+            { cat: "Μηχανισμοί Σύνδεσης", q: "Ποιοι είναι οι 3 μηχανισμοί σύνδεσης;", a: "1. Μηχανική πλέξη/συγκράτηση (όχι χημική).<br>2. Φυσική σύνδεση (2ο γενείς δεσμοί - Προσρόφηση).<br>3. Χημική σύνδεση (Χημειορόφηση)." },
+            { cat: "Σύνδεση", q: "Τι είναι ο συζευκτικός παράγοντας;", a: "Είναι ο παράγοντας που δρα ως γέφυρα για τη δημιουργία δεσμού." },
+            { cat: "Σύνδεση", q: "Τι ρόλο παίζει ο ενεργοποιητής στην επιφάνεια;", a: "Τροποποιεί τα χαρακτηριστικά της επιφάνειας ώστε να γίνει ΠΙΟ ΔΕΚΤΙΚΗ." },
+            { cat: "Σύνδεση", q: "Τι είδους δεσμούς δημιουργεί το φωσφορικό οξύ;", a: "Ετεροπολικούς δεσμούς." },
+            
+            // Χημεία & Σιλάνια
+            { cat: "Χημεία", q: "Ποια είναι η χημική αλυσίδα σύνδεσης με σιλάνιο;", a: "Ύαλος + Σιλάνιο -> -C=C- (μήτρα) -> Σύνθετη Ρητίνη + Επεξεργασμένη επιφάνεια = ΔΕΣΜΟΣ." },
+            { cat: "Χημεία", q: "Τι θα συνέβαινε χωρίς τη χρήση σιλανίου;", a: "Ο δεσμός θα ήταν ασθενής." },
+            
+            // Κεφάλαιο 2.2 - Σύνθετες Ρητίνες
+            { cat: "Σύσταση", q: "Ποια είναι τα 3 βασικά συστατικά των σύνθετων ρητινών;", a: "1. Οργανική μήτρα (ρητινώδης).<br>2. Ανόργανες ενισχυτικές ουσίες.<br>3. Συζευκτικός παράγοντας (σιλάνια)." },
+            { cat: "Μήτρα", q: "Ποια είναι η συχνότερη ρητίνη (μήτρα) και ποιο το βασικό της χαρακτηριστικό;", a: "Η Bis-GMA.<br>Έχει μεγάλο μοριακό βάρος (MB), το οποίο οδηγεί σε μείωση της συστολής πολυμερισμού." },
+            { cat: "Μήτρα", q: "Γιατί προστίθεται το μονομερές TEGDMA;", a: "Είναι μονομερές χαμηλού ιξώδους και χρησιμοποιείται για να μειώσει το ιξώδες της τελικής ρητίνης." },
+            
+            // Πολυμερισμός - Αναστολείς
+            { cat: "Πολυμερισμός", q: "Γιατί προστίθεται αναστολέας πολυμερισμού και ποιος είναι;", a: "Για να αποφεύγεται ο πρόωρος πολυμερισμός.<br>Χρησιμοποιείται η Υδροκινόνη (0,1%)." },
+            { cat: "Πολυμερισμός", q: "Ποια είναι τα δύο είδη πολυμερισμού;", a: "1. Χημικός πολυμερισμός.<br>2. Φωτοπολυμερισμός." },
+            
+            // Ενισχυτικές Ουσίες & Σιλάνια
+            { cat: "Ενισχυτικές Ουσίες", q: "Ποιο είναι το πλεονέκτημα των ενισχυτικών ουσιών;", a: "Η σύνδεση μήτρας και ενισχυτικών ουσιών (μέσω συζευκτικού παράγοντα) δίνει καλύτερες μηχανικές ιδιότητες." },
+            { cat: "Σιλάνια", q: "Τι συμβαίνει αν δεν γίνει σωστή σύνδεση με τα σιλάνια (γ-MPTS);", a: "1. Τάση στην μήτρα.<br>2. Αύξηση ερπυσμού.<br>3. Κατάγματα που επιτρέπουν εισχώρηση νερού/ρωγμές." },
+            
+            // Φωτοπολυμερισμός
+            { cat: "Φωτοπολυμερισμός", q: "Τι είναι η σύνθετη ρητίνη κατά τον πολυμερισμό;", a: "Ένα σκληρό υλικό μέσω του πολυμερισμού των μονομερών της ρητινώδους μήτρας." },
+            { cat: "Φωτοπολυμερισμός", q: "Ποιο μήκος κύματος και ποια πηγή ελευθέρων ριζών χρησιμοποιείται;", a: "Μήκος κύματος: 460-480 nm.<br>Πηγή ριζών: Καμφοροκινόνη." },
+            { cat: "Φωτοπολυμερισμός", q: "Τι ορίζει τον 'καλύτερο' πολυμερισμό;", a: "Το μεγαλύτερο ποσοστό μετατροπής των διπλών δεσμών (-C=C-)." },
+            { cat: "Κανόνας Πολυμερισμού", q: "Ποιος είναι ο γενικός κανόνας για τον φωτοπολυμερισμό;", a: "Όχι πάνω από 2mm πάχος και τουλάχιστον 40 δευτερόλεπτα χρόνο." },
+            { cat: "Τεχνική", q: "Τι κάνουμε για βάθος μεγαλύτερο από 2mm;", a: "Χρησιμοποιούμε διαστρωματική τεχνική (στρώματα)." },
+            { cat: "Τεχνική", q: "Είναι αποτελεσματικά τα 20 δευτερόλεπτα πολυμερισμού;", a: "Όχι, θεωρείται μη αποτελεσματικό (σύμφωνα με τις σημειώσεις)." },
+            { cat: "Συσκευές", q: "Ποιες συσκευές πολυμερισμού αναφέρονται;", a: "1. Λάμπες μπλε/LED (460-480 nm).<br>2. Λάμπες χαλαζία αλογόνου.<br>3. Λέιζερ αργού.<br>4. Λάμπες τόξου πλάσματος." },
+            { cat: "Συστολή", q: "Ποια είναι η σχέση βάθους πολυμερισμού και συστολής;", a: "Αύξηση βάθους πολυμερισμού οδηγεί σε μείωση της συστολής (βάσει σημείωσης 'βέλος κάτω'). *Προσοχή: Ελέγξτε αν εννοεί ότι η αύξηση της μετατροπής αυξάνει τη συστολή.*" },
+            
+            // Ταξινόμηση & Χειρισμός
+            { cat: "Ταξινόμηση", q: "Ποιες είναι οι κατηγορίες σύνθετων ρητινών;", a: "1. Μακρόκοκκες (10-20μm).<br>2. Μικρόκοκκες.<br>3. Υβριδικές.<br>4. Μικροϋβριδικές.<br>5. Νανοϋβριδικές." },
+            { cat: "Χειρισμός", q: "Έχει η ρητίνη ικανότητα σύνδεσης με αδαμαντίνη/οδοντίνη;", a: "Όχι από μόνη της. Απαιτείται στεγνό υπόστρωμα, αδροποίηση (φωσφορικό οξύ) και συγκολλητικούς παράγοντες." },
+            { cat: "Ιξώδες", q: "Ποιο είναι το ιδανικό ιξώδες κατά τον χειρισμό;", a: "Τέτοιο ώστε να σμιλεύεται (γλυραίνεται) αλλά και να ρέει σε δύσκολα σημεία." },
+            { cat: "Ρευστές Ρητίνες", q: "Ποιο είναι το μειονέκτημα των ρευστών ρητινών;", a: "Έχουν κατώτερες μηχανικές ιδιότητες." },
+            
+            // Ιδιότητες
+            { cat: "Ιδιότητες", q: "Πώς πρέπει να είναι ο συντελεστής θερμικής διαστολής;", a: "Κοντά στον αντίστοιχο των οδοντικών ιστών." },
+            { cat: "Ιδιότητες", q: "Τι ισχύει για την προσρόφηση νερού;", a: "Πρέπει να είναι μειωμένη." },
+            { cat: "Ιδιότητες", q: "Τι ισχύει για την ακτινοσκιερότητα;", a: "Για τα οπίσθια δόντια, πρέπει να έχει τουλάχιστον αυτή της αδαμαντίνης." },
+            { cat: "Ενίσχυση", q: "Τι προσφέρουν οι ίνες στις σύνθετες ρητίνες;", a: "Ικανοποιητική αντοχή και σκληρότητα (κατάλληλες για στεφάνες και γέφυρες)." },
+            
+            // Compomers (Πολυόξινα τροποποιημένες)
+            { cat: "Compomers", q: "Τι απελευθερώνουν οι πολυόξινα τροποποιημένες ρητίνες (Compomers);", a: "Απελευθερώνουν Φθόριο (F-) για προστασία έναντι τερηδόνας (όπως οι υαλοϊνομερείς)." },
+            { cat: "Compomers", q: "Χρειάζονται συγκολλητικό παράγοντα τα Compomers;", a: "Ναι, χρειάζονται συγκολλητικό παράγοντα (δεν έχουν χημική σύνδεση με οδοντίνη/αδαμαντίνη)." },
+            { cat: "Compomers", q: "Πώς είναι οι μηχανικές ιδιότητες των Compomers;", a: "Κατώτερες (έχουν ενδιάμεση αντοχή σε συμπίεση)." },
+            { cat: "Compomers", q: "Πώς είναι ο χειρισμός των Compomers;", a: "Προσαρμόζονται και διαμορφώνονται εύκολα, δεν ρέουν." }
+        ];
+
+        let currentIndex = 0;
+        const cardElement = document.getElementById('flashcard');
+        const questionEl = document.getElementById('question');
+        const answerEl = document.getElementById('answer');
+        const categoryEl = document.getElementById('category');
+        const counterEl = document.getElementById('counter');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function updateCard() {
+            // Reset flip state
+            cardElement.classList.remove('is-flipped');
+            
+            // Update content with slight delay to hide change during potential flip back
+            setTimeout(() => {
+                const currentCard = flashcards[currentIndex];
+                questionEl.textContent = currentCard.q;
+                answerEl.innerHTML = currentCard.a;
+                categoryEl.textContent = currentCard.cat;
+                counterEl.textContent = `${currentIndex + 1} / ${flashcards.length}`;
+                
+                // Button states
+                prevBtn.disabled = currentIndex === 0;
+                nextBtn.disabled = currentIndex === flashcards.length - 1;
+            }, 200);
+        }
+
+        // Flip functionality
+        cardElement.addEventListener('click', () => {
+            cardElement.classList.toggle('is-flipped');
+        });
+
+        // Navigation
+        function nextCard() {
+            if (currentIndex < flashcards.length - 1) {
+                currentIndex++;
+                updateCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                updateCard();
+            }
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ' || e.key === 'Enter') cardElement.classList.toggle('is-flipped');
+        });
+
+        // Initialize
+        updateCard();
+
+    </script>
+</body>
+</html>
