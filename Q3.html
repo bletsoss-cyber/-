@@ -3,520 +3,565 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Κουίζ Οδοντιατρικών Υλικών</title>
+    <title>Flashcards Οδοντιατρικών Υλικών</title>
     
-    <!-- Φόρτωση Tailwind CSS για το στυλ -->
+    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
     
-    <!-- Φόρτωση React και ReactDOM -->
+    <!-- React & ReactDOM -->
     <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
     <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
     
-    <!-- Φόρτωση Babel για τη μεταγλώττιση του JSX -->
+    <!-- Babel -->
     <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
 
     <style>
-        /* Προσθήκη εφέ για drag and drop και animations */
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+        .perspective-1000 { perspective: 1000px; }
+        .transform-style-3d { transform-style: preserve-3d; }
+        .backface-hidden { backface-visibility: hidden; }
+        .rotate-y-180 { transform: rotateY(180deg); }
+        
+        /* Custom Scrollbar for longer answers */
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 4px;
         }
-        .animate-fade-in {
-            animation: fadeIn 0.3s ease-out forwards;
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1); 
         }
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3); 
+            border-radius: 4px;
         }
     </style>
 </head>
-<body class="bg-slate-100 min-h-screen text-slate-800 font-sans selection:bg-blue-200">
+<body class="bg-slate-100 min-h-screen flex flex-col items-center justify-center p-4 font-sans text-slate-800">
     <div id="root"></div>
 
     <script type="text/babel">
         const { useState, useEffect } = React;
 
         // --- Εικονίδια (SVGs) ---
-        const IconCheckCircle = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+        const IconChevronLeft = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
         );
-        const IconXCircle = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+        const IconChevronRight = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
         );
-        const IconRefreshCw = () => (
+        const IconRotateCw = () => (
             <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
         );
-        const IconTrophy = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-500 mx-auto mb-4"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 1 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+        const IconShuffle = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
         );
-        const IconArrowRight = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-        );
-        const IconMousePointer2 = () => (
-            <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> 
+        const IconLayers = () => (
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-blue-600"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
         );
 
-        // --- Δεδομένα Κουίζ ---
-        const quizData = [
-            // Ενότητα 1: Πολυμερισμός
+        // --- Δεδομένα Flashcards ---
+        const flashcardsData = [
+            // --- ΠΟΛΥΜΕΡΙΣΜΟΣ ---
             {
                 id: 1,
-                type: 'mc',
                 category: 'Πολυμερισμός',
-                question: 'Ποιοι είναι οι δύο βασικοί τρόποι πολυμερισμού;',
-                options: [
-                'Προσθήκη και Αφαίρεση',
-                'Προσθήκη και Συμπύκνωση',
-                'Οξείδωση και Αναγωγή',
-                'Συμπύκνωση και Εξάτμιση'
-                ],
-                correctAnswer: 1
+                question: 'Ποιοι είναι οι 2 τρόποι πολυμερισμού;',
+                answer: (
+                <div className="text-left">
+                    <ol className="list-decimal pl-5 space-y-2">
+                    <li><strong>Προσθήκη:</strong> Όχι εξάλειψη μικρότερου μορίου.</li>
+                    <li><strong>Συμπύκνωση:</strong> Εξάλειψη μικρότερου μορίου (π.χ. H₂O).</li>
+                    </ol>
+                </div>
+                )
             },
             {
                 id: 2,
-                type: 'dnd',
-                category: 'Πολυμερισμός',
-                question: 'Συμπλήρωσε το στάδιο που λείπει στον Πολυμερισμό Προσθήκης:',
-                textBefore: 'Ενεργοποίηση → Έναρξη → ',
-                textAfter: ' → Τερματισμός',
-                options: ['Συμπύκνωση', 'Πρόοδος (Ανάπτυξη)', 'Διάσπαση', 'Οξείδωση'],
-                correctAnswer: 'Πρόοδος (Ανάπτυξη)'
+                category: 'Πολυμερισμός Προσθήκης',
+                question: 'Ποια είναι τα ΣΤΑΔΙΑ του Πολυμερισμού Προσθήκης;',
+                answer: (
+                <div className="text-left">
+                    <ul className="space-y-2">
+                    <li>1. <strong>Ενεργοποίηση</strong> (απαιτεί την παρουσία ελευθέρων ριζών)</li>
+                    <li>2. <strong>Έναρξη</strong></li>
+                    <li>3. <strong>Πρόοδος της αντίδρασης</strong> (ανάπτυξη της αλυσίδας)</li>
+                    <li>4. <strong>Τερματισμός</strong></li>
+                    </ul>
+                </div>
+                )
             },
             {
                 id: 3,
-                type: 'mc',
-                category: 'Πολυμερισμός',
-                question: 'Ποιος είναι ο ρόλος του Υπεροξειδίου του Βενζοιλίου;',
-                options: [
-                'Λειτουργεί ως αναστολέας',
-                'Παρέχει ελεύθερες ρίζες (Ενεργοποιητής)',
-                'Μειώνει το σημείο βρασμού',
-                'Αυξάνει τη διαφάνεια'
-                ],
-                correctAnswer: 1
+                category: 'Πολυμερισμός Προσθήκης',
+                question: 'Ποιος είναι ο ενεργοποιητής στην Οδοντιατρική και πώς λειτουργεί;',
+                answer: (
+                <div className="text-left">
+                    <p className="mb-2"><strong>Υπεροξείδιο Βενζοιλίου</strong> (δίνει ελεύθερες ρίζες).</p>
+                    <p>↳ Διασπάται με χρήση ενεργοποιητή (Θερμότητα &gt; 65°C).</p>
+                </div>
+                )
             },
             {
                 id: 4,
-                type: 'dnd',
                 category: 'Ιδιότητες Πολυμερών',
-                question: 'Σύρε τη σωστή επίδραση της αύξησης του Μοριακού Βάρους (Mr):',
-                textBefore: 'Η αύξηση του Mr οδηγεί σε ',
-                textAfter: ' του ιξώδους τήξης και της Θερμοκρασίας υαλώδους μετάπτωσης.',
-                options: ['Μείωση', 'Σταθεροποίηση', 'Αύξηση', 'Μηδενισμό'],
-                correctAnswer: 'Αύξηση'
+                question: 'Πώς επηρεάζει η αύξηση του Μοριακού Βάρους (↑Mr) τις ιδιότητες;',
+                answer: (
+                <div className="text-left">
+                    <p className="mb-2">Η <strong>↑ Mr</strong> επηρεάζει (βελτιώνει) τις φυσικές ιδιότητες.</p>
+                    <p>↳ <strong>↑ ιξώδους τήξης</strong> → <strong>↑ θ υαλώδους μετάπτωσης</strong>.</p>
+                    <p className="text-sm text-gray-300 mt-2">(Αποτέλεσμα: Δύσκολη επεξεργασία).</p>
+                </div>
+                )
             },
-
-            // Ενότητα 2: Πλαστικοποιητές
             {
                 id: 5,
-                type: 'mc',
-                category: 'Πλαστικοποιητές',
-                question: 'Ποια είναι η επίδραση των πλαστικοποιητών στα πολυμερή;',
-                options: [
-                'Αυξάνουν τη σκληρότητα και το μέτρο ελαστικότητας',
-                'Μειώνουν τη θ-υαλώδους μετάπτωσης και αυξάνουν την ευκαμψία',
-                'Δεν επηρεάζουν τις μηχανικές ιδιότητες',
-                'Προκαλούν άμεσο τερματισμό της αντίδρασης'
-                ],
-                correctAnswer: 1
+                category: 'Ιδιότητες Πολυμερών',
+                question: 'Πώς επηρεάζει η Θερμοκρασία (Θ) τους δεσμούς στα πολυμερή;',
+                answer: (
+                <div className="text-left">
+                    <ul className="space-y-2">
+                    <li><strong>Θ↑ (Αύξηση):</strong> Σπάνε οι δεσμοί.</li>
+                    <li><strong>Θ↓ (Μείωση):</strong> Επαναδημιουργούνται.</li>
+                    </ul>
+                    <p className="mt-2 text-sm italic text-gray-400">Σημείωση: Η κρυσταλλική δομή είναι περιορισμένη στα πολυμερή.</p>
+                </div>
+                )
             },
+            
+            // --- SOS / ΠΛΑΣΤΙΚΟΠΟΙΗΤΕΣ ---
             {
                 id: 6,
-                type: 'dnd',
-                category: 'Πλαστικοποιητές',
-                question: 'Ποια ουσία χρησιμοποιείται ως πλαστικοποιητής στα μαλακά επιστρώματα;',
-                textBefore: 'Χρησιμοποιείται η ',
-                textAfter: ' (αν και έχει ελαττωθεί η χρήση της σε άλλα υλικά).',
-                options: ['Αιθανόλη', 'Διβουτυλική φθαλείνη', 'Υπεροξείδιο', 'Σιλικόνη'],
-                correctAnswer: 'Διβουτυλική φθαλείνη'
+                category: 'SOS - Πλαστικοποιητές',
+                question: 'Τι είναι οι Πλαστικοποιητές;',
+                answer: 'Είναι ουσία με μικρό Mr (Μοριακό Βάρος) που προστίθεται σε πολυμερές.'
             },
-
-            // Ενότητα 3: Ρεολογία
             {
                 id: 7,
-                type: 'mc',
-                category: 'Ρεολογία',
-                question: 'Πώς ορίζεται το Ιξώδες;',
-                options: [
-                'Η ικανότητα ανάκλασης του φωτός',
-                'Η αντίσταση ενός υγρού στη ροή',
-                'Η αντοχή σε θλίψη',
-                'Η θερμική αγωγιμότητα'
-                ],
-                correctAnswer: 1
+                category: 'SOS - Πλαστικοποιητές',
+                question: 'Ποια είναι η επίδραση των Πλαστικοποιητών;',
+                answer: (
+                <div className="text-left">
+                    <div className="border-l-4 border-blue-400 pl-3 my-2">
+                    <p>↓ θ υαλώδους μετάπτωσης</p>
+                    <p>↓ μέτρο ελαστικότητας</p>
+                    </div>
+                    <p className="font-bold">Αποτέλεσμα: Πιο εύκαμπτες οι αλυσίδες.</p>
+                </div>
+                )
             },
             {
                 id: 8,
-                type: 'dnd',
-                category: 'Ρεολογία',
-                question: 'Συμπλήρωσε τη σχέση Θερμοκρασίας και Ιξώδους:',
-                textBefore: 'Όταν αυξάνεται η Θερμοκρασία (Θ↑), το Ιξώδες ',
-                textAfter: '.',
-                options: ['Αυξάνεται', 'Μειώνεται', 'Μένει ίδιο', 'Μηδενίζεται'],
-                correctAnswer: 'Μειώνεται'
-            },
-            {
-                id: 9,
-                type: 'mc',
-                category: 'Ρεολογία',
-                question: 'Τι είναι η Θιξοτροπία;',
-                options: [
-                'Η σταθερή ροή ανεξαρτήτως πίεσης',
-                'Η μεταβολή του ιξώδους για συγκεκριμένο βαθμό διάτμησης',
-                'Η μετατροπή στερεού σε αέριο',
-                'Η αντοχή στην τριβή'
-                ],
-                correctAnswer: 1
+                category: 'SOS - Πλαστικοποιητές',
+                question: 'Ποιος πλαστικοποιητής χρησιμοποιείται στην Οδοντιατρική και πού;',
+                answer: (
+                <div className="text-left">
+                    <p><strong>Διβουτυλική φθαλείνη</strong></p>
+                    <p className="mt-1">→ Χρήση: Μαλακά επιστρώματα οδοντοστοιχιών.</p>
+                    <p className="mt-2 text-red-300 text-sm">↳ Ελαττωμένη χρήση στα αποτυπωτικά υλικά και στις σύνθετες ρητίνες.</p>
+                </div>
+                )
             },
 
-            // Ενότητα 4: Θερμικές & Οπτικές Ιδιότητες
+            // --- ΦΥΣΙΚΕΣ ΙΔΙΟΤΗΤΕΣ 1.7 - ΡΕΟΛΟΓΙΑ ---
+            {
+                id: 9,
+                category: 'Φυσικές Ιδιότητες - Ρεολογία',
+                question: 'Τι είναι Ρεολογία και πώς διακρίνεται η Ροή;',
+                answer: (
+                <div className="text-left">
+                    <p className="mb-2"><strong>Ρεολογία:</strong> Μελέτη της ροής των υλικών.</p>
+                    <p className="font-semibold underline">Ροή:</p>
+                    <ul className="list-disc pl-5">
+                    <li><strong>Υγρά</strong> ↗ Ιξώδες</li>
+                    <li><strong>Στερεά</strong> ↗ Ερπυσμός</li>
+                    <li>↘ Ιξωδοελαστικότητα</li>
+                    </ul>
+                </div>
+                )
+            },
             {
                 id: 10,
-                type: 'dnd',
-                category: 'Θερμικές Ιδιότητες',
-                question: 'Ο συντελεστής θερμικής διαστολής (α) του υλικού πρέπει να είναι:',
-                textBefore: 'Ο συντελεστής (α) του υλικού πρέπει να είναι ',
-                textAfter: ' με αυτόν των οδοντικών ιστών.',
-                options: ['Διπλάσιος', 'Ίσος', 'Μικρότερος', 'Αντίστροφος'],
-                correctAnswer: 'Ίσος'
+                category: 'Ρεολογία',
+                question: 'Τι είναι Ιξώδες και πώς επηρεάζεται από τη Θερμοκρασία;',
+                answer: (
+                <div className="text-left">
+                    <p><strong>Ιξώδες:</strong> Η αντίσταση ενός υγρού στη ροή.</p>
+                    <div className="mt-3 bg-yellow-900/50 p-2 rounded text-center border border-yellow-600 text-yellow-100">
+                    <strong>Θ↑ : ↓ Ιξώδους</strong>
+                    <div className="text-xs text-yellow-200/80">(Αύξηση θερμοκρασίας μειώνει το ιξώδες)</div>
+                    </div>
+                </div>
+                )
             },
             {
                 id: 11,
-                type: 'mc',
-                category: 'Οπτικές Ιδιότητες',
-                question: 'Τι συμβαίνει κατά τον Φθορισμό;',
-                options: [
-                'Απορρόφηση στο ορατό και εκπομπή στο υπεριώδες',
-                'Απορρόφηση στο υπεριώδες (300-400nm) και εκπομπή στο ορατό',
-                'Πλήρης ανάκλαση του φωτός',
-                'Απορρόφηση θερμότητας'
-                ],
-                correctAnswer: 1
+                category: 'Ρεολογία',
+                question: 'Δώσε τους τύπους για Τάση Διάτμησης και Βαθμό Διάτμησης.',
+                answer: (
+                <div className="text-left space-y-3">
+                    <div>
+                    <span className="font-bold">Τάση διάτμησης (σ):</span>
+                    <div className="text-xl text-center font-mono my-1">σ = F / A</div>
+                    </div>
+                    <div>
+                    <span className="font-bold">Βαθμός διάτμησης (ė):</span>
+                    <div className="text-xl text-center font-mono my-1">ė = V / d</div>
+                    </div>
+                </div>
+                )
             },
             {
                 id: 12,
-                type: 'dnd',
-                category: 'Υφή Επιφάνειας',
-                question: 'Πώς αλληλεπιδρά το φως με την υφή;',
-                textBefore: 'Οι λείες επιφάνειες προκαλούν ανάκλαση, ενώ οι τραχείες προκαλούν ',
-                textAfter: ' του φωτός.',
-                options: ['Διάθλαση', 'Σκέδαση', 'Απορρόφηση', 'Ενίσχυση'],
-                correctAnswer: 'Σκέδαση'
-            },
-            {
-                id: 13,
-                type: 'mc',
-                category: 'Υφή Επιφάνειας',
-                question: 'Ποια παράμετρος μετρά την τραχύτητα σε τρισδιάστατη μορφή;',
-                options: [
-                'Ra',
-                'Sa',
-                'pH',
-                'Mr'
-                ],
-                correctAnswer: 1
+                category: 'Ρεολογία',
+                question: 'Τι είναι η Θιξοτροπία;',
+                answer: 'Είναι η μεταβολή του ιξώδους για συγκεκριμένο βαθμό διάτμησης.'
             },
 
-            // Ενότητα 5: Χημικές Ιδιότητες & Διάβρωση
+            // --- ΘΕΡΜΙΚΕΣ ΙΔΙΟΤΗΤΕΣ ---
+            {
+                id: 13,
+                category: 'Θερμικές Ιδιότητες',
+                question: 'Ποιες είναι οι βασικές Θερμικές Ιδιότητες;',
+                answer: (
+                <div className="text-left">
+                    <ul className="list-disc pl-5 space-y-1">
+                    <li>Θερμική αγωγιμότητα</li>
+                    <li>Ειδική θερμότητα</li>
+                    <li>Θερμική διάχυση</li>
+                    <li>Γραμμικός συντελεστής θερμικής διαστολής (α)</li>
+                    </ul>
+                </div>
+                )
+            },
             {
                 id: 14,
-                type: 'mc',
-                category: 'Χημικές Ιδιότητες',
-                question: 'Ποια είναι η κύρια χημική ιδιότητα που αφορά τα Πολυμερή;',
-                options: [
-                'Οξείδωση',
-                'Προσρόφηση νερού / Απώλεια συστατικών',
-                'Ηλεκτροχημική διάβρωση',
-                'Αμαύρωση'
-                ],
-                correctAnswer: 1
+                category: 'Θερμικές Ιδιότητες',
+                question: 'Ποια είναι η ιδανική συνθήκη για τον συντελεστή θερμικής διαστολής (α);',
+                answer: (
+                <div className="text-center text-lg font-bold bg-green-900/40 p-3 rounded border border-green-600 text-green-100">
+                    α (αποκαταστατικού υλικού) <br/> = <br/> α (οδοντικών ιστών)
+                </div>
+                )
             },
             {
                 id: 15,
-                type: 'dnd',
-                category: 'Διάβρωση',
-                question: 'Τι είδους αντίδραση είναι η Διάβρωση;',
-                textBefore: 'Η διάβρωση είναι μια ',
-                textAfter: ' (ανοδική) αντίδραση του υλικού με το περιβάλλον.',
-                options: ['Μηχανική', 'Ηλεκτροχημική', 'Θερμική', 'Πυρηνική'],
-                correctAnswer: 'Ηλεκτροχημική'
+                category: 'Θερμικές Ιδιότητες',
+                question: 'Ποια είναι η Κλινική Σημασία των θερμικών ιδιοτήτων;',
+                answer: (
+                <div className="text-left">
+                    <ol className="list-decimal pl-5 space-y-2">
+                    <li>Μπορούν να επηρεάσουν την <strong>αίσθηση ζεστού-κρύου</strong>.</li>
+                    <li>Μπορούν να οδηγήσουν σε <strong>μηχανική αποτυχία</strong> λόγω διαστολής-συστολής.</li>
+                    </ol>
+                </div>
+                )
             },
+
+            // --- ΟΠΤΙΚΕΣ ΙΔΙΟΤΗΤΕΣ ---
             {
                 id: 16,
-                type: 'mc',
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Από τι εξαρτώνται οι Οπτικές Ιδιότητες;',
+                answer: (
+                <div className="text-left">
+                    Χαρακτηριστικά αντικειμένου <br/>
+                    <span className="text-blue-300 font-bold">→ Φάσμα ηλ/μαγ ακτινοβολίας →</span> <br/>
+                    Χρώμα, Διαφάνεια, Υφή επιφάνειας.
+                </div>
+                )
+            },
+            {
+                id: 17,
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Τι είναι ο Φθορισμός και τι μήκη κύματος περιλαμβάνει;',
+                answer: (
+                <div className="text-left">
+                    <p><strong>Φθορισμός:</strong></p>
+                    <ul className="list-none pl-2 space-y-1 mt-2">
+                    <li>⬇ Απορρόφηση φωτός στο <strong>υπεριώδες</strong> (300-400 nm)</li>
+                    <li>⬆ Εκπομπή φωτός στο <strong>ορατό</strong> (400-450 nm)</li>
+                    </ul>
+                </div>
+                )
+            },
+            {
+                id: 18,
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Ποιο είναι το αποτέλεσμα του φωτός φθορισμού και πού είναι αναγκαίο;',
+                answer: (
+                <div className="text-left">
+                    <p>→ Δίνει <strong>πιο λευκά δόντια</strong> (αδαμαντίνη).</p>
+                    <p className="mt-2"><strong>Αναγκαίο στα αποκαταστατικά υλικά:</strong></p>
+                    <ul className="list-disc pl-5 text-sm text-gray-300">
+                    <li>Γέφυρες</li>
+                    <li>Στεφάνες</li>
+                    <li>Εμφράξεις</li>
+                    </ul>
+                </div>
+                )
+            },
+            {
+                id: 19,
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Πώς διακρίνεται η Διαφάνεια;',
+                answer: (
+                <div className="text-left">
+                    <ul className="space-y-2">
+                    <li>↗ <strong>Διαφανές:</strong> Διέλευση φωτός.</li>
+                    <li>↘ <strong>Αδιαφανές:</strong> Μη διέλευση φωτός.</li>
+                    </ul>
+                </div>
+                )
+            },
+
+            // --- ΥΦΗ ΕΠΙΦΑΝΕΙΑΣ ---
+            {
+                id: 20,
+                category: 'Υφή Επιφάνειας',
+                question: 'Πώς αλληλεπιδρά το φως με Λείες και Τραχείες επιφάνειες;',
+                answer: (
+                <div className="text-left">
+                    <ul className="space-y-3">
+                    <li><strong>Λείες επιφάνειες:</strong> Ανάκλαση φωτός.</li>
+                    <li><strong>Τραχείες επιφάνειες:</strong> Σκέδαση φωτός.</li>
+                    </ul>
+                    <div className="mt-3 text-sm italic text-gray-400">
+                    "Όσο μικρότερο → τόσο τραχύτερο"
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 21,
+                category: 'Υφή Επιφάνειας',
+                question: 'Τι είναι τα Ra και Sa στη μέτρηση τραχύτητας;',
+                answer: (
+                <div className="text-left">
+                    <ul className="space-y-3">
+                    <li>
+                        <strong>Ra:</strong> Αδρότητα επιφάνειας σε <u>προφιλόμετρο ακίδας</u>.
+                    </li>
+                    <li>
+                        <strong>Sa:</strong> Αδρότητα επιφάνειας σε <u>τρισδιάστατη μορφή</u> (οπτικό προφιλόμετρο).
+                    </li>
+                    </ul>
+                </div>
+                )
+            },
+            {
+                id: 22,
+                category: 'Υφή Επιφάνειας',
+                question: 'Ποια είναι η κλινική σημασία της υφής επιφάνειας;',
+                answer: 'Η επιλογή ενός υλικού εξαρτάται από την ικανότητα λείανσης της επιφάνειάς του.'
+            },
+
+            // --- ΧΗΜΙΚΕΣ ΙΔΙΟΤΗΤΕΣ ---
+            {
+                id: 23,
+                category: 'Χημικές Ιδιότητες 1.8',
+                question: 'Ποια είναι η κύρια χημική ιδιότητα για τα Πολυμερή;',
+                answer: (
+                <div className="text-left">
+                    <p><strong>Προσρόφηση (νερού)</strong> / Απώλεια ευδιάλυτων συστατικών.</p>
+                    <div className="mt-2 text-sm bg-white/10 p-2 rounded">
+                    Στα Μαλακά επιστρώματα οδοντοστοιχιών.
+                    </div>
+                </div>
+                )
+            },
+            {
+                id: 24,
+                category: 'Χημικές Ιδιότητες',
+                question: 'Ποιες είναι οι χημικές ιδιότητες για Μέταλλα και Κεραμικά;',
+                answer: (
+                <div className="text-left">
+                    <ul className="space-y-2">
+                    <li><strong>Μέταλλα:</strong> Αμαύρωση / Οξείδωση.</li>
+                    <li><strong>Κεραμικά:</strong> Χημική διάλυση.</li>
+                    </ul>
+                </div>
+                )
+            },
+            {
+                id: 25,
+                category: 'Χημικές Ιδιότητες',
+                question: 'Σε τι οδηγεί η Χημική Διάλυση / Δυσχρωμία;',
+                answer: (
+                <div className="text-left">
+                    <ol className="list-decimal pl-5 font-semibold space-y-2">
+                    <li className="text-red-300">ΜΕΙΩΣΗ ΑΝΤΟΧΗΣ</li>
+                    <li className="text-red-400">ΤΟΞΙΚΟΤΗΤΑ (τοπική ή συστηματική)</li>
+                    </ol>
+                    <p className="text-sm mt-2 text-gray-400">Αιτίες δυσχρωμίας: Σουλφίδια, χλωρίδια.</p>
+                </div>
+                )
+            },
+            {
+                id: 26,
+                category: 'Χημικές Ιδιότητες',
+                question: 'Τι συμβαίνει στα Πορώδη υλικά;',
+                answer: (
+                <div className="text-left">
+                    <p>Πορώδες υλικό → <strong>Προσρόφηση</strong></p>
+                    <p className="mt-1">↪ Αποτέλεσμα: Αποχρωματισμός, Αποδόμηση υλικών.</p>
+                </div>
+                )
+            },
+
+            // --- ΔΙΑΒΡΩΣΗ ---
+            {
+                id: 27,
                 category: 'Διάβρωση',
-                question: 'Σε ποιες κατηγορίες χωρίζεται η εντοπισμένη υγρή διάβρωση;',
-                options: [
-                'Οξείδωση και Αναγωγή',
-                'Γαλβανική διάβρωση και Διάβρωση σχισμών',
-                'Ξηρή και Υγρή',
-                'Επιφανειακή και Εσωτερική'
-                ],
-                correctAnswer: 1
+                question: 'Τι είναι η Διάβρωση;',
+                answer: 'Είναι η ηλεκτροχημική (ανοδική) αντίδραση του υλικού με το περιβάλλον.'
+            },
+            {
+                id: 28,
+                category: 'Διάβρωση',
+                question: 'Πώς κατηγοριοποιείται η Διάβρωση;',
+                answer: (
+                <div className="text-left text-sm">
+                    <ul className="space-y-2">
+                        <li><strong>Ξηρή</strong> (Χημική)</li>
+                        <li>
+                        <strong>Υγρή</strong> (Ηλεκτροχημική):
+                        <ul className="pl-4 list-[square] mt-1 space-y-1 text-gray-300">
+                            <li>Ομοιόμορφη</li>
+                            <li>Εντοπισμένη:
+                            <span className="block pl-4 text-xs">↘ Γαλβανική διάβρωση</span>
+                            <span className="block pl-4 text-xs">↘ Διάβρωση σχισμών</span>
+                            </li>
+                        </ul>
+                        </li>
+                    </ul>
+                </div>
+                )
             }
         ];
 
         // --- Κύρια Εφαρμογή ---
         function App() {
-            const [currentQuestionIndex, setCurrentQuestionIndex] = useState(0);
-            const [score, setScore] = useState(0);
-            const [showResult, setShowResult] = useState(false);
-            const [selectedOption, setSelectedOption] = useState(null);
-            const [isAnswered, setIsAnswered] = useState(false);
-            const [droppedItem, setDroppedItem] = useState(null);
-            const [isCorrect, setIsCorrect] = useState(false);
+            const [currentIndex, setCurrentIndex] = useState(0);
+            const [isFlipped, setIsFlipped] = useState(false);
+            const [cards, setCards] = useState(flashcardsData);
+            const [direction, setDirection] = useState(0); 
 
-            const currentQuestion = quizData[currentQuestionIndex];
+            const currentCard = cards[currentIndex];
 
-            // Διαχείριση επιλογής (Multiple Choice)
-            const handleMCSelect = (index) => {
-                if (isAnswered) return;
-                setSelectedOption(index);
-                const correct = index === currentQuestion.correctAnswer;
-                setIsCorrect(correct);
-                setIsAnswered(true);
-                if (correct) setScore(score + 1);
+            const handleNext = () => {
+                setIsFlipped(false);
+                setDirection(1);
+                setTimeout(() => {
+                    setCurrentIndex((prev) => (prev + 1) % cards.length);
+                    setDirection(0);
+                }, 150);
             };
 
-            // Διαχείριση Drag (Έναρξη)
-            const handleDragStart = (e, item) => {
-                if (isAnswered) return;
-                e.dataTransfer.setData('text/plain', item);
+            const handlePrev = () => {
+                setIsFlipped(false);
+                setDirection(-1);
+                setTimeout(() => {
+                    setCurrentIndex((prev) => (prev - 1 + cards.length) % cards.length);
+                    setDirection(0);
+                }, 150);
             };
 
-            // Διαχείριση Drop (Απόθεση)
-            const handleDrop = (e) => {
-                e.preventDefault();
-                if (isAnswered) return;
-                const item = e.dataTransfer.getData('text/plain');
-                if (item) {
-                    processSelection(item);
-                }
+            const handleShuffle = () => {
+                setIsFlipped(false);
+                const shuffled = [...flashcardsData].sort(() => Math.random() - 0.5);
+                setCards(shuffled);
+                setCurrentIndex(0);
             };
 
-            const handleDragOver = (e) => {
-                e.preventDefault();
+            const handleReset = () => {
+                setIsFlipped(false);
+                setCards(flashcardsData);
+                setCurrentIndex(0);
             };
-
-            // Κοινή λογική για κλικ και drop στις DND ερωτήσεις
-            const processSelection = (item) => {
-                setDroppedItem(item);
-                const correct = item === currentQuestion.correctAnswer;
-                setIsCorrect(correct);
-                setIsAnswered(true);
-                if (correct) setScore(score + 1);
-            };
-
-            const nextQuestion = () => {
-                if (currentQuestionIndex < quizData.length - 1) {
-                    setCurrentQuestionIndex(currentQuestionIndex + 1);
-                    resetState();
-                } else {
-                    setShowResult(true);
-                }
-            };
-
-            const resetState = () => {
-                setSelectedOption(null);
-                setIsAnswered(false);
-                setDroppedItem(null);
-                setIsCorrect(false);
-            };
-
-            const restartQuiz = () => {
-                setCurrentQuestionIndex(0);
-                setScore(0);
-                setShowResult(false);
-                resetState();
-            };
-
-            if (showResult) {
-                return (
-                    <div className="min-h-screen flex flex-col items-center justify-center p-4">
-                        <div className="glass-panel p-8 rounded-2xl shadow-xl max-w-md w-full text-center animate-fade-in border border-white/50">
-                            <IconTrophy />
-                            <h2 className="text-2xl font-bold text-slate-800 mb-2">Ολοκλήρωση Κουίζ!</h2>
-                            <p className="text-slate-600 mb-6">
-                                Το σκορ σου είναι: <span className="text-2xl font-bold text-blue-600">{score}</span> / {quizData.length}
-                            </p>
-                            
-                            <div className="w-full bg-gray-200 rounded-full h-2.5 mb-6 overflow-hidden">
-                                <div 
-                                    className="bg-blue-600 h-2.5 rounded-full transition-all duration-1000 ease-out" 
-                                    style={{ width: `${(score / quizData.length) * 100}%` }}
-                                ></div>
-                            </div>
-
-                            <button
-                                onClick={restartQuiz}
-                                className="flex items-center justify-center w-full gap-2 bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition font-semibold shadow-lg shadow-blue-200"
-                            >
-                                <IconRefreshCw />
-                                Πάμε πάλι
-                            </button>
-                        </div>
-                    </div>
-                );
-            }
 
             return (
-                <div className="min-h-screen flex flex-col items-center justify-center p-4 font-sans pb-10">
-                    <div className="max-w-xl w-full animate-fade-in">
-                        {/* Header */}
-                        <div className="flex justify-between items-end mb-4 px-2">
-                            <div>
-                                <span className="text-xs font-bold text-blue-600 tracking-wider uppercase bg-blue-100 px-2 py-1 rounded">
-                                    {currentQuestion.category}
+                <div className="w-full max-w-md flex flex-col items-center">
+                    <div className="w-full mb-6 flex items-center justify-between">
+                        <h1 className="text-2xl font-bold flex items-center gap-2 text-slate-700">
+                            <IconLayers />
+                            Οδοντιατρικά Υλικά
+                        </h1>
+                        <div className="text-sm font-medium text-slate-500 bg-white px-3 py-1 rounded-full shadow-sm">
+                            {currentIndex + 1} / {cards.length}
+                        </div>
+                    </div>
+
+                    <div 
+                        className="relative w-full h-96 perspective-1000 group cursor-pointer"
+                        onClick={() => setIsFlipped(!isFlipped)}
+                    >
+                        <div className={`
+                        relative w-full h-full duration-500 transform-style-3d transition-transform
+                        ${isFlipped ? 'rotate-y-180' : ''}
+                        ${direction === 1 ? 'translate-x-[-10px] opacity-80' : ''}
+                        ${direction === -1 ? 'translate-x-[10px] opacity-80' : ''}
+                        `}>
+                        {/* Front Side */}
+                        <div className="absolute w-full h-full bg-white rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center backface-hidden border-2 border-slate-100">
+                            <div className="absolute top-4 left-0 w-full flex justify-center">
+                                <span className="bg-blue-100 text-blue-800 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider shadow-sm">
+                                {currentCard.category}
                                 </span>
-                                <h2 className="text-slate-400 text-sm mt-1 font-medium">
-                                    Ερώτηση {currentQuestionIndex + 1} από {quizData.length}
-                                </h2>
                             </div>
-                            <div className="text-slate-600 font-bold bg-white px-3 py-1 rounded-lg shadow-sm border border-slate-200">
-                                Score: {score}
-                            </div>
+                            <h2 className="text-xl font-bold text-center leading-relaxed text-slate-800">
+                            {currentCard.question}
+                            </h2>
+                            <p className="absolute bottom-6 text-xs text-slate-400 font-medium animate-pulse">
+                            Κλικ για απάντηση
+                            </p>
                         </div>
 
-                        <div className="glass-panel rounded-2xl shadow-xl overflow-hidden border border-white/50">
-                            {/* Progress Bar */}
-                            <div className="w-full bg-slate-100 h-1.5">
-                                <div 
-                                    className="bg-blue-500 h-1.5 transition-all duration-500 ease-out"
-                                    style={{ width: `${((currentQuestionIndex + 1) / quizData.length) * 100}%` }}
-                                ></div>
+                        {/* Back Side */}
+                        <div className="absolute w-full h-full bg-slate-800 text-white rounded-2xl shadow-xl p-8 flex flex-col items-center justify-center backface-hidden rotate-y-180 custom-scrollbar overflow-y-auto border-2 border-slate-700">
+                            <div className="absolute top-4 left-0 w-full flex justify-center mb-4">
+                                <span className="bg-slate-700 text-slate-300 text-xs font-semibold px-3 py-1 rounded-full uppercase tracking-wider border border-slate-600">
+                                Απάντηση
+                                </span>
                             </div>
-
-                            <div className="p-6 md:p-8">
-                                {/* Question Text */}
-                                <h3 className="text-xl font-bold text-slate-800 mb-6 leading-relaxed">
-                                    {currentQuestion.type === 'mc' ? currentQuestion.question : 'Σύρε τη σωστή λέξη στο κενό:'}
-                                </h3>
-
-                                {/* Multiple Choice Layout */}
-                                {currentQuestion.type === 'mc' && (
-                                    <div className="space-y-3">
-                                        {currentQuestion.options.map((option, index) => {
-                                            let btnClass = "w-full text-left p-4 rounded-xl border-2 transition-all duration-200 font-medium ";
-                                            if (isAnswered) {
-                                                if (index === currentQuestion.correctAnswer) {
-                                                    btnClass += "border-green-500 bg-green-50 text-green-700";
-                                                } else if (selectedOption === index) {
-                                                    btnClass += "border-red-500 bg-red-50 text-red-700";
-                                                } else {
-                                                    btnClass += "border-slate-100 text-slate-400 opacity-50";
-                                                }
-                                            } else {
-                                                btnClass += "border-slate-200 hover:border-blue-400 hover:bg-blue-50 text-slate-700 bg-white";
-                                            }
-
-                                            return (
-                                                <button
-                                                    key={index}
-                                                    onClick={() => handleMCSelect(index)}
-                                                    disabled={isAnswered}
-                                                    className={btnClass}
-                                                >
-                                                    <div className="flex justify-between items-center">
-                                                        <span>{option}</span>
-                                                        {isAnswered && index === currentQuestion.correctAnswer && <div className="text-green-600"><IconCheckCircle /></div>}
-                                                        {isAnswered && selectedOption === index && index !== currentQuestion.correctAnswer && <div className="text-red-600"><IconXCircle /></div>}
-                                                    </div>
-                                                </button>
-                                            );
-                                        })}
-                                    </div>
-                                )}
-
-                                {/* Drag and Drop Layout */}
-                                {currentQuestion.type === 'dnd' && (
-                                    <div className="flex flex-col gap-8">
-                                        {/* Sentence Area */}
-                                        <div className="bg-slate-50 p-6 rounded-xl border-2 border-dashed border-slate-300 text-lg leading-relaxed text-slate-700 text-center relative">
-                                            {currentQuestion.textBefore}
-                                            <span 
-                                                onDrop={handleDrop}
-                                                onDragOver={handleDragOver}
-                                                className={`
-                                                    inline-flex items-center justify-center min-w-[120px] h-10 mx-1 px-3 rounded-lg border-2 align-middle transition-all duration-300 font-semibold shadow-sm
-                                                    ${droppedItem 
-                                                        ? (isCorrect ? 'border-green-500 bg-green-100 text-green-800' : 'border-red-500 bg-red-100 text-red-800') 
-                                                        : 'border-blue-300 bg-white text-slate-400 animate-pulse'}
-                                                `}
-                                            >
-                                                {droppedItem || "Σύρε εδώ"}
-                                            </span>
-                                            {currentQuestion.textAfter}
-                                        </div>
-
-                                        {/* Draggable Options */}
-                                        <div className="grid grid-cols-2 gap-3">
-                                            {currentQuestion.options.map((option, index) => (
-                                                <div
-                                                    key={index}
-                                                    draggable={!isAnswered}
-                                                    onDragStart={(e) => handleDragStart(e, option)}
-                                                    onClick={() => {
-                                                        // Fallback για κινητά (tap αντί για drag)
-                                                        if(!isAnswered) {
-                                                            processSelection(option);
-                                                        }
-                                                    }}
-                                                    className={`
-                                                        p-3 rounded-lg text-center font-medium cursor-grab active:cursor-grabbing shadow-sm border border-slate-200 select-none transition-all
-                                                        ${isAnswered ? 'opacity-50 cursor-default grayscale' : 'bg-white hover:bg-blue-50 hover:border-blue-400 hover:shadow-md hover:-translate-y-1'}
-                                                    `}
-                                                >
-                                                    {option}
-                                                </div>
-                                            ))}
-                                        </div>
-                                        {!isAnswered && (
-                                            <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1">
-                                                <IconMousePointer2 />
-                                                Σύρε ή πάτα τη σωστή λέξη
-                                            </div>
-                                        )}
-                                    </div>
-                                )}
-                            </div>
-
-                            {/* Footer / Next Button */}
-                            <div className="bg-slate-50/50 p-4 flex justify-end border-t border-slate-100 h-20 items-center">
-                                {isAnswered && (
-                                    <div className="w-full flex justify-between items-center animate-fade-in">
-                                        <div className={`font-bold flex items-center gap-2 ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
-                                            {isCorrect ? (
-                                                <>
-                                                    <IconCheckCircle />
-                                                    Σωστά!
-                                                </>
-                                            ) : (
-                                                <>
-                                                    <IconXCircle />
-                                                    Λάθος!
-                                                    <span className="text-slate-500 text-sm font-normal ml-1 hidden sm:inline">
-                                                        Η σωστή απάντηση ήταν: {currentQuestion.type === 'mc' ? currentQuestion.options[currentQuestion.correctAnswer] : currentQuestion.correctAnswer}
-                                                    </span>
-                                                </>
-                                            )}
-                                        </div>
-                                        <button
-                                            onClick={nextQuestion}
-                                            className="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center gap-2 shadow-md shadow-blue-200"
-                                        >
-                                            {currentQuestionIndex === quizData.length - 1 ? 'Αποτελέσματα' : 'Επόμενο'}
-                                            <IconArrowRight />
-                                        </button>
-                                    </div>
-                                )}
+                            <div className="text-lg leading-relaxed w-full mt-4">
+                            {currentCard.answer}
                             </div>
                         </div>
-                        {/* Κάτω μέρος με την απάντηση σε περίπτωση λάθους (για κινητά όπου το κείμενο κόβεται) */}
-                        {isAnswered && !isCorrect && (
-                            <div className="mt-2 text-center sm:hidden text-sm text-red-600 bg-red-50 p-2 rounded-lg border border-red-100">
-                                Σωστή απάντηση: <span className="font-bold">{currentQuestion.type === 'mc' ? currentQuestion.options[currentQuestion.correctAnswer] : currentQuestion.correctAnswer}</span>
-                            </div>
-                        )}
+                        </div>
+                    </div>
+
+                    <div className="w-full mt-8 grid grid-cols-4 gap-3">
+                        <button 
+                        onClick={handleReset}
+                        className="col-span-1 flex items-center justify-center p-3 rounded-xl bg-white shadow-sm text-slate-600 hover:bg-slate-50 active:scale-95 transition border border-slate-200"
+                        title="Επαναφορά σειράς"
+                        >
+                        <IconRotateCw />
+                        </button>
+
+                        <button 
+                        onClick={handlePrev}
+                        className="col-span-1 flex items-center justify-center p-3 rounded-xl bg-white shadow-sm text-blue-600 hover:bg-blue-50 active:scale-95 transition border border-slate-200"
+                        >
+                        <IconChevronLeft />
+                        </button>
+
+                        <button 
+                        onClick={handleNext}
+                        className="col-span-1 flex items-center justify-center p-3 rounded-xl bg-white shadow-sm text-blue-600 hover:bg-blue-50 active:scale-95 transition border border-slate-200"
+                        >
+                        <IconChevronRight />
+                        </button>
+
+                        <button 
+                        onClick={handleShuffle}
+                        className="col-span-1 flex items-center justify-center p-3 rounded-xl bg-white shadow-sm text-purple-600 hover:bg-purple-50 active:scale-95 transition border border-slate-200"
+                        title="Ανακάτεμα"
+                        >
+                        <IconShuffle />
+                        </button>
+                    </div>
+                    
+                    <div className="mt-8 text-xs text-slate-400">
+                        Σύνολο καρτών: {cards.length}
                     </div>
                 </div>
             );
