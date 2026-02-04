@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards Οδοντιατρικών Υλικών</title>
+    <style>
+        /* Βασικό Στυλ - Ενσωματωμένο για σιγουριά */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5;
+            color: #333;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+        }
+
+        .container {
+            width: 100%;
+            max-width: 500px;
+            background: transparent;
+        }
+
+        /* Κεφαλίδα */
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            background: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+
+        .title {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: #2c3e50;
+        }
+
+        .counter {
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+
+        /* Κάρτα */
+        .scene {
+            width: 100%;
+            height: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            padding: 20px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+            border: 1px solid #ddd;
+        }
+
+        .card-front {
+            background-color: white;
+            color: #333;
+        }
+
+        .card-back {
+            background-color: #2c3e50;
+            color: white;
+            transform: rotateY(180deg);
+            align-items: flex-start;
+            text-align: left;
+            justify-content: flex-start;
+        }
+
+        /* Ετικέτες */
+        .category {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            font-weight: bold;
+            margin-bottom: 15px;
+            align-self: center;
+        }
+
+        .question {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .hint {
+            margin-top: auto;
+            font-size: 0.8rem;
+            color: #888;
+        }
+
+        .answer {
+            font-size: 1.1rem;
+            line-height: 1.5;
+            width: 100%;
+        }
+
+        .answer ul, .answer ol {
+            padding-left: 20px;
+        }
+
+        .answer li {
+            margin-bottom: 5px;
+        }
+
+        /* Κουμπιά */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 10px;
+            background: white;
+            color: #333;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            transition: background 0.2s;
+        }
+
+        .btn:hover {
+            background: #f1f1f1;
+        }
+
+        .btn-primary {
+            background: #3498db;
+            color: white;
+        }
+        
+        .btn-primary:hover {
+            background: #2980b9;
+        }
+
+        /* Error Message */
+        #error-msg {
+            color: red;
+            background: #fee;
+            padding: 20px;
+            border: 1px solid red;
+            display: none;
+            margin: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="error-msg"></div>
+
+    <div class="container" id="app">
+        <div class="header">
+            <span class="title">Οδοντιατρικά Υλικά</span>
+            <span class="counter" id="counter">1 / 28</span>
+        </div>
+
+        <div class="scene" onclick="flipCard()">
+            <div class="card" id="card">
+                <div class="card-face card-front">
+                    <span class="category" id="cat-text">Κατηγορία</span>
+                    <div class="question" id="q-text">Φόρτωση...</div>
+                    <div class="hint">Κλικ για απάντηση</div>
+                </div>
+                <div class="card-face card-back">
+                    <div class="answer" id="a-text">...</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="controls">
+            <button class="btn" onclick="prev(event)">&#8592; Πίσω</button>
+            <button class="btn btn-primary" onclick="next(event)">Επόμενο &#8594;</button>
+        </div>
+        <div class="controls" style="margin-top:10px">
+             <button class="btn" onclick="shuffle(event)">🔀 Ανακάτεμα</button>
+        </div>
+    </div>
+
+    <script>
+        // Έλεγχος Σφαλμάτων
+        window.onerror = function(msg, url, line) {
+            var errDiv = document.getElementById('error-msg');
+            errDiv.style.display = 'block';
+            errDiv.innerHTML = "<strong>Παρουσιάστηκε σφάλμα:</strong> " + msg + "<br>Γραμμή: " + line;
+            return false;
+        };
+
+        // ΔΕΔΟΜΕΝΑ (Όλες οι 28 ερωτήσεις)
+        var data = [
+            { cat: 'Πολυμερισμός', q: 'Ποιοι είναι οι 2 τρόποι πολυμερισμού;', a: '<ol><li><strong>Προσθήκη:</strong> Όχι εξάλειψη μικρότερου μορίου.</li><li><strong>Συμπύκνωση:</strong> Εξάλειψη μικρότερου μορίου (π.χ. H₂O).</li></ol>' },
+            { cat: 'Πολ. Προσθήκης', q: 'Ποια είναι τα ΣΤΑΔΙΑ του Πολυμερισμού Προσθήκης;', a: '<ul><li>1. Ενεργοποίηση (ελεύθερες ρίζες)</li><li>2. Έναρξη</li><li>3. Πρόοδος (ανάπτυξη)</li><li>4. Τερματισμός</li></ul>' },
+            { cat: 'Πολ. Προσθήκης', q: 'Ποιος είναι ο ενεργοποιητής στην Οδοντιατρική;', a: '<strong>Υπεροξείδιο Βενζοιλίου</strong>.<br>Διασπάται με θερμότητα > 65°C.' },
+            { cat: 'Ιδιότητες Πολυμερών', q: 'Πώς επηρεάζει η αύξηση του Mr (Μοριακό Βάρος);', a: 'Η <strong>↑ Mr</strong> βελτιώνει τις ιδιότητες.<br><br>↑ ιξώδους τήξης → ↑ θ υαλώδους μετάπτωσης<br>(Δύσκολη επεξεργασία)' },
+            { cat: 'Ιδιότητες Πολυμερών', q: 'Πώς επηρεάζει η Θερμοκρασία (Θ) τους δεσμούς;', a: 'Θ↑: Σπάνε οι δεσμοί.<br>Θ↓: Επαναδημιουργούνται.' },
+            { cat: 'SOS - Πλαστικοποιητές', q: 'Τι είναι οι Πλαστικοποιητές;', a: 'Ουσία με μικρό Mr που προστίθεται σε πολυμερές.' },
+            { cat: 'SOS - Πλαστικοποιητές', q: 'Ποια είναι η επίδραση των Πλαστικοποιητών;', a: '↓ θ υαλώδους μετάπτωσης<br>↓ μέτρο ελαστικότητας<br><strong>Αποτέλεσμα:</strong> Πιο εύκαμπτες αλυσίδες.' },
+            { cat: 'SOS - Πλαστικοποιητές', q: 'Ποιος χρησιμοποιείται και πού;', a: '<strong>Διβουτυλική φθαλείνη</strong><br>Χρήση: Μαλακά επιστρώματα οδοντοστοιχιών.' },
+            { cat: 'Ρεολογία', q: 'Πώς διακρίνεται η Ροή;', a: 'Υγρά: Ιξώδες<br>Στερεά: Ερπυσμός<br>Και: Ιξωδοελαστικότητα' },
+            { cat: 'Ρεολογία', q: 'Σχέση Ιξώδους και Θερμοκρασίας;', a: '<strong>Θ↑ : ↓ Ιξώδους</strong><br>(Αύξηση θερμοκρασίας = Μείωση ιξώδους)' },
+            { cat: 'Ρεολογία', q: 'Τύποι για Τάση & Βαθμό Διάτμησης', a: 'Τάση (σ) = F / A<br>Βαθμός (ė) = V / d' },
+            { cat: 'Ρεολογία', q: 'Τι είναι Θιξοτροπία;', a: 'Μεταβολή του ιξώδους για συγκεκριμένο βαθμό διάτμησης.' },
+            { cat: 'Θερμικές Ιδιότητες', q: 'Βασικές Θερμικές Ιδιότητες;', a: 'Θερμική αγωγιμότητα<br>Ειδική θερμότητα<br>Θερμική διάχυση<br>Συντελεστής διαστολής (α)' },
+            { cat: 'Θερμικές Ιδιότητες', q: 'Ιδανική συνθήκη για συντελεστή (α);', a: 'α (υλικού) = α (δοντιού)' },
+            { cat: 'Θερμικές Ιδιότητες', q: 'Κλινική Σημασία;', a: '1. Πόνος (ζεστό-κρύο)<br>2. Μηχανική αποτυχία (συστολή-διαστολή)' },
+            { cat: 'Οπτικές Ιδιότητες', q: 'Από τι εξαρτώνται;', a: 'Χαρακτηριστικά αντικειμένου → Φάσμα ακτινοβολίας → Χρώμα, Διαφάνεια, Υφή.' },
+            { cat: 'Οπτικές Ιδιότητες', q: 'Τι είναι Φθορισμός;', a: 'Απορρόφηση UV (300-400nm) → Εκπομπή Ορατού (400-450nm)' },
+            { cat: 'Οπτικές Ιδιότητες', q: 'Χρήση Φθορισμού;', a: 'Κάνει τα δόντια να φαίνονται πιο λευκά.<br>Αναγκαίο σε στεφάνες και εμφράξεις.' },
+            { cat: 'Οπτικές Ιδιότητες', q: 'Διαφάνεια', a: 'Διαφανές (περνάει φως)<br>Αδιαφανές (δεν περνάει φως)' },
+            { cat: 'Υφή Επιφάνειας', q: 'Φως & Υφή', a: 'Λείες: Ανάκλαση<br>Τραχείες: Σκέδαση<br>"Όσο μικρότερο → τόσο τραχύτερο"' },
+            { cat: 'Υφή Επιφάνειας', q: 'Ra vs Sa', a: 'Ra: Ακίδα (2D)<br>Sa: Οπτικό (3D)<br>↑ τιμή = πιο τραχύ.' },
+            { cat: 'Υφή Επιφάνειας', q: 'Κλινική σημασία', a: 'Η επιλογή υλικού εξαρτάται από την ικανότητα λείανσης.' },
+            { cat: 'Χημικές Ιδιότητες', q: 'Κύρια ιδιότητα για Πολυμερή;', a: 'Προσρόφηση νερού / Απώλεια συστατικών.<br>(Στα μαλακά επιστρώματα)' },
+            { cat: 'Χημικές Ιδιότητες', q: 'Μέταλλα & Κεραμικά;', a: 'Μέταλλα: Αμαύρωση/Οξείδωση<br>Κεραμικά: Χημική διάλυση' },
+            { cat: 'Χημικές Ιδιότητες', q: 'Συνέπειες Διάλυσης;', a: '1. ΜΕΙΩΣΗ ΑΝΤΟΧΗΣ<br>2. ΤΟΞΙΚΟΤΗΤΑ' },
+            { cat: 'Χημικές Ιδιότητες', q: 'Πορώδη υλικά;', a: 'Προσρόφηση → Αποχρωματισμός, Αποδόμηση.' },
+            { cat: 'Διάβρωση', q: 'Τι είναι η Διάβρωση;', a: 'Ηλεκτροχημική (ανοδική) αντίδραση υλικού με περιβάλλον.' },
+            { cat: 'Διάβρωση', q: 'Είδη Διάβρωσης;', a: '1. Ξηρή (Χημική)<br>2. Υγρή (Ηλεκτροχημική):<br>- Ομοιόμορφη<br>- Εντοπισμένη (Γαλβανική, Σχισμών)' }
+        ];
+
+        // Μεταβλητές
+        var idx = 0;
+        var isFlipped = false;
+        var card = document.getElementById('card');
+        var qText = document.getElementById('q-text');
+        var aText = document.getElementById('a-text');
+        var catText = document.getElementById('cat-text');
+        var counter = document.getElementById('counter');
+
+        function update() {
+            var item = data[idx];
+            catText.innerText = item.cat;
+            qText.innerHTML = item.q;
+            aText.innerHTML = item.a;
+            counter.innerText = (idx + 1) + " / " + data.length;
+            
+            // Επαναφορά στην μπροστινή όψη
+            isFlipped = false;
+            card.className = 'card';
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                card.className = 'card is-flipped';
+            } else {
+                card.className = 'card';
+            }
+        }
+
+        function next(e) {
+            if(e) e.stopPropagation();
+            // Αν είναι γυρισμένη, τη γυρνάμε πίσω πρώτα
+            if(isFlipped) {
+                flipCard();
+                setTimeout(function() {
+                    idx = (idx + 1) % data.length;
+                    update();
+                }, 300);
+            } else {
+                idx = (idx + 1) % data.length;
+                update();
+            }
+        }
+
+        function prev(e) {
+            if(e) e.stopPropagation();
+            if(isFlipped) {
+                flipCard();
+                setTimeout(function() {
+                    idx = (idx - 1 + data.length) % data.length;
+                    update();
+                }, 300);
+            } else {
+                idx = (idx - 1 + data.length) % data.length;
+                update();
+            }
+        }
+
+        function shuffle(e) {
+            if(e) e.stopPropagation();
+            if(isFlipped) flipCard();
+            
+            setTimeout(function() {
+                // Ανακάτεμα
+                for (var i = data.length - 1; i > 0; i--) {
+                    var j = Math.floor(Math.random() * (i + 1));
+                    var temp = data[i];
+                    data[i] = data[j];
+                    data[j] = temp;
+                }
+                idx = 0;
+                update();
+            }, 300);
+        }
+
+        // Αρχική Εκτέλεση
+        document.addEventListener("DOMContentLoaded", function() {
+            update();
+        });
+
+    </script>
+</body>
+</html>
