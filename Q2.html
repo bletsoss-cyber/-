@@ -1,0 +1,503 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quiz Βιοϋλικών (Κεφ. 1.2 - 1.5)</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Greek:wght@400;500;700&display=swap" rel="stylesheet">
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+
+    <style>
+        body { font-family: 'Noto Sans Greek', sans-serif; background-color: #f0fdf4; }
+        .correct-answer { background-color: #dcfce7; border-color: #22c55e; color: #15803d; }
+        .wrong-answer { background-color: #fee2e2; border-color: #ef4444; color: #b91c1c; }
+        .selected-word { transform: scale(1.05); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); border-color: #4f46e5; background-color: #eef2ff; color: #4338ca; }
+        .filled-slot { background-color: #e0e7ff; color: #3730a3; border-color: #6366f1; font-weight: bold; }
+        
+        /* Animation for feedback */
+        @keyframes popIn {
+            0% { transform: scale(0.9); opacity: 0; }
+            100% { transform: scale(1); opacity: 1; }
+        }
+        .animate-pop { animation: popIn 0.2s ease-out forwards; }
+    </style>
+</head>
+<body>
+    <div id="root"></div>
+
+    <script type="text/babel">
+        const { useState, useEffect } = React;
+
+        // --- ΔΕΔΟΜΕΝΑ ΠΟΛΛΑΠΛΗΣ ΕΠΙΛΟΓΗΣ ---
+        const mcqData = [
+            {
+                id: 1,
+                question: "Ποια είναι η σωστή σειρά ισχύος των πρωτευόντων δεσμών;",
+                options: [
+                    "Μεταλλικοί > Ιοντικοί > Ομοιοπολικοί",
+                    "Ομοιοπολικοί > Μεταλλικοί > Ιοντικοί",
+                    "Ομοιοπολικοί > Ιοντικοί > Μεταλλικοί",
+                    "Ιοντικοί > Ομοιοπολικοί > Μεταλλικοί"
+                ],
+                correct: 2,
+                explanation: "Σύμφωνα με τις σημειώσεις: Ομοιοπολικοί > Ιοντικοί > Μεταλλικοί."
+            },
+            {
+                id: 2,
+                question: "Τι αντιπροσωπεύει ο τύπος 2Ea - Em;",
+                options: [
+                    "Τον παράγοντα στοιβαγμού",
+                    "Την ενέργεια δεσμού (διαχωρισμού ατόμων)",
+                    "Την ενέργεια υαλοποίησης",
+                    "Τη θερμική συστολή"
+                ],
+                correct: 1,
+                explanation: "Είναι η ενέργεια που απαιτείται για τον διαχωρισμό των ατόμων."
+            },
+            {
+                id: 3,
+                question: "Σε ποιους δεσμούς οφείλεται η μεγάλη σταθερότητα των οργανικών μορίων;",
+                options: [
+                    "Δεσμοί Υδρογόνου",
+                    "Δεσμοί London (Van der Waals)",
+                    "Ιοντικοί Δεσμοί",
+                    "Μεταλλικοί Δεσμοί"
+                ],
+                correct: 1,
+                explanation: "Οι σημειώσεις αναφέρουν ρητά: 'London -> Σε αυτούς οφείλεται η μεγάλη σταθερότητα οργανικών μορίων'."
+            },
+            {
+                id: 4,
+                question: "Ποιος είναι περίπου ο παράγοντας στοιβαγμού (όγκος ατόμων σε κύβο);",
+                options: [
+                    "0,74 (74% κενό)",
+                    "0,54 (50% κενό)",
+                    "0,32 (30% κενό)",
+                    "1,00 (0% κενό)"
+                ],
+                correct: 1,
+                explanation: "Στις σημειώσεις γράφει: 0,54 ≈ 50% είναι κενό."
+            },
+            {
+                id: 5,
+                question: "Γιατί το Οξείδιο του Ψευδαργύρου θεωρείται SOS;",
+                options: [
+                    "Γιατί χρησιμοποιείται στα εμφυτεύματα τιτανίου",
+                    "Γιατί είναι το κύριο συστατικό του γυαλιού",
+                    "Γιατί χρησιμοποιείται ευρέως στην οδοντιατρική (ενισχυτικές ουσίες)",
+                    "Γιατί έχει τη χαμηλότερη ενέργεια δεσμού"
+                ],
+                correct: 2,
+                explanation: "Χρησιμοποιείται ευρέως στην οδοντιατρική ως ενισχυτική ουσία σε ρητίνες και κονίες."
+            },
+            {
+                id: 6,
+                question: "Τι συμβαίνει κατά την 'Αποϋαλοποίηση';",
+                options: [
+                    "Ο ύαλος μετατρέπεται σε αέριο",
+                    "Ο ύαλος κρυσταλλοποιείται (αναδιοργάνωση μορίων)",
+                    "Το στερεό γίνεται άμορφο",
+                    "Μειώνεται η θερμοκρασία τήξης"
+                ],
+                correct: 1,
+                explanation: "Αποϋαλοποίηση = Όταν ο ύαλος κρυσταλλοποιείται."
+            },
+            {
+                id: 7,
+                question: "Ποιο είναι το χαρακτηριστικό της υαλώδους μετάπτωσης;",
+                options: [
+                    "Υπάρχει σαφής θερμοκρασία τήξης",
+                    "Δεν υπάρχει διακριτή μετάπτωση στερεό-υγρό, αλλά αυξάνεται η μεταβολή όγκου",
+                    "Ο όγκος παραμένει σταθερός",
+                    "Δημιουργείται κρυσταλλική δομή"
+                ],
+                correct: 1,
+                explanation: "Στις υαλώδεις μεταπτώσεις δεν υπάρχει διακριτή μετάπτωση, σε αντίθεση με την κρυσταλλική τήξη."
+            },
+             {
+                id: 8,
+                question: "Ποια είναι η βάση πολλών κεραμικών;",
+                options: [
+                    "Άνθρακας (C)",
+                    "Πυρίτιο (SiO2)",
+                    "Τιτάνιο (Ti)",
+                    "Αλκάνια"
+                ],
+                correct: 1,
+                explanation: "Βάση πολλών κεραμικών: Πυρίτιο (SiO2) λόγω πολυμερισμού."
+            }
+        ];
+
+        // --- ΔΕΔΟΜΕΝΑ ΣΥΜΠΛΗΡΩΣΗΣ ΚΕΝΩΝ ---
+        const fillBlanksData = [
+            {
+                id: 1,
+                pre: "Η βασική αλληλουχία είναι: Άτομα -> ",
+                post: " -> Ιδιότητες.",
+                answer: "Δομή"
+            },
+            {
+                id: 2,
+                pre: "Ο σχηματισμός δεσμού οδηγεί σε ",
+                post: " της ενέργειας (σταθεροποίηση).",
+                answer: "Μείωση"
+            },
+            {
+                id: 3,
+                pre: "Ο ",
+                post: " δεσμός είναι κατευθυντικός και περιλαμβάνει μοίρασμα ηλεκτρονίων.",
+                answer: "Ομοιοπολικός"
+            },
+            {
+                id: 4,
+                pre: "Όταν ένα στερεό δεν έχει συμμετρία ονομάζεται ",
+                post: " (π.χ. ύαλος).",
+                answer: "Αμόρφο"
+            },
+            {
+                id: 5,
+                pre: "Στα κεραμικά, το SiO2 δρα ως ",
+                post: " υάλου, ενώ το μεταλλικό οξείδιο ως τροποποιητής.",
+                answer: "Διαμορφωτής"
+            },
+            {
+                id: 6,
+                pre: "Κατά την ψύξη του SiO2, η γρήγορη ψύξη οδηγεί σε ύαλο, ενώ η ομαλή ψύξη σε ",
+                post: " στερεό.",
+                answer: "Κρυσταλλικό"
+            },
+            {
+                id: 7,
+                pre: "Τα μέταλλα και κράματα χρησιμοποιούνται στην οδοντιατρική για βελτίωση των ",
+                post: " ιδιοτήτων.",
+                answer: "Μηχανικών"
+            },
+             {
+                id: 8,
+                pre: "Η διάταξη των ηλεκτρονίων καθορίζει την ",
+                post: ".",
+                answer: "Αντιδραστικότητα"
+            }
+        ];
+
+        // Λίστα λέξεων για βοήθεια (Word Bank)
+        const wordBank = [
+            "Δομή", "Μείωση", "Ομοιοπολικός", "Αμόρφο", 
+            "Διαμορφωτής", "Κρυσταλλικό", "Μηχανικών", "Αντιδραστικότητα",
+            "Ιοντικός", "Αύξηση", "Συμμετρικό" // decoys
+        ].sort();
+
+
+        function App() {
+            const [activeTab, setActiveTab] = useState('mcq'); // 'mcq' or 'blanks'
+            
+            // State for MCQ
+            const [mcqAnswers, setMcqAnswers] = useState({});
+            const [mcqSubmitted, setMcqSubmitted] = useState(false);
+
+            // State for Blanks
+            const [blankAnswers, setBlankAnswers] = useState({}); // { 1: "Δομή", 2: ... }
+            const [blanksSubmitted, setBlanksSubmitted] = useState(false);
+            const [selectedWord, setSelectedWord] = useState(null); // The word currently 'held' by user
+
+            const handleMcqSelect = (qId, optionIndex) => {
+                if (mcqSubmitted) return;
+                setMcqAnswers(prev => ({...prev, [qId]: optionIndex}));
+            };
+
+            // ---- NEW LOGIC FOR BLANKS ----
+            
+            // 1. Click a word from the bank
+            const handleBankWordClick = (word) => {
+                if (blanksSubmitted) return;
+                // Toggle selection
+                if (selectedWord === word) {
+                    setSelectedWord(null);
+                } else {
+                    setSelectedWord(word);
+                }
+            };
+
+            // 2. Click a slot in the sentence
+            const handleSlotClick = (qId) => {
+                if (blanksSubmitted) return;
+
+                // Case A: User has selected a word -> Fill the slot
+                if (selectedWord) {
+                    setBlankAnswers(prev => ({...prev, [qId]: selectedWord}));
+                    setSelectedWord(null); // Clear selection after placing
+                } 
+                // Case B: Slot is already filled, user clicks to clear it
+                else if (blankAnswers[qId]) {
+                    const newAnswers = {...blankAnswers};
+                    delete newAnswers[qId];
+                    setBlankAnswers(newAnswers);
+                }
+            };
+            
+            // Helper to check if a word is used
+            const isWordUsed = (word) => {
+                return Object.values(blankAnswers).includes(word);
+            };
+
+            const calculateScore = (type) => {
+                if (type === 'mcq') {
+                    let score = 0;
+                    mcqData.forEach(q => {
+                        if (mcqAnswers[q.id] === q.correct) score++;
+                    });
+                    return score;
+                } else {
+                    let score = 0;
+                    fillBlanksData.forEach(q => {
+                        const userAns = (blankAnswers[q.id] || "");
+                        if (userAns === q.answer) score++;
+                    });
+                    return score;
+                }
+            };
+
+            const resetQuiz = () => {
+                setMcqAnswers({});
+                setMcqSubmitted(false);
+                setBlankAnswers({});
+                setBlanksSubmitted(false);
+                setSelectedWord(null);
+            };
+
+            return (
+                <div className="min-h-screen pb-12 bg-gray-50">
+                    {/* Header */}
+                    <div className="bg-slate-800 text-white p-6 shadow-lg mb-8">
+                        <div className="max-w-4xl mx-auto">
+                            <h1 className="text-3xl font-bold mb-2">Quiz Βιοϋλικών</h1>
+                            <p className="opacity-80 text-sm">Επιλέξτε λειτουργία από κάτω</p>
+                        </div>
+                    </div>
+
+                    <div className="max-w-4xl mx-auto px-4">
+                        
+                        {/* Tabs */}
+                        <div className="flex mb-8 bg-white rounded-xl shadow-sm border border-gray-200 p-1">
+                            <button 
+                                onClick={() => setActiveTab('mcq')}
+                                className={`flex-1 py-3 px-6 rounded-lg font-bold transition-all ${activeTab === 'mcq' ? 'bg-slate-700 text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}
+                            >
+                                Πολλαπλής Επιλογής
+                            </button>
+                            <button 
+                                onClick={() => setActiveTab('blanks')}
+                                className={`flex-1 py-3 px-6 rounded-lg font-bold transition-all ${activeTab === 'blanks' ? 'bg-slate-700 text-white shadow-md' : 'text-gray-500 hover:bg-gray-100'}`}
+                            >
+                                Συμπλήρωση Κενών
+                            </button>
+                        </div>
+
+                        {/* MCQ SECTION */}
+                        {activeTab === 'mcq' && (
+                            <div className="space-y-6 animate-fade-in">
+                                {mcqSubmitted && (
+                                    <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-green-500 mb-6 flex justify-between items-center animate-pop">
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-800">Αποτελέσματα</h3>
+                                            <p className="text-gray-600">Σκορ: <span className="font-bold text-green-600 text-2xl">{calculateScore('mcq')} / {mcqData.length}</span></p>
+                                        </div>
+                                        <button onClick={resetQuiz} className="text-sm bg-gray-100 hover:bg-gray-200 px-6 py-2 rounded-lg font-medium text-gray-700 transition-colors">Επαναφορά</button>
+                                    </div>
+                                )}
+
+                                {mcqData.map((q, index) => (
+                                    <div key={q.id} className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
+                                        <div className="flex items-start gap-3 mb-4">
+                                            <span className="bg-slate-100 text-slate-600 text-sm font-bold px-2.5 py-1 rounded min-w-[2rem] text-center">{index + 1}</span>
+                                            <h3 className="text-lg font-medium text-gray-800 leading-tight pt-0.5">{q.question}</h3>
+                                        </div>
+
+                                        <div className="space-y-3 pl-2 sm:pl-10">
+                                            {q.options.map((option, optIndex) => {
+                                                let optionClass = "border p-4 rounded-xl cursor-pointer transition-all flex items-center gap-3 relative overflow-hidden ";
+                                                
+                                                if (mcqSubmitted) {
+                                                    if (optIndex === q.correct) {
+                                                        optionClass += "correct-answer bg-green-50 border-green-500 shadow-sm";
+                                                    } else if (mcqAnswers[q.id] === optIndex) {
+                                                        optionClass += "wrong-answer bg-red-50 border-red-500";
+                                                    } else {
+                                                        optionClass += "bg-white opacity-50 border-gray-100 grayscale";
+                                                    }
+                                                } else {
+                                                    optionClass += mcqAnswers[q.id] === optIndex 
+                                                        ? "bg-slate-50 border-slate-500 shadow-sm ring-1 ring-slate-500" 
+                                                        : "bg-white border-gray-200 hover:border-slate-300 hover:bg-gray-50";
+                                                }
+
+                                                return (
+                                                    <div 
+                                                        key={optIndex} 
+                                                        onClick={() => handleMcqSelect(q.id, optIndex)}
+                                                        className={optionClass}
+                                                    >
+                                                        <div className={`w-5 h-5 rounded-full border-2 flex-shrink-0 flex items-center justify-center transition-colors ${mcqAnswers[q.id] === optIndex ? 'border-slate-600 bg-slate-600' : 'border-gray-300'}`}>
+                                                            {mcqAnswers[q.id] === optIndex && <div className="w-2 h-2 bg-white rounded-full"></div>}
+                                                        </div>
+                                                        <span className="text-gray-700 font-medium">{option}</span>
+                                                    </div>
+                                                );
+                                            })}
+                                        </div>
+
+                                        {mcqSubmitted && (
+                                            <div className="mt-4 ml-0 sm:ml-10 p-4 bg-blue-50 text-blue-800 text-sm rounded-lg border border-blue-100">
+                                                <strong>Επεξήγηση:</strong> {q.explanation}
+                                            </div>
+                                        )}
+                                    </div>
+                                ))}
+
+                                {!mcqSubmitted && (
+                                    <div className="sticky bottom-6 z-20">
+                                        <button 
+                                            onClick={() => setMcqSubmitted(true)}
+                                            disabled={Object.keys(mcqAnswers).length < mcqData.length}
+                                            className="w-full bg-slate-800 hover:bg-slate-900 disabled:bg-gray-300 disabled:cursor-not-allowed text-white font-bold py-4 rounded-xl shadow-xl transition-all text-lg transform active:scale-95"
+                                        >
+                                            Υποβολή Απαντήσεων
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                        {/* FILL BLANKS SECTION (NEW CLICK-BASED) */}
+                        {activeTab === 'blanks' && (
+                            <div className="space-y-6 animate-fade-in pb-20">
+                                
+                                <div className="bg-blue-50 border-l-4 border-blue-500 p-4 rounded text-blue-800 text-sm mb-4">
+                                    <strong>Οδηγίες:</strong> Κάντε κλικ σε μια <strong>λέξη</strong> από το κουτί και μετά πατήστε στο <strong>κενό</strong> για να την τοποθετήσετε. Πατήστε ξανά στο κενό για αφαίρεση.
+                                </div>
+
+                                {/* Sticky Word Bank */}
+                                <div className="bg-white p-4 sm:p-6 rounded-xl border border-indigo-100 mb-6 sticky top-2 z-30 shadow-lg">
+                                    <h3 className="text-gray-500 font-bold mb-3 text-xs uppercase tracking-wider flex justify-between items-center">
+                                        <span>Διαθεσιμες Λεξεις</span>
+                                        {selectedWord && <span className="text-indigo-600 bg-indigo-50 px-2 py-1 rounded">Επιλέξατε: <strong>{selectedWord}</strong></span>}
+                                    </h3>
+                                    <div className="flex flex-wrap gap-2 sm:gap-3">
+                                        {wordBank.map((word, idx) => {
+                                            const isUsed = isWordUsed(word);
+                                            const isSelected = selectedWord === word;
+                                            
+                                            let btnClass = "px-3 py-2 rounded-lg text-sm sm:text-base font-bold transition-all transform duration-150 border-2 ";
+                                            
+                                            if (blanksSubmitted) {
+                                                btnClass += "opacity-50 cursor-default bg-gray-100 border-gray-200 text-gray-400";
+                                            } else if (isUsed) {
+                                                btnClass += "bg-gray-100 text-gray-400 border-gray-100 cursor-not-allowed scale-95";
+                                            } else if (isSelected) {
+                                                btnClass += "selected-word cursor-pointer scale-105 shadow-md";
+                                            } else {
+                                                btnClass += "bg-white text-gray-700 border-gray-200 hover:border-indigo-300 hover:bg-indigo-50 cursor-pointer shadow-sm";
+                                            }
+
+                                            return (
+                                                <button 
+                                                    key={idx}
+                                                    onClick={() => handleBankWordClick(word)}
+                                                    disabled={isUsed || blanksSubmitted}
+                                                    className={btnClass}
+                                                >
+                                                    {word}
+                                                </button>
+                                            )
+                                        })}
+                                    </div>
+                                </div>
+
+                                {blanksSubmitted && (
+                                    <div className="bg-white p-6 rounded-xl shadow-md border-l-4 border-indigo-500 mb-6 flex justify-between items-center animate-pop">
+                                        <div>
+                                            <h3 className="text-xl font-bold text-gray-800">Αποτελέσματα</h3>
+                                            <p className="text-gray-600">Σκορ: <span className="font-bold text-indigo-600 text-2xl">{calculateScore('blanks')} / {fillBlanksData.length}</span></p>
+                                        </div>
+                                        <button onClick={resetQuiz} className="text-sm bg-gray-100 hover:bg-gray-200 px-6 py-2 rounded-lg font-medium text-gray-700 transition-colors">Επαναφορά</button>
+                                    </div>
+                                )}
+
+                                <div className="bg-white p-4 sm:p-8 rounded-xl shadow-sm border border-gray-200 space-y-8 divide-y divide-gray-100">
+                                    {fillBlanksData.map((q, index) => {
+                                        const userAnswer = blankAnswers[q.id];
+                                        const hasAnswer = !!userAnswer;
+                                        const isCorrect = userAnswer === q.answer;
+                                        
+                                        // Slot Styling
+                                        let slotClass = "inline-flex items-center justify-center min-w-[120px] h-[40px] px-3 mx-2 rounded-lg border-b-4 transition-all align-middle cursor-pointer text-center select-none ";
+                                        
+                                        if (blanksSubmitted) {
+                                            if (isCorrect) {
+                                                slotClass += "bg-green-100 border-green-500 text-green-800 font-bold";
+                                            } else {
+                                                slotClass += "bg-red-100 border-red-500 text-red-800 font-bold line-through decoration-2";
+                                            }
+                                        } else {
+                                            if (hasAnswer) {
+                                                slotClass += "filled-slot border-indigo-400 hover:bg-red-50 hover:border-red-300 hover:text-red-500"; // Hover to remove hint
+                                            } else {
+                                                slotClass += selectedWord 
+                                                    ? "bg-indigo-50 border-indigo-300 animate-pulse text-indigo-400 font-medium" 
+                                                    : "bg-gray-100 border-gray-300 text-gray-400";
+                                            }
+                                        }
+
+                                        return (
+                                            <div key={q.id} className="pt-6 first:pt-0 text-base sm:text-lg leading-loose text-gray-800 font-medium">
+                                                <span className="inline-block bg-indigo-50 text-indigo-800 text-xs font-bold px-2 py-0.5 rounded mr-2 align-middle">#{index + 1}</span>
+                                                {q.pre}
+                                                
+                                                <span 
+                                                    onClick={() => handleSlotClick(q.id)}
+                                                    className={slotClass}
+                                                >
+                                                    {hasAnswer ? userAnswer : (selectedWord ? "Εδώ!" : "______")}
+                                                </span>
+                                                
+                                                {q.post}
+                                                
+                                                {blanksSubmitted && !isCorrect && (
+                                                    <div className="mt-2 text-sm text-green-600 font-bold bg-green-50 inline-block px-3 py-1 rounded animate-pop">
+                                                        ✓ {q.answer}
+                                                    </div>
+                                                )}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                {!blanksSubmitted && (
+                                    <div className="sticky bottom-6 z-20">
+                                        <button 
+                                            onClick={() => setBlanksSubmitted(true)}
+                                            className="w-full bg-slate-800 hover:bg-slate-900 text-white font-bold py-4 rounded-xl shadow-xl transition-all text-lg transform active:scale-95"
+                                        >
+                                            Έλεγχος Απαντήσεων
+                                        </button>
+                                    </div>
+                                )}
+                            </div>
+                        )}
+
+                    </div>
+                </div>
+            );
+        }
+
+        const root = ReactDOM.createRoot(document.getElementById('root'));
+        root.render(<App />);
+    </script>
+</body>
+</html>
+
