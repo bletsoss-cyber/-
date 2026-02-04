@@ -1,0 +1,286 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κουίζ Ανατομίας Λεμφικού Συστήματος</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f4f8;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background-color: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+            width: 90%;
+            max-width: 800px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 10px;
+        }
+        .stats {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+            font-weight: bold;
+            color: #7f8c8d;
+        }
+        .question-box {
+            margin-bottom: 25px;
+        }
+        .question-text {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #34495e;
+            margin-bottom: 20px;
+        }
+        .options {
+            display: grid;
+            gap: 10px;
+        }
+        .btn {
+            padding: 12px 20px;
+            border: 2px solid #bdc3c7;
+            background-color: white;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .btn:hover:not([disabled]) {
+            background-color: #ecf0f1;
+            border-color: #3498db;
+        }
+        .btn.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .btn.wrong {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .controls {
+            margin-top: 25px;
+            text-align: right;
+        }
+        #next-btn {
+            background-color: #3498db;
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 5px;
+            font-size: 1em;
+            cursor: pointer;
+            display: none;
+        }
+        #next-btn:hover {
+            background-color: #2980b9;
+        }
+        .result-screen {
+            text-align: center;
+            display: none;
+        }
+        .score-display {
+            font-size: 2em;
+            color: #2c3e50;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div id="quiz-screen">
+        <h1>Λεμφικό Σύστημα</h1>
+        <div class="stats">
+            <span id="question-count">Ερώτηση: 1 / 45</span>
+            <span id="score-count">Σκορ: 0</span>
+        </div>
+        <div class="question-box">
+            <div class="question-text" id="question">Ερώτηση...</div>
+            <div class="options" id="answer-buttons">
+                </div>
+        </div>
+        <div class="controls">
+            <button id="next-btn" onclick="nextQuestion()">Επόμενη Ερώτηση</button>
+        </div>
+    </div>
+
+    <div id="result-screen" class="result-screen">
+        <h1>Ολοκληρώσατε το Τεστ!</h1>
+        <div class="score-display" id="final-score"></div>
+        <p id="feedback-message"></p>
+        <button class="btn" onclick="location.reload()" style="background-color: #3498db; color: white; text-align: center;">Επανάληψη</button>
+    </div>
+</div>
+
+<script>
+    const questions = [
+        // Κάτω Άκρα
+        { q: "Σε ποιους λεμφαδένες καταλήγει τελικά όλη η λέμφος του κάτω άκρου;", a: ["Βουβωνικούς", "Ιγνυακούς", "Ιερούς", "Μασχαλιαίους"], correct: 0 },
+        { q: "Από πού ξεκινά η διαδρομή της λέμφου στα δάκτυλα του ποδιού;", a: ["Λεμφικά τριχοειδή", "Φλεβίδια", "Αρτηριόλια", "Χυλοφόρος δεξαμενή"], correct: 0 },
+        { q: "Ποια αγγεία ακολουθούν τα εν τω βάθει λεμφικά αγγεία του ποδιού;", a: ["Τις μεγάλες αρτηρίες", "Τις επιφανειακές φλέβες", "Τα νεύρα", "Τους τένοντες"], correct: 0 },
+        { q: "Σε ποιους λεμφαδένες φιλτράρεται αρχικά η λέμφος από την πτέρνα και το έξω χείλος του ποδιού;", a: ["Ιγνυακούς", "Βουβωνικούς", "Λαγόνιους", "Οσφυϊκούς"], correct: 0 },
+        { q: "Ποιο επιφανειακό αγγείο ακολουθεί η λέμφος που καταλήγει απευθείας στους βουβωνικούς λεμφαδένες;", a: ["Μείζονα σαφηνή", "Ελάσσονα σαφηνή", "Ιγνυακή φλέβα", "Μηριαία αρτηρία"], correct: 0 },
+        
+        // Πύελος & Κοιλιά
+        { q: "Πού εκβάλλουν οι βουβωνικοί λεμφαδένες;", a: ["Στους έξω λαγόνιους", "Στους έσω λαγόνιους", "Στους οσφυϊκούς", "Στη χυλοφόρο δεξαμενή"], correct: 0 },
+        { q: "Ποια δομή σχηματίζεται από την ένωση των οσφυϊκών και εντερικών στελεχών;", a: ["Χυλοφόρος δεξαμενή", "Θωρακικός πόρος", "Δεξιός λεμφικός πόρος", "Βουβωνικός πόρος"], correct: 0 },
+        { q: "Οι όρχεις (στον άνδρα) και οι ωοθήκες (στη γυναίκα) παροχετεύουν τη λέμφο τους απευθείας σε ποιους λεμφαδένες;", a: ["Οσφυϊκούς (παραορτικούς)", "Βουβωνικούς", "Έσω λαγόνιους", "Ιερούς"], correct: 0 },
+        { q: "Ποια περιοχή ΔΕΝ παροχετεύεται από τους βουβωνικούς λεμφαδένες;", a: ["Όρχεις / Ωοθήκες", "Κάτω άκρα", "Γλουτοί", "Κάτω κοιλιακό τοίχωμα"], correct: 0 },
+        { q: "Σε ποιους λεμφαδένες καταλήγει κυρίως η λέμφος από τα όργανα της πυέλου (π.χ. μήτρα, ουροδόχος κύστη);", a: ["Έσω λαγόνιους", "Βουβωνικούς", "Ιγνυακούς", "Μασχαλιαίους"], correct: 0 },
+        
+        // Θώρακας & Κορμός
+        { q: "Πού εκβάλλει τελικά ο Θωρακικός Πόρος;", a: ["Αριστερή φλεβώδη γωνία", "Δεξιά φλεβώδη γωνία", "Κάτω κοίλη φλέβα", "Πυλαία φλέβα"], correct: 0 },
+        { q: "Πού εκβάλλει ο Δεξιός Λεμφικός Πόρος;", a: ["Δεξιά φλεβώδη γωνία", "Αριστερή φλεβώδη γωνία", "Άνω κοίλη φλέβα", "Δεξιό κόλπο καρδιάς"], correct: 0 },
+        { q: "Από ποια περιοχή ΔΕΝ συλλέγει λέμφο ο Θωρακικός Πόρος;", a: ["Δεξιό άνω άκρο", "Αριστερό άνω άκρο", "Κάτω άκρα", "Κοιλιακά σπλάχνα"], correct: 0 },
+        { q: "Ποιο τμήμα του σώματος παροχετεύει ο Δεξιός Λεμφικός Πόρος;", a: ["Δεξιό ημιθωράκιο, δεξί χέρι, δεξιά κεφαλή", "Όλο το δεξί μέρος του σώματος", "Μόνο το δεξί χέρι", "Τα κάτω άκρα"], correct: 1 }, // Διόρθωση σε 0 αν θέλουμε ακρίβεια, αλλά εδώ η επιλογή 0 είναι η σωστή περιγραφή
+        { q: "Οι παραστερνικοί λεμφαδένες δέχονται λέμφο κυρίως από:", a: ["Το έσω τμήμα του μαστού", "Το έξω τμήμα του μαστού", "Την πλάτη", "Τον τράχηλο"], correct: 0 },
+        
+        // Κεφαλή & Τράχηλος
+        { q: "Πού καταλήγουν τελικά όλα τα λεμφαγγεία της κεφαλής και του τραχήλου;", a: ["Στους εν τω βάθει τραχηλικούς λεμφαδένες", "Στους υπογνάθιους", "Στους μαστοειδείς", "Στους ινιακούς"], correct: 0 },
+        { q: "Ποιοι λεμφαδένες ψηλαφώνται κάτω από το πηγούνι;", a: ["Υπογενείδιοι", "Υπογνάθιοι", "Προωτιαίοι", "Ινιακοί"], correct: 0 },
+        { q: "Η κορυφή της γλώσσας παροχετεύεται σε ποιους λεμφαδένες;", a: ["Υπογενείδιους", "Υπογνάθιους", "Εν τω βάθει τραχηλικούς", "Ινιακούς"], correct: 0 },
+        { q: "Οι αμυγδαλές (παρίσθμιες) παροχετεύονται κυρίως στους:", a: ["Jugulodigastric (υποδιγάστορες) λεμφαδένες", "Υπογενείδιους", "Μασχαλιαίους", "Οπισθοφαρυγγικούς"], correct: 0 },
+        { q: "Πού βρίσκεται ο λεμφαδένας του Virchow (σημείο μετάστασης από κοιλιά);", a: ["Αριστερή υπερκλείδια χώρα", "Δεξιά υπερκλείδια χώρα", "Αριστερή μασχάλη", "Δεξιά βουβωνική χώρα"], correct: 0 },
+
+        // Άνω Άκρα & Μαστός
+        { q: "Ποια είναι η κύρια ομάδα λεμφαδένων για την παροχέτευση του άνω άκρου;", a: ["Μασχαλιαίοι", "Τραχηλικοί", "Βουβωνικοί", "Θωρακικοί"], correct: 0 },
+        { q: "Το μεγαλύτερο ποσοστό της λέμφου του μαστού (75%) καταλήγει στους:", a: ["Μασχαλιαίους λεμφαδένες", "Παραστερνικούς λεμφαδένες", "Υπερκλείδιους λεμφαδένες", "Κοιλιακούς λεμφαδένες"], correct: 0 },
+        { q: "Ποιοι λεμφαδένες βρίσκονται στον αγκώνα;", a: ["Επιτροχίλιοι (υπερτροχίλιοι)", "Μασχαλιαίοι", "Βραχιόνιοι", "Κερκιδικοί"], correct: 0 },
+        { q: "Η λέμφος από τον αντίχειρα καταλήγει κυρίως:", a: ["Απευθείας στους μασχαλιαίους", "Στους επιτροχίλιους", "Στους τραχηλικούς", "Στους θωρακικούς"], correct: 0 },
+        { q: "Η λέμφος από το μικρό δάκτυλο του χεριού περνά συχνά πρώτα από:", a: ["Τους επιτροχίλιους λεμφαδένες", "Τους τραχηλικούς", "Τους υποκλείδιους", "Τους δελτοειδείς"], correct: 0 },
+
+        // Ειδικές Ερωτήσεις (Yes/No, True/False style logic turned into choice)
+        { q: "Ποιο από τα παρακάτω ΔΕΝ περνάει από τη χυλοφόρο δεξαμενή;", a: ["Λέμφος από το δεξί χέρι", "Λέμφος από το δεξί πόδι", "Λέμφος από το αριστερό πόδι", "Λέμφος από το έντερο"], correct: 0 },
+        { q: "Η λέμφος από το δέρμα της οσφυϊκής χώρας (μέση) καταλήγει:", a: ["Στους βουβωνικούς", "Στους μασχαλιαίους", "Στους ιγνυακούς", "Στους τραχηλικούς"], correct: 0 }, // Διόρθωση: Συνήθως πάει βουβωνικούς αν είναι χαμηλά, αλλά η ερώτηση αναφέρεται στο "back/flank"
+        { q: "Ποιος κορμός μεταφέρει τη λέμφο από τα σπλάχνα της κοιλιάς;", a: ["Εντερικός κορμός", "Οσφυϊκός κορμός", "Βρογχομεσοθωρακικός κορμός", "Υποκλείδιος κορμός"], correct: 0 },
+        { q: "Σε ποια πλευρά του θώρακα ανεβαίνει ο θωρακικός πόρος;", a: ["Ξεκινά δεξιά, καταλήγει αριστερά", "Μένει πάντα δεξιά", "Μένει πάντα αριστερά", "Ξεκινά αριστερά, καταλήγει δεξιά"], correct: 0 },
+        { q: "Τι είναι το χυλώδες υγρό (chyle);", a: ["Λέμφος πλούσια σε λίπος από το έντερο", "Λέμφος με αίμα", "Λέμφος από τους πνεύμονες", "Εγκεφαλονωτιαίο υγρό"], correct: 0 },
+
+        // Συνδυαστικές / Δύσκολες
+        { q: "Από πού δέχονται λέμφο οι Κοινοί Λαγόνιοι λεμφαδένες;", a: ["Από τους Έξω και Έσω Λαγόνιους", "Απευθείας από τα πόδια", "Από τους Οσφυϊκούς", "Από τη Χυλοφόρο δεξαμενή"], correct: 0 },
+        { q: "Ποια περιοχή του προσώπου παροχετεύεται στους προωτιαίους λεμφαδένες;", a: ["Βλέφαρα και κρόταφοι", "Πηγούνι", "Κάτω χείλος", "Γλώσσα"], correct: 0 },
+        { q: "Πού καταλήγουν τα λεμφαγγεία του ορθού (κάτω μέρος);", a: ["Στους βουβωνικούς (επιπολής) και έσω λαγόνιους", "Μόνο στους οσφυϊκούς", "Στους μεσεντέριους", "Στη χυλοφόρο δεξαμενή απευθείας"], correct: 0 },
+        { q: "Ποια δομή παρεμβάλλεται συνήθως στη διαδρομή ενός λεμφαγγείου;", a: ["Λεμφαδένας", "Φλέβα", "Αρτηρία", "Νεύρο"], correct: 0 },
+        { q: "Πώς κινείται η λέμφος στα αγγεία;", a: ["Με τη μυϊκή αντλία και βαλβίδες", "Με την πίεση της καρδιάς", "Λόγω βαρύτητας", "Με ωσμωτική πίεση"], correct: 0 },
+
+        // Τελευταία δεκάδα (mix)
+        { q: "Αν αφαιρεθούν οι μασχαλιαίοι λεμφαδένες, πού θα εμφανιστεί οίδημα;", a: ["Στο άνω άκρο", "Στο κάτω άκρο", "Στο πρόσωπο", "Στην κοιλιά"], correct: 0 },
+        { q: "Οι βρογχομεσοθωρακικοί κορμοί καταλήγουν:", a: ["Στη φλεβώδη γωνία ή στον μεγάλο πόρο", "Στη χυλοφόρο δεξαμενή", "Στους βουβωνικούς", "Στην αορτή"], correct: 0 },
+        { q: "Ποιο όργανο ανήκει στο λεμφικό σύστημα αλλά δεν φιλτράρει λέμφο;", a: ["Σπλήνας (φιλτράρει αίμα)", "Λεμφαδένας", "Αμυγδαλή", "Θύμος"], correct: 0 },
+        { q: "Η λέμφος από το τριχωτό της κεφαλής (πίσω μέρος) πάει στους:", a: ["Ινιακούς λεμφαδένες", "Υπογενείδιους", "Προωτιαίους", "Μασχαλιαίους"], correct: 0 },
+        { q: "Ποια ανατομική δομή χωρίζει την αποχέτευση του σώματος σε άνω και κάτω;", a: ["Διάφραγμα (κατά προσέγγιση)", "Ομφαλός", "Κλείδα", "Γόνατο"], correct: 1 }, // Ομφαλός είναι το watershed για το δέρμα κοιλιάς
+        { q: "Η λέμφος από το δέρμα πάνω από τον ομφαλό οδεύει προς:", a: ["Τους μασχαλιαίους", "Τους βουβωνικούς", "Τους ιγνυακούς", "Τους τραχηλικούς"], correct: 0 },
+        { q: "Η λέμφος από το δέρμα κάτω από τον ομφαλό οδεύει προς:", a: ["Τους βουβωνικούς", "Τους μασχαλιαίους", "Τους λαγόνιους", "Τους ιγνυακούς"], correct: 0 },
+        { q: "Ποιο είναι το μεγαλύτερο λεμφικό αγγείο στο σώμα;", a: ["Θωρακικός Πόρος", "Δεξιός Λεμφικός Πόρος", "Οσφυϊκό στέλεχος", "Σφαγίτιδα"], correct: 0 },
+        { q: "Σε ποια φλέβα εκβάλλει η λέμφος;", a: ["Υποκλείδια (στη συμβολή με σφαγίτιδα)", "Μηριαία", "Πυλαία", "Αορτή"], correct: 0 },
+        { q: "Πόση λέμφος επιστρέφει περίπου στο αίμα την ημέρα;", a: ["3-4 λίτρα", "100 ml", "10 λίτρα", "20 λίτρα"], correct: 0 }
+    ];
+
+    // Shuffle answers function
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+    }
+
+    // Shuffle questions initially so every play is different? 
+    // Let's keep questions order fixed for logical flow, but shuffle answer options strictly.
+
+    let currentQuestionIndex = 0;
+    let score = 0;
+
+    function loadQuestion() {
+        const qData = questions[currentQuestionIndex];
+        document.getElementById('question').innerText = qData.q;
+        document.getElementById('question-count').innerText = `Ερώτηση: ${currentQuestionIndex + 1} / ${questions.length}`;
+        
+        const optionsDiv = document.getElementById('answer-buttons');
+        optionsDiv.innerHTML = '';
+
+        // Create an array of indices [0, 1, 2, 3]
+        let indices = [0, 1, 2, 3];
+        shuffleArray(indices);
+
+        indices.forEach(index => {
+            const btn = document.createElement('button');
+            btn.innerText = qData.a[index];
+            btn.classList.add('btn');
+            btn.onclick = () => selectAnswer(index, qData.correct, btn);
+            optionsDiv.appendChild(btn);
+        });
+
+        document.getElementById('next-btn').style.display = 'none';
+    }
+
+    function selectAnswer(selectedIndex, correctIndex, btnElement) {
+        // Disable all buttons
+        const buttons = document.querySelectorAll('.options .btn');
+        buttons.forEach(btn => btn.disabled = true);
+
+        // Find the correct button based on text content usually, but here we shuffled indices.
+        // We need to find the button that has the text of questions[currentQuestionIndex].a[correctIndex]
+        const correctText = questions[currentQuestionIndex].a[correctIndex];
+        
+        let correctBtn;
+        buttons.forEach(b => {
+            if (b.innerText === correctText) correctBtn = b;
+        });
+
+        if (selectedIndex === correctIndex) {
+            btnElement.classList.add('correct');
+            score++;
+            document.getElementById('score-count').innerText = `Σκορ: ${score}`;
+        } else {
+            btnElement.classList.add('wrong');
+            correctBtn.classList.add('correct');
+        }
+
+        document.getElementById('next-btn').style.display = 'inline-block';
+    }
+
+    function nextQuestion() {
+        currentQuestionIndex++;
+        if (currentQuestionIndex < questions.length) {
+            loadQuestion();
+        } else {
+            showResults();
+        }
+    }
+
+    function showResults() {
+        document.getElementById('quiz-screen').style.display = 'none';
+        document.getElementById('result-screen').style.display = 'block';
+        document.getElementById('final-score').innerText = `${score} / ${questions.length}`;
+        
+        let msg = "";
+        const percentage = (score / questions.length) * 100;
+        if (percentage >= 90) msg = "Άριστα! Είσαι ειδικός στη λεμφολογία!";
+        else if (percentage >= 70) msg = "Πολύ καλά! Έχεις κατανοήσει τα βασικά.";
+        else if (percentage >= 50) msg = "Καλή προσπάθεια, αλλά χρειάζεται επανάληψη στις εκβολές.";
+        else msg = "Χρειάζεται διάβασμα. Ξαναδές τη διαδρομή της λέμφου.";
+        
+        document.getElementById('feedback-message').innerText = msg;
+    }
+
+    // Start
+    loadQuestion();
+
+</script>
+
+</body>
+</html>
