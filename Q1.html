@@ -1,0 +1,624 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Βιοϋλικά Master Quiz & Ασκήσεις</title>
+    <!-- MathJax for formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --secondary: #27ae60; /* Green from your notes */
+            --accent: #e74c3c;
+            --bg: #f3f4f6;
+            --card: #ffffff;
+            --text: #1f2937;
+        }
+
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 1.5rem; }
+        h2 { color: var(--secondary); margin-top: 0; }
+
+        .container {
+            max-width: 800px;
+            margin: 20px auto;
+            padding: 0 20px;
+            flex: 1;
+        }
+
+        .menu-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-top: 40px;
+        }
+
+        .menu-card {
+            background: var(--card);
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            transition: transform 0.2s, box-shadow 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .menu-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 15px rgba(0,0,0,0.1);
+            border-color: var(--secondary);
+        }
+
+        .menu-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
+        .menu-title { font-weight: bold; font-size: 1.2rem; display: block; }
+
+        /* Quiz Styles */
+        .quiz-section { display: none; }
+        .active-section { display: block; }
+
+        .question-card {
+            background: var(--card);
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            margin-bottom: 20px;
+        }
+
+        .question-text {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 20px;
+            border-left: 5px solid var(--secondary);
+            padding-left: 15px;
+        }
+
+        /* MCQ Options */
+        .options-grid {
+            display: grid;
+            gap: 10px;
+        }
+
+        .option-btn {
+            background: #f8f9fa;
+            border: 2px solid #e9ecef;
+            padding: 15px;
+            border-radius: 8px;
+            text-align: left;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: all 0.2s;
+        }
+
+        .option-btn:hover { background: #e9ecef; }
+        
+        .correct { background-color: #d1fae5 !important; border-color: var(--secondary) !important; color: #065f46; }
+        .wrong { background-color: #fee2e2 !important; border-color: var(--accent) !important; color: #991b1b; }
+
+        /* Gap Fill Styles */
+        .gap-sentence {
+            font-size: 1.2rem;
+            line-height: 2;
+            margin-bottom: 30px;
+        }
+
+        .gap-slot {
+            display: inline-block;
+            min-width: 100px;
+            height: 30px;
+            border-bottom: 2px solid var(--primary);
+            margin: 0 5px;
+            vertical-align: bottom;
+            text-align: center;
+            color: var(--secondary);
+            font-weight: bold;
+            cursor: pointer;
+            background: #eef2ff;
+            border-radius: 4px 4px 0 0;
+            padding: 0 10px;
+        }
+
+        .gap-slot.filled { border-bottom-color: var(--secondary); }
+        .gap-slot.error { border-bottom-color: var(--accent); color: var(--accent); }
+
+        .word-bank {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+            background: #f1f5f9;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        .draggable-word {
+            background: white;
+            border: 1px solid #cbd5e1;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            user-select: none;
+            box-shadow: 0 2px 2px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+            transition: transform 0.1s;
+        }
+
+        .draggable-word:active { transform: scale(0.95); }
+        .draggable-word.used { opacity: 0.5; pointer-events: none; background: #e2e8f0; }
+        .draggable-word.selected { border-color: var(--secondary); background: #dcfce7; transform: scale(1.05); }
+
+        /* Controls */
+        .controls {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 20px;
+        }
+
+        .btn {
+            background: var(--primary);
+            color: white;
+            border: none;
+            padding: 10px 25px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 1rem;
+        }
+        
+        .btn:disabled { opacity: 0.5; cursor: not-allowed; }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+
+        .feedback {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 6px;
+            display: none;
+        }
+        .feedback.show { display: block; }
+        .feedback-correct { background: #d1fae5; color: #064e3b; }
+        .feedback-wrong { background: #fee2e2; color: #7f1d1d; }
+
+        @media (max-width: 600px) {
+            .menu-grid { grid-template-columns: 1fr; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>ΒΙΟΫΛΙΚΑ: Διαδραστική Εξάσκηση</h1>
+</header>
+
+<div class="container" id="mainMenu">
+    <h2>Επίλεξε Τρόπο Εξέτασης</h2>
+    <div class="menu-grid">
+        <div class="menu-card" onclick="startQuiz('mcq')">
+            <span class="menu-icon">📝</span>
+            <span class="menu-title">Πολλαπλής Επιλογής</span>
+            <p>15 Ερωτήσεις θεωρίας και ορισμών</p>
+        </div>
+        <div class="menu-card" onclick="startQuiz('gap')">
+            <span class="menu-icon">🧩</span>
+            <span class="menu-title">Συμπλήρωση Κενών</span>
+            <p>Σύρε τις λέξεις στη σωστή σειρά (Ιεραρχίες & Τύποι)</p>
+        </div>
+    </div>
+</div>
+
+<!-- MCQ Container -->
+<div class="container quiz-section" id="mcqContainer">
+    <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+        <span id="mcqProgress">Ερώτηση 1/10</span>
+        <button class="btn-outline" style="padding: 5px 10px;" onclick="goHome()">Έξοδος</button>
+    </div>
+    <div class="question-card">
+        <div class="question-text" id="mcqQuestion"></div>
+        <div class="options-grid" id="mcqOptions"></div>
+        <div class="feedback" id="mcqFeedback"></div>
+    </div>
+    <div class="controls">
+        <button class="btn" id="mcqNext" onclick="nextMcq()" disabled>Επόμενο</button>
+    </div>
+</div>
+
+<!-- Gap Fill Container -->
+<div class="container quiz-section" id="gapContainer">
+    <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
+        <span id="gapProgress">Άσκηση 1/5</span>
+        <button class="btn-outline" style="padding: 5px 10px;" onclick="goHome()">Έξοδος</button>
+    </div>
+    
+    <div class="question-card">
+        <p style="color: #666; font-size: 0.9rem;">Κάνε κλικ σε μια λέξη από την τράπεζα και μετά κάνε κλικ στο κενό που θέλεις να τη βάλεις.</p>
+        <div class="gap-sentence" id="gapSentence"></div>
+        <div class="word-bank" id="gapBank"></div>
+        <div class="feedback" id="gapFeedback"></div>
+    </div>
+
+    <div class="controls">
+        <button class="btn btn-outline" onclick="resetGap()">Καθαρισμός</button>
+        <button class="btn" id="gapNext" onclick="checkGap()">Έλεγχος & Επόμενο</button>
+    </div>
+</div>
+
+<script>
+    /* --- DATA SOURCES --- */
+    
+    // MCQ Data
+    const mcqData = [
+        {
+            q: "Ποια είναι η σωστή ιεραρχία ισχύος των δεσμών (από τον ασθενέστερο στον ισχυρότερο);",
+            options: [
+                "Ιοντικός < Μεταλλικός < Ομοιοπολικός",
+                "Μεταλλικός < Ιοντικός < Ομοιοπολικός",
+                "Ομοιοπολικός < Ιοντικός < Μεταλλικός",
+                "Μεταλλικός < Ομοιοπολικός < Ιοντικός"
+            ],
+            correct: 1,
+            explanation: "Σύμφωνα με τις σημειώσεις, ο Μεταλλικός είναι ο πιο ασθενής και ο Ομοιοπολικός ο πιο ισχυρός."
+        },
+        {
+            q: "Τι συμβαίνει στα άτομα μετάλλων κατά τον μεταλλικό δεσμό;",
+            options: [
+                "Δημιουργούνται πολύ ισχυρές κατευθυντικές δυνάμεις",
+                "Τα ηλεκτρόνια σθένους είναι σταθερά και ακίνητα",
+                "Τα ηλεκτρόνια σθένους κινούνται μεταξύ των ατόμων (χαλαρώνουν οι αποστάσεις)",
+                "Τα άτομα απομακρύνονται πλήρως μεταξύ τους"
+            ],
+            correct: 2,
+            explanation: "Στον μεταλλικό δεσμό τα ηλεκτρόνια κινούνται ελεύθερα ("νέφος"), δημιουργώντας όχι ισχυρές ηλεκτροστατικές δυνάμεις."
+        },
+        {
+            q: "Ποιος είναι ο Νόμος του Hooke και τι εκφράζει;",
+            options: [
+                "\\( \\sigma = F/A \\) (Τάση)",
+                "\\( E = \\sigma / e \\) (Μέτρο ακαμψίας)",
+                "\\( e = \\Delta L / L_0 \\) (Παραμόρφωση)",
+                "\\( R = P^2 / 2E \\) (Ευκαμψία)"
+            ],
+            correct: 1,
+            explanation: "Ο Νόμος του Hooke είναι \\( E = \\sigma / e \\) και εκφράζει το Μέτρο Ακαμψίας του υλικού."
+        },
+        {
+            q: "Τι ορίζουμε ως 'Τάση Αντοχής' (Proof Stress);",
+            options: [
+                "Την τάση όπου το υλικό σπάει",
+                "Την τάση όπου αρχίζει η ελαστική παραμόρφωση",
+                "Την τάση για να παραχθεί 0,2% μόνιμη πλαστική παραμόρφωση",
+                "Τη μέγιστη τάση που αντέχει το δοκίμιο"
+            ],
+            correct: 2,
+            explanation: "Η Τάση Αντοχής είναι η τάση που αντιστοιχεί σε μόνιμη παραμόρφωση 0,2%."
+        },
+        {
+            q: "Ποια είναι η διαφορά Ευκαμψίας (Resilience) και Σκληρότητας (Toughness);",
+            options: [
+                "Η Ευκαμψία είναι μέχρι το σημείο θραύσης, η Σκληρότητα μέχρι το όριο ελαστικότητας",
+                "Η Ευκαμψία αφορά ενέργεια χωρίς μόνιμη παραμόρφωση, η Σκληρότητα αφορά τη συνολική ενέργεια μέχρι τη θραύση",
+                "Είναι ταυτόσημες έννοιες",
+                "Η Ευκαμψία μετράται σε Pascal, η Σκληρότητα σε Newton"
+            ],
+            correct: 1,
+            explanation: "Ευκαμψία (R): Ενέργεια χωρίς πλαστική παραμόρφωση. Σκληρότητα: Συνολική ενέργεια μέχρι τη θραύση."
+        },
+        {
+            q: "Τι ονομάζουμε 'Κόπωση' (Fatigue) ενός υλικού;",
+            options: [
+                "Τη μόνιμη παραμόρφωση υπό σταθερή τάση για μεγάλο χρόνο",
+                "Την ταχεία θραύση λόγω ασταθούς ρωγμής",
+                "Τη θραύση από συσσώρευση μικρών πλαστικών παραμορφώσεων σε κύκλο εναλλασσόμενων τάσεων",
+                "Την αντοχή του υλικού στην κρούση"
+            ],
+            correct: 2,
+            explanation: "Κόπωση είναι η αστοχία από επαναλαμβανόμενα φορτία (εναλλασσόμενες τάσεις), ακόμα και αν είναι μικρά."
+        },
+        {
+            q: "Τι ισχύει για τα ολίσιμα υλικά κατά τον εφελκυσμό (πλαστική παραμόρφωση);",
+            options: [
+                "Αύξηση μήκους και αύξηση διατομής",
+                "Μείωση μήκους και αύξηση διατομής",
+                "Αύξηση μήκους και μείωση επιφάνειας διατομής",
+                "Το μήκος και η διατομή μένουν σταθερά"
+            ],
+            correct: 2,
+            explanation: "Στα ολίσιμα υλικά: \\( l \\uparrow \\Rightarrow A \\downarrow \\)."
+        },
+        {
+            q: "Ποιος είναι ο τύπος για την Τάση Εφελκυσμού σε δίσκο (με κάθετη φόρτιση);",
+            options: [
+                "\\( \\sigma = F / A \\)",
+                "\\( \\sigma = 2P / (\\pi \\cdot D \\cdot T) \\)",
+                "\\( \\sigma = P^2 / 2E \\)",
+                "\\( \\sigma = \\Delta L / L_0 \\)"
+            ],
+            correct: 1,
+            explanation: "Για δίσκο: \\( \\sigma = \\frac{2P}{\\pi \\cdot D \\cdot T} \\)."
+        },
+        {
+            q: "Τι είναι ο 'Ερπυσμός' (Creep);",
+            options: [
+                "Μόνιμη παραμόρφωση υπό σταθερή τάση για μεγάλο χρονικό διάστημα",
+                "Παραμόρφωση μόνο όταν ξεπεραστεί το όριο θραύσης",
+                "Η ελαστική επαναφορά του υλικού",
+                "Η αντίσταση στην κρούση"
+            ],
+            correct: 0,
+            explanation: "Ερπυσμός συμβαίνει με την πάροδο του χρόνου υπό σταθερό φορτίο, ακόμη και σε τάση < Ο.Ε."
+        }
+    ];
+
+    // Gap Fill Data
+    const gapData = [
+        {
+            sentence: "Η ιεραρχία ισχύος των δεσμών είναι: {0} < {1} < {2}",
+            words: ["Ιοντικός", "Μεταλλικός", "Ομοιοπολικός", "Van der Waals"],
+            correctOrder: ["Μεταλλικός", "Ιοντικός", "Ομοιοπολικός"],
+            hint: "Ξεκίνα από τον πιο ασθενή (μη κατευθυντικό)."
+        },
+        {
+            sentence: "Τύποι Τάσεων: Στον {0} έχουμε απομάκρυνση ατόμων, στη {1} έχουμε προσέγγιση ατόμων και στη {2} έχουμε παράλληλη μετακίνηση.",
+            words: ["Διάτμηση", "Συμπίεση", "Εφελκυσμό", "Κάμψη"],
+            correctOrder: ["Εφελκυσμό", "Συμπίεση", "Διάτμηση"],
+            hint: "Θυμήσου τα βελάκια: Εφελκυσμός (πάνω-κάτω έξω), Συμπίεση (μέσα)."
+        },
+        {
+            sentence: "Η {0} είναι η τάση όταν αρχίζει η πλαστική παραμόρφωση. Η {1} είναι η τάση που απαιτείται για τη θραύση. Η {2} είναι η μέγιστη τάση που αντέχει το δοκίμιο.",
+            words: ["Τάση Αντοχής", "Τάση Ενδοτικότητας", "Τάση Θραύσης", "Τελική Αντοχή"],
+            correctOrder: ["Τάση Ενδοτικότητας", "Τάση Θραύσης", "Τελική Αντοχή"],
+            hint: "Ενδοτικότητα = αρχή πλαστικής, Τελική = κορυφή καμπύλης."
+        },
+        {
+            sentence: "Μηχανικοί Τύποι: Τάση σ = {0}, Παραμόρφωση e = {1}, Ευκαμψία R = {2}",
+            words: ["F/A", "(Li-Lo)/Lo", "P^2/2E", "σ/e"],
+            correctOrder: ["F/A", "(Li-Lo)/Lo", "P^2/2E"],
+            hint: "Τάση είναι δύναμη ανά επιφάνεια. Ευκαμψία έχει τετράγωνο."
+        },
+        {
+            sentence: "Κλινική Σημασία: Αν οι τάσεις υπερβούν τη μέγιστη τιμή αντοχής προκαλείται {0}. Αν σε μεταλλική αποκατάσταση ξεπεραστεί η τάση ενδοτικότητας προκαλείται {1}.",
+            words: ["κάταγμα", "μόνιμη παραμόρφωση", "ελαστική παραμόρφωση", "ερπυσμός"],
+            correctOrder: ["κάταγμα", "μόνιμη παραμόρφωση"],
+            hint: "Υπέρβαση μέγιστης αντοχής = σπάσιμο."
+        }
+    ];
+
+    /* --- LOGIC --- */
+    
+    let currentMcqIndex = 0;
+    let mcqScore = 0;
+    
+    let currentGapIndex = 0;
+    let selectedWord = null;
+    let userGapAnswers = [];
+
+    // Navigation
+    function goHome() {
+        document.getElementById('mcqContainer').classList.remove('active-section');
+        document.getElementById('gapContainer').classList.remove('active-section');
+        document.getElementById('mainMenu').style.display = 'block';
+    }
+
+    function startQuiz(type) {
+        document.getElementById('mainMenu').style.display = 'none';
+        if (type === 'mcq') {
+            document.getElementById('mcqContainer').classList.add('active-section');
+            currentMcqIndex = 0;
+            mcqScore = 0;
+            loadMcq();
+        } else {
+            document.getElementById('gapContainer').classList.add('active-section');
+            currentGapIndex = 0;
+            loadGap();
+        }
+    }
+
+    // --- MCQ LOGIC ---
+    function loadMcq() {
+        const qData = mcqData[currentMcqIndex];
+        document.getElementById('mcqProgress').textContent = `Ερώτηση ${currentMcqIndex + 1}/${mcqData.length}`;
+        document.getElementById('mcqQuestion').innerHTML = qData.q;
+        document.getElementById('mcqFeedback').className = 'feedback'; // hide feedback
+        document.getElementById('mcqFeedback').innerHTML = '';
+        document.getElementById('mcqNext').disabled = true;
+
+        const optionsHtml = qData.options.map((opt, idx) => 
+            `<button class="option-btn" onclick="checkMcq(this, ${idx})">${opt}</button>`
+        ).join('');
+        document.getElementById('mcqOptions').innerHTML = optionsHtml;
+        
+        // Render math
+        if(window.MathJax) MathJax.typeset();
+    }
+
+    function checkMcq(btn, selectedIdx) {
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true); // Disable all
+
+        const qData = mcqData[currentMcqIndex];
+        const feedbackDiv = document.getElementById('mcqFeedback');
+
+        if (selectedIdx === qData.correct) {
+            btn.classList.add('correct');
+            feedbackDiv.innerHTML = `<strong>Σωστά!</strong> <br> ${qData.explanation}`;
+            feedbackDiv.classList.add('feedback-correct');
+            mcqScore++;
+        } else {
+            btn.classList.add('wrong');
+            allBtns[qData.correct].classList.add('correct'); // Show correct
+            feedbackDiv.innerHTML = `<strong>Λάθος.</strong> Η σωστή απάντηση ήταν: <br> ${qData.options[qData.correct]} <br><br> ${qData.explanation}`;
+            feedbackDiv.classList.add('feedback-wrong');
+        }
+        
+        feedbackDiv.classList.add('show');
+        document.getElementById('mcqNext').disabled = false;
+        
+        // Re-render math in feedback
+        if(window.MathJax) MathJax.typeset();
+    }
+
+    function nextMcq() {
+        if (currentMcqIndex < mcqData.length - 1) {
+            currentMcqIndex++;
+            loadMcq();
+        } else {
+            // End of quiz
+            document.getElementById('mcqContainer').innerHTML = `
+                <div class="question-card" style="text-align:center;">
+                    <h2>Τέλος Κουίζ!</h2>
+                    <p style="font-size: 1.5rem;">Σκορ: ${mcqScore} / ${mcqData.length}</p>
+                    <button class="btn" onclick="goHome()">Επιστροφή στο Μενού</button>
+                </div>
+            `;
+        }
+    }
+
+    // --- GAP FILL LOGIC ---
+    function loadGap() {
+        const data = gapData[currentGapIndex];
+        document.getElementById('gapProgress').textContent = `Άσκηση ${currentGapIndex + 1}/${gapData.length}`;
+        document.getElementById('gapFeedback').className = 'feedback';
+        document.getElementById('gapNext').textContent = "Έλεγχος";
+        document.getElementById('gapNext').setAttribute('onclick', 'checkGap()');
+        
+        selectedWord = null;
+        userGapAnswers = new Array(data.correctOrder.length).fill(null);
+
+        // Build Sentence with slots
+        let htmlSentence = data.sentence;
+        for(let i=0; i<data.correctOrder.length; i++) {
+            htmlSentence = htmlSentence.replace(`{${i}}`, `<span class="gap-slot" onclick="placeWord(${i})" id="slot-${i}"></span>`);
+        }
+        document.getElementById('gapSentence').innerHTML = htmlSentence;
+
+        // Build Word Bank
+        // Shuffle words
+        const shuffled = [...data.words].sort(() => Math.random() - 0.5);
+        const bankHtml = shuffled.map(word => 
+            `<div class="draggable-word" onclick="selectWord(this, '${word}')">${word}</div>`
+        ).join('');
+        document.getElementById('gapBank').innerHTML = bankHtml;
+    }
+
+    function selectWord(el, word) {
+        // Deselect prev
+        document.querySelectorAll('.draggable-word').forEach(d => d.classList.remove('selected'));
+        
+        // If clicking already used word, do nothing
+        if (el.classList.contains('used')) return;
+
+        // Select new
+        el.classList.add('selected');
+        selectedWord = { element: el, text: word };
+    }
+
+    function placeWord(slotIndex) {
+        if (!selectedWord) return;
+
+        const slot = document.getElementById(`slot-${slotIndex}`);
+        
+        // If slot already has a word, return it to bank (visually)
+        if (userGapAnswers[slotIndex]) {
+            // Find the bank element corresponding to this text and enable it
+            const prevWord = userGapAnswers[slotIndex];
+            const bankItems = document.querySelectorAll('.draggable-word');
+            bankItems.forEach(item => {
+                if (item.textContent === prevWord && item.classList.contains('used')) {
+                    item.classList.remove('used');
+                }
+            });
+        }
+
+        // Place new word
+        slot.textContent = selectedWord.text;
+        slot.classList.add('filled');
+        slot.classList.remove('error'); // remove error state if retrying
+        
+        userGapAnswers[slotIndex] = selectedWord.text;
+
+        // Mark word as used in bank
+        selectedWord.element.classList.remove('selected');
+        selectedWord.element.classList.add('used');
+        selectedWord = null;
+    }
+
+    function resetGap() {
+        loadGap();
+    }
+
+    function checkGap() {
+        const data = gapData[currentGapIndex];
+        let correctCount = 0;
+        let isAllFilled = true;
+
+        // Check each slot
+        for(let i=0; i<data.correctOrder.length; i++) {
+            const slot = document.getElementById(`slot-${i}`);
+            if (!userGapAnswers[i]) {
+                isAllFilled = false;
+                slot.style.borderBottomColor = 'var(--accent)';
+            } else if (userGapAnswers[i] === data.correctOrder[i]) {
+                slot.style.color = '#065f46'; // Dark green
+                slot.style.borderBottomColor = '#065f46';
+                correctCount++;
+            } else {
+                slot.classList.add('error');
+            }
+        }
+
+        const feedbackDiv = document.getElementById('gapFeedback');
+        
+        if (!isAllFilled) {
+            feedbackDiv.textContent = "Συμπλήρωσε όλα τα κενά!";
+            feedbackDiv.className = 'feedback feedback-wrong show';
+            return;
+        }
+
+        if (correctCount === data.correctOrder.length) {
+            feedbackDiv.innerHTML = `<strong>Μπράβο!</strong> Σωστή σειρά.`;
+            feedbackDiv.className = 'feedback feedback-correct show';
+            document.getElementById('gapNext').textContent = "Επόμενη Άσκηση";
+            document.getElementById('gapNext').setAttribute('onclick', 'nextGap()');
+        } else {
+            feedbackDiv.innerHTML = `<strong>Προσπάθησε ξανά.</strong><br> Hint: ${data.hint}`;
+            feedbackDiv.className = 'feedback feedback-wrong show';
+        }
+    }
+
+    function nextGap() {
+        if (currentGapIndex < gapData.length - 1) {
+            currentGapIndex++;
+            loadGap();
+        } else {
+            document.getElementById('gapContainer').innerHTML = `
+                <div class="question-card" style="text-align:center;">
+                    <h2>Τέλος Ασκήσεων!</h2>
+                    <p>Ολοκλήρωσες όλες τις ασκήσεις κενών.</p>
+                    <button class="btn" onclick="goHome()">Επιστροφή στο Μενού</button>
+                </div>
+            `;
+        }
+    }
+
+</script>
+
+</body>
+</html>
+
