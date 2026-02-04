@@ -1,0 +1,643 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Flashcards Οδοντιατρικών Υλικών</title>
+    <style>
+        /* --- CSS STYLES (Ενσωματωμένα για να λειτουργεί παντού) --- */
+        :root {
+            --primary: #3498db;
+            --secondary: #2c3e50;
+            --bg: #f0f2f5;
+            --card-front: #ffffff;
+            --card-back: #2c3e50;
+            --text-main: #333;
+            --text-light: #666;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            color: var(--text-main);
+            overflow-x: hidden; /* Αποφυγή οριζόντιου scroll */
+        }
+
+        .app-container {
+            width: 100%;
+            max-width: 500px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* HEADER */
+        .header {
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: var(--secondary);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .counter {
+            background: #fff;
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: bold;
+            color: var(--text-light);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+
+        /* CARD SCENE */
+        .scene {
+            width: 100%;
+            height: 400px;
+            perspective: 1000px;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            border-radius: 20px;
+            padding: 30px;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            overflow-y: auto;
+        }
+
+        /* Front Face Style */
+        .card-front {
+            background-color: var(--card-front);
+            border: 2px solid #e1e4e8;
+        }
+
+        /* Back Face Style */
+        .card-back {
+            background-color: var(--card-back);
+            color: white;
+            transform: rotateY(180deg);
+            border: 2px solid #34495e;
+            align-items: flex-start;
+            justify-content: flex-start;
+            text-align: left;
+        }
+
+        /* Badges */
+        .category-badge {
+            background-color: #e1f5fe;
+            color: #0277bd;
+            padding: 6px 12px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 20px;
+            align-self: center;
+            text-align: center;
+        }
+
+        .category-badge-back {
+            background-color: #34495e;
+            color: #bdc3c7;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            font-weight: bold;
+            margin-bottom: 15px;
+            align-self: center;
+            border: 1px solid #4a6572;
+        }
+
+        /* Text Content */
+        .question-text {
+            font-size: 1.3rem;
+            font-weight: 600;
+            text-align: center;
+            line-height: 1.5;
+            flex-grow: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .answer-text {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            width: 100%;
+        }
+
+        .answer-text ul, .answer-text ol {
+            padding-left: 20px;
+            margin: 0;
+        }
+        
+        .answer-text li {
+            margin-bottom: 8px;
+        }
+
+        .hint {
+            font-size: 0.8rem;
+            color: #999;
+            margin-top: 20px;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { opacity: 0.6; }
+            50% { opacity: 1; }
+            100% { opacity: 0.6; }
+        }
+
+        /* Custom Styles inside Answer */
+        .box-highlight {
+            background: rgba(255,255,255,0.1);
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 10px;
+            font-size: 0.95rem;
+            border-left: 3px solid var(--primary);
+        }
+        .text-red { color: #ff8a80; font-weight: bold; }
+        .text-green { color: #b9f6ca; font-weight: bold; }
+        .text-yellow { color: #fff59d; font-weight: bold; }
+        .text-blue { color: #81d4fa; font-weight: bold; }
+        .sub-text { font-size: 0.9em; opacity: 0.8; margin-top: 5px; }
+
+        /* CONTROLS */
+        .controls {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            width: 100%;
+        }
+
+        .btn {
+            background: #fff;
+            border: none;
+            padding: 15px;
+            border-radius: 12px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+            color: #555;
+            font-size: 1.2rem;
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        .btn:hover {
+            background-color: #f8f9fa;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0,0,0,0.1);
+        }
+
+        .btn:active {
+            transform: scale(0.95);
+        }
+
+        .btn-primary { color: var(--primary); }
+        .btn-purple { color: #9b59b6; }
+
+        /* Scrollbar for back card */
+        .card-back::-webkit-scrollbar { width: 6px; }
+        .card-back::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); }
+        .card-back::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 3px; }
+
+    </style>
+</head>
+<body>
+
+    <div class="app-container">
+        <!-- HEADER -->
+        <div class="header">
+            <div class="title">
+                <!-- SVG Icon Layer -->
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#3498db" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>
+                <span>Οδοντιατρικά Υλικά</span>
+            </div>
+            <div class="counter" id="counter">1 / 28</div>
+        </div>
+
+        <!-- CARD SCENE -->
+        <div class="scene" onclick="flipCard()">
+            <div class="card" id="card">
+                <!-- FRONT -->
+                <div class="card-face card-front">
+                    <span class="category-badge" id="category">Κατηγορία</span>
+                    <div class="question-text" id="question">
+                        Ερώτηση...
+                    </div>
+                    <div class="hint">Κλικ για εμφάνιση απάντησης</div>
+                </div>
+
+                <!-- BACK -->
+                <div class="card-face card-back">
+                    <span class="category-badge-back">Απάντηση</span>
+                    <div class="answer-text" id="answer">
+                        Απάντηση...
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- CONTROLS -->
+        <div class="controls">
+            <button class="btn" onclick="resetCards()" title="Επαναφορά">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+            </button>
+            <button class="btn btn-primary" onclick="prevCard()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>
+            </button>
+            <button class="btn btn-primary" onclick="nextCard()">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>
+            </button>
+            <button class="btn btn-purple" onclick="shuffleCards()" title="Ανακάτεμα">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 3 21 3 21 8"/><line x1="4" y1="20" x2="21" y2="3"/><polyline points="21 16 21 21 16 21"/><line x1="15" y1="15" x2="21" y2="21"/><line x1="4" y1="4" x2="9" y2="9"/></svg>
+            </button>
+        </div>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        // DATA - ΠΛΗΡΕΣ ΣΕΤ 28 ΚΑΡΤΩΝ
+        const originalData = [
+            // --- ΠΟΛΥΜΕΡΙΣΜΟΣ (1-5) ---
+            {
+                category: 'Πολυμερισμός',
+                question: 'Ποιοι είναι οι 2 τρόποι πολυμερισμού;',
+                answer: `<ol>
+                            <li><strong>Προσθήκη:</strong> Όχι εξάλειψη μικρότερου μορίου.</li>
+                            <li><strong>Συμπύκνωση:</strong> Εξάλειψη μικρότερου μορίου (π.χ. H₂O).</li>
+                        </ol>`
+            },
+            {
+                category: 'Πολυμερισμός Προσθήκης',
+                question: 'Ποια είναι τα ΣΤΑΔΙΑ του Πολυμερισμού Προσθήκης;',
+                answer: `<ul>
+                            <li>1. <strong>Ενεργοποίηση</strong> (απαιτεί ελεύθερες ρίζες)</li>
+                            <li>2. <strong>Έναρξη</strong></li>
+                            <li>3. <strong>Πρόοδος της αντίδρασης</strong> (ανάπτυξη αλυσίδας)</li>
+                            <li>4. <strong>Τερματισμός</strong></li>
+                        </ul>`
+            },
+            {
+                category: 'Πολυμερισμός Προσθήκης',
+                question: 'Ποιος είναι ο ενεργοποιητής στην Οδοντιατρική;',
+                answer: `<p style="margin-bottom:10px"><strong>Υπεροξείδιο Βενζοιλίου</strong> (δίνει ελεύθερες ρίζες).</p>
+                         <p>↳ Διασπάται με χρήση ενεργοποιητή (Θερμότητα > 65°C).</p>`
+            },
+            {
+                category: 'Ιδιότητες Πολυμερών',
+                question: 'Πώς επηρεάζει η αύξηση του Mr (Μοριακό Βάρος);',
+                answer: `<p>Η <strong>↑ Mr</strong> βελτιώνει τις φυσικές ιδιότητες.</p>
+                         <div class="box-highlight">↑ ιξώδους τήξης → ↑ θ υαλώδους μετάπτωσης</div>
+                         <p class="sub-text">(Αποτέλεσμα: Δύσκολη επεξεργασία)</p>`
+            },
+            {
+                category: 'Ιδιότητες Πολυμερών',
+                question: 'Πώς επηρεάζει η Θερμοκρασία (Θ) τους δεσμούς;',
+                answer: `<ul>
+                            <li><strong>Θ↑ (Αύξηση):</strong> Σπάνε οι δεσμοί.</li>
+                            <li><strong>Θ↓ (Μείωση):</strong> Επαναδημιουργούνται.</li>
+                        </ul>
+                        <p class="sub-text">Σημείωση: Η κρυσταλλική δομή είναι περιορισμένη στα πολυμερή.</p>`
+            },
+            
+            // --- ΠΛΑΣΤΙΚΟΠΟΙΗΤΕΣ (6-8) ---
+            {
+                category: 'SOS - Πλαστικοποιητές',
+                question: 'Τι είναι οι Πλαστικοποιητές;',
+                answer: `Ουσία με μικρό Mr (Μοριακό Βάρος) που προστίθεται σε πολυμερές.`
+            },
+            {
+                category: 'SOS - Πλαστικοποιητές',
+                question: 'Ποια είναι η επίδραση των Πλαστικοποιητών;',
+                answer: `<div style="border-left: 4px solid #3498db; padding-left: 10px; margin: 10px 0;">
+                            <p>↓ θ υαλώδους μετάπτωσης</p>
+                            <p>↓ μέτρο ελαστικότητας</p>
+                        </div>
+                        <p><strong>Αποτέλεσμα:</strong> Πιο εύκαμπτες οι αλυσίδες.</p>`
+            },
+            {
+                category: 'SOS - Πλαστικοποιητές',
+                question: 'Ποιος πλαστικοποιητής χρησιμοποιείται και πού;',
+                answer: `<p><strong>Διβουτυλική φθαλείνη</strong></p>
+                         <p>→ Χρήση: Μαλακά επιστρώματα οδοντοστοιχιών.</p>
+                         <p class="text-red" style="margin-top:8px; font-size:0.9em">↳ Ελαττωμένη χρήση στα αποτυπωτικά & ρητίνες.</p>`
+            },
+
+            // --- ΡΕΟΛΟΓΙΑ (9-12) ---
+            {
+                category: 'Ρεολογία',
+                question: 'Τι είναι Ρεολογία και πώς διακρίνεται η Ροή;',
+                answer: `<p><strong>Ρεολογία:</strong> Μελέτη της ροής των υλικών.</p>
+                        <ul style="list-style: none; padding: 0; margin-top: 10px;">
+                            <li>💧 <strong>Υγρά:</strong> ↗ Ιξώδες</li>
+                            <li>🧱 <strong>Στερεά:</strong> ↗ Ερπυσμός</li>
+                            <li>〰️ ↘ Ιξωδοελαστικότητα</li>
+                        </ul>`
+            },
+            {
+                category: 'Ρεολογία',
+                question: 'Σχέση Ιξώδους και Θερμοκρασίας;',
+                answer: `<p><strong>Ιξώδες:</strong> Η αντίσταση ενός υγρού στη ροή.</p>
+                        <div style="text-align: center; background: rgba(255,255,0,0.1); padding: 10px; border-radius: 10px; border: 1px solid rgba(255,255,0,0.3); margin-top: 10px;">
+                            <strong style="font-size: 1.2em;" class="text-yellow">Θ↑ : ↓ Ιξώδους</strong>
+                            <div style="font-size: 0.8em; margin-top: 5px;">Αύξηση θερμοκρασίας = Μείωση ιξώδους</div>
+                        </div>`
+            },
+            {
+                category: 'Ρεολογία',
+                question: 'Τύποι για Τάση & Βαθμό Διάτμησης',
+                answer: `<div style="display: flex; flexDirection: column; gap: 15px;">
+                            <div style="margin-bottom:10px">
+                                <span>Τάση διάτμησης (σ):</span>
+                                <div style="font-family: monospace; font-size: 1.2em; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px; text-align: center;">σ = F / A</div>
+                            </div>
+                            <div>
+                                <span>Βαθμός διάτμησης (ė):</span>
+                                <div style="font-family: monospace; font-size: 1.2em; background: rgba(0,0,0,0.2); padding: 5px; border-radius: 5px; text-align: center;">ė = V / d</div>
+                            </div>
+                        </div>`
+            },
+            {
+                category: 'Ρεολογία',
+                question: 'Τι είναι Θιξοτροπία;',
+                answer: `Μεταβολή του ιξώδους για συγκεκριμένο βαθμό διάτμησης (π.χ. όταν αναδεύουμε το υλικό γίνεται πιο ρευστό).`
+            },
+
+            // --- ΘΕΡΜΙΚΕΣ ΙΔΙΟΤΗΤΕΣ (13-15) ---
+            {
+                category: 'Θερμικές Ιδιότητες',
+                question: 'Ποιες είναι οι βασικές Θερμικές Ιδιότητες;',
+                answer: `<ul>
+                            <li>Θερμική αγωγιμότητα</li>
+                            <li>Ειδική θερμότητα</li>
+                            <li>Θερμική διάχυση</li>
+                            <li>Γραμμικός συντελεστής θερμικής διαστολής (α)</li>
+                        </ul>`
+            },
+            {
+                category: 'Θερμικές Ιδιότητες',
+                question: 'Ιδανική συνθήκη για συντελεστή (α);',
+                answer: `<div class="text-green" style="text-align: center; font-weight: bold; border: 1px solid #b9f6ca; padding: 10px; border-radius: 10px;">
+                            α (υλικού) = α (δοντιού)
+                        </div>`
+            },
+            {
+                category: 'Θερμικές Ιδιότητες',
+                question: 'Κλινική Σημασία θερμικών ιδιοτήτων;',
+                answer: `<ol>
+                            <li>Αίσθηση ζεστού-κρύου.</li>
+                            <li>Μηχανική αποτυχία λόγω συστολής-διαστολής.</li>
+                        </ol>`
+            },
+
+            // --- ΟΠΤΙΚΕΣ ΙΔΙΟΤΗΤΕΣ (16-19) ---
+            {
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Από τι εξαρτώνται οι Οπτικές Ιδιότητες;',
+                answer: `Χαρακτηριστικά αντικειμένου <br/>
+                         <span class="text-blue">→ Φάσμα ηλ/μαγ ακτινοβολίας →</span> <br/>
+                         Χρώμα, Διαφάνεια, Υφή επιφάνειας.`
+            },
+            {
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Τι είναι Φθορισμός;',
+                answer: `<p><strong>Φθορισμός:</strong></p>
+                        <ul style="margin-top: 10px;">
+                            <li>⬇ Απορρόφηση UV (300-400 nm)</li>
+                            <li>⬆ Εκπομπή Ορατού (400-450 nm)</li>
+                        </ul>`
+            },
+            {
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Αποτέλεσμα Φθορισμού & Χρήση',
+                answer: `<p>→ Κάνει τα δόντια να φαίνονται <strong>πιο λευκά</strong> (αδαμαντίνη).</p>
+                         <p style="margin-top: 10px;"><strong>Αναγκαίο σε:</strong> Γέφυρες, Στεφάνες, Εμφράξεις (αποκαταστατικά υλικά).</p>`
+            },
+            {
+                category: 'Οπτικές Ιδιότητες',
+                question: 'Πώς διακρίνεται η Διαφάνεια;',
+                answer: `<ul>
+                            <li>↗ <strong>Διαφανές:</strong> Διέλευση φωτός.</li>
+                            <li>↘ <strong>Αδιαφανές:</strong> Μη διέλευση φωτός.</li>
+                        </ul>`
+            },
+
+            // --- ΥΦΗ ΕΠΙΦΑΝΕΙΑΣ (20-22) ---
+            {
+                category: 'Υφή Επιφάνειας',
+                question: 'Φως & Υφή (Λείες vs Τραχείες)',
+                answer: `<ul>
+                            <li><strong>Λείες επιφάνειες:</strong> Ανάκλαση φωτός ✨</li>
+                            <li><strong>Τραχείες επιφάνειες:</strong> Σκέδαση φωτός 🌫️</li>
+                        </ul>
+                        <div class="sub-text" style="font-style: italic;">"Όσο μικρότερο → τόσο τραχύτερο"</div>`
+            },
+            {
+                category: 'Υφή Επιφάνειας',
+                question: 'Ra vs Sa (Τραχύτητα)',
+                answer: `<ul>
+                            <li><strong>Ra:</strong> Αδρότητα σε προφιλόμετρο ακίδας (2D).</li>
+                            <li><strong>Sa:</strong> Αδρότητα σε οπτικό προφιλόμετρο (3D).</li>
+                        </ul>
+                        <div style="margin-top: 10px;"><strong>↑ :</strong> πιο λείο (στις σημειώσεις) / πιο τραχύ (συνήθως). *Βάσει σημειώσεων: ↑ = πιο λείο.*</div>`
+            },
+            {
+                category: 'Υφή Επιφάνειας',
+                question: 'Κλινική σημασία υφής',
+                answer: `Η επιλογή ενός υλικού εξαρτάται από την ικανότητα λείανσης της επιφάνειάς του.`
+            },
+
+            // --- ΧΗΜΙΚΕΣ ΙΔΙΟΤΗΤΕΣ (23-26) ---
+            {
+                category: 'Χημικές Ιδιότητες',
+                question: 'Κύρια ιδιότητα για τα Πολυμερή;',
+                answer: `<p><strong>Προσρόφηση (νερού)</strong> / Απώλεια ευδιάλυτων συστατικών.</p>
+                         <div class="box-highlight">Στα Μαλακά επιστρώματα οδοντοστοιχιών.</div>`
+            },
+            {
+                category: 'Χημικές Ιδιότητες',
+                question: 'Ιδιότητες για Μέταλλα & Κεραμικά;',
+                answer: `<ul>
+                            <li><strong>Μέταλλα:</strong> Αμαύρωση / Οξείδωση.</li>
+                            <li><strong>Κεραμικά:</strong> Χημική διάλυση.</li>
+                        </ul>`
+            },
+            {
+                category: 'Χημικές Ιδιότητες',
+                question: 'Συνέπειες Χημικής Διάλυσης/Δυσχρωμίας',
+                answer: `<ol>
+                            <li class="text-red">ΜΕΙΩΣΗ ΑΝΤΟΧΗΣ</li>
+                            <li class="text-red">ΤΟΞΙΚΟΤΗΤΑ (τοπική/συστηματική)</li>
+                        </ol>
+                        <p class="sub-text">Αιτίες δυσχρωμίας: Σουλφίδια, χλωρίδια.</p>`
+            },
+            {
+                category: 'Χημικές Ιδιότητες',
+                question: 'Τι συμβαίνει στα Πορώδη υλικά;',
+                answer: `<p>Πορώδες υλικό → <strong>Προσρόφηση</strong></p>
+                         <p>↪ Αποτέλεσμα: Αποχρωματισμός, Αποδόμηση υλικών.</p>`
+            },
+
+            // --- ΔΙΑΒΡΩΣΗ (27-28) ---
+            {
+                category: 'Διάβρωση',
+                question: 'Τι είναι η Διάβρωση;',
+                answer: `Είναι η ηλεκτροχημική (ανοδική) αντίδραση του υλικού με το περιβάλλον.`
+            },
+            {
+                category: 'Διάβρωση',
+                question: 'Πώς κατηγοριοποιείται η Διάβρωση;',
+                answer: `<div style="background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px;">
+                            <ul style="margin-top: 0;">
+                                <li><strong>Ξηρή</strong> (Χημική)</li>
+                                <li><strong>Υγρή</strong> (Ηλεκτροχημική):
+                                    <ul style="font-size: 0.9em; color: #bdc3c7;">
+                                        <li>Ομοιόμορφη</li>
+                                        <li>Εντοπισμένη:
+                                            <div style="padding-left:10px">↘ Γαλβανική<br/>↘ Σχισμών</div>
+                                        </li>
+                                    </ul>
+                                </li>
+                            </ul>
+                        </div>`
+            }
+        ];
+
+        // STATE
+        let cards = [...originalData];
+        let currentIndex = 0;
+        let isFlipped = false;
+
+        // ELEMENTS
+        const cardEl = document.getElementById('card');
+        const categoryEl = document.getElementById('category');
+        const questionEl = document.getElementById('question');
+        const answerEl = document.getElementById('answer');
+        const counterEl = document.getElementById('counter');
+
+        // FUNCTIONS
+        function renderCard() {
+            const currentCard = cards[currentIndex];
+            
+            // Update Text
+            categoryEl.textContent = currentCard.category;
+            questionEl.textContent = currentCard.question;
+            answerEl.innerHTML = currentCard.answer;
+            counterEl.textContent = `${currentIndex + 1} / ${cards.length}`;
+        }
+
+        function flipCard() {
+            isFlipped = !isFlipped;
+            if (isFlipped) {
+                cardEl.classList.add('is-flipped');
+            } else {
+                cardEl.classList.remove('is-flipped');
+            }
+        }
+
+        function nextCard() {
+            if(isFlipped) {
+                flipCard();
+                setTimeout(() => {
+                    currentIndex = (currentIndex + 1) % cards.length;
+                    renderCard();
+                }, 300);
+            } else {
+                currentIndex = (currentIndex + 1) % cards.length;
+                renderCard();
+            }
+        }
+
+        function prevCard() {
+            if(isFlipped) {
+                flipCard();
+                setTimeout(() => {
+                    currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                    renderCard();
+                }, 300);
+            } else {
+                currentIndex = (currentIndex - 1 + cards.length) % cards.length;
+                renderCard();
+            }
+        }
+
+        function shuffleCards() {
+            if(isFlipped) flipCard();
+            setTimeout(() => {
+                // Fisher-Yates Shuffle
+                for (let i = cards.length - 1; i > 0; i--) {
+                    const j = Math.floor(Math.random() * (i + 1));
+                    [cards[i], cards[j]] = [cards[j], cards[i]];
+                }
+                currentIndex = 0;
+                renderCard();
+            }, 300);
+        }
+
+        function resetCards() {
+            if(isFlipped) flipCard();
+            setTimeout(() => {
+                cards = [...originalData]; // Restore original order
+                currentIndex = 0;
+                renderCard();
+            }, 300);
+        }
+
+        // KEYBOARD SUPPORT
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'ArrowRight') nextCard();
+            if (e.key === 'ArrowLeft') prevCard();
+            if (e.key === ' ' || e.key === 'Enter') flipCard();
+        });
+
+        // INIT
+        renderCard();
+
+    </script>
+</body>
+</html>
