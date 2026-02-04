@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Βιοϋλικά - Flashcards</title>
+    <!-- MathJax for rendering formulas -->
+    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #27ae60;
+            --text-color: #333;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 20px;
+        }
+
+        h1 {
+            color: var(--primary-color);
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .controls {
+            margin-bottom: 20px;
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: var(--primary-color);
+            color: white;
+            border: none;
+            border-radius: 5px;
+            transition: background 0.3s;
+        }
+
+        button:hover {
+            background-color: #34495e;
+        }
+
+        button:disabled {
+            background-color: #bdc3c7;
+            cursor: not-allowed;
+        }
+
+        .progress {
+            font-size: 1.2rem;
+            font-weight: bold;
+            color: var(--text-color);
+        }
+
+        /* Card Flip Styles */
+        .scene {
+            width: 100%;
+            max-width: 600px;
+            height: 400px;
+            perspective: 1000px;
+            margin-bottom: 20px;
+        }
+
+        .card {
+            width: 100%;
+            height: 100%;
+            position: relative;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            border-radius: 15px;
+        }
+
+        .card.is-flipped {
+            transform: rotateY(180deg);
+        }
+
+        .card__face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            border-radius: 15px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 30px;
+            box-sizing: border-box;
+            background-color: var(--card-bg);
+            text-align: center;
+            overflow-y: auto;
+        }
+
+        .card__face--front {
+            background: linear-gradient(135deg, #ffffff 0%, #f9f9f9 100%);
+            border: 2px solid #e0e0e0;
+        }
+
+        .card__face--front::after {
+            content: "ΠΑΤΗΣΤΕ ΓΙΑ ΑΠΑΝΤΗΣΗ";
+            position: absolute;
+            bottom: 15px;
+            font-size: 0.8rem;
+            color: #999;
+        }
+
+        .card__face--back {
+            background-color: #fff;
+            transform: rotateY(180deg);
+            border: 2px solid var(--accent-color);
+            color: var(--text-color);
+        }
+
+        .category {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .content-text {
+            font-size: 1.3rem;
+            line-height: 1.6;
+        }
+
+        .content-text ul {
+            text-align: left;
+            font-size: 1.1rem;
+            padding-left: 20px;
+        }
+
+        .content-text li {
+            margin-bottom: 8px;
+        }
+
+        /* Scrollbar for lots of text */
+        .card__face::-webkit-scrollbar {
+            width: 8px;
+        }
+        .card__face::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 4px;
+        }
+        .card__face::-webkit-scrollbar-thumb {
+            background: #ccc; 
+            border-radius: 4px;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>ΒΙΟΫΛΙΚΑ (Σημειώσεις)</h1>
+
+    <div class="controls">
+        <button id="prevBtn" onclick="prevCard()">&#8592; Πίσω</button>
+        <span class="progress" id="progress">1 / X</span>
+        <button id="nextBtn" onclick="nextCard()">Επόμενο &#8594;</button>
+    </div>
+
+    <div class="scene scene--card">
+        <div class="card" onclick="flipCard()">
+            <div class="card__face card__face--front">
+                <span class="category">Κατηγορία</span>
+                <div class="content-text" id="frontText">Ερώτηση</div>
+            </div>
+            <div class="card__face card__face--back">
+                <span class="category">Απάντηση</span>
+                <div class="content-text" id="backText">Απάντηση</div>
+            </div>
+        </div>
+    </div>
+
+    <p style="color: #666; font-size: 0.9rem;">Κάντε κλικ στην κάρτα για να δείτε την απάντηση.</p>
+
+    <script>
+        const flashcards = [
+            {
+                category: "Ατομικη Δομη",
+                front: "Ποιος είναι ο βασικός σκοπός της ένωσης των ατόμων;",
+                back: "Η ένωση ατόμων οδηγεί σε <strong>χαμηλότερη ενέργεια</strong> και <strong>μεγαλύτερη σταθερότητα</strong>."
+            },
+            {
+                category: "Ατομικη Δομη - Μεταλλικος Δεσμος",
+                front: "Ποια είναι τα χαρακτηριστικά του μεταλλικού δεσμού;",
+                back: "<ul><li>Άτομα μετάλλων: Χαλαρώνουν οι αποστάσεις.</li><li>Τα <strong>e<sup>-</sup> σθένους κινούνται</strong> μεταξύ των ατόμων.</li><li>Δημιουργούνται <strong>όχι ισχυρές</strong> ηλεκτροστατικές δυνάμεις.</li><li>Είναι <strong>μη-κατευθυντικός</strong> δεσμός (ο πιο ασθενής).</li></ul>"
+            },
+            {
+                category: "Ατομικη Δομη",
+                front: "Ποια είναι η ιεραρχία ισχύος των δεσμών;",
+                back: "<strong>Μεταλλικός δεσμός</strong> < <strong>Ιοντικός δεσμός</strong> < <strong>Ομοιοπολικός δεσμός</strong>"
+            },
+            {
+                category: "Οδοντιατρικη Εφαρμογη",
+                front: "Τι γνωρίζετε για τα υλικά και τους δεσμούς στην οδοντιατρική;",
+                back: "Χρησιμοποιούνται <strong>οξείδια</strong> ή <strong>κράματα μετάλλων</strong>. Παρεμβάλλονται και άλλα άτομα που <strong>ενισχύουν</strong> τον δεσμό.<br><br><em>Π.χ. Εμφυτεύματα &rarr; οξείδια τιτανίου.</em>"
+            },
+            {
+                category: "Δεσμοι Van der Waals",
+                front: "Ποιες είναι οι κατηγορίες των δεσμών Van der Waals;",
+                back: "<ol><li>Διπόλου - Διπόλου</li><li>Εξ επαγωγής</li><li>London</li></ol>"
+            },
+            {
+                category: "Μηχανικες Ιδιοτητες",
+                front: "Ποια είναι η σχέση διατομής και δύναμης για το ίδιο υλικό;",
+                back: "Για ίδιο υλικό, ανεξαρτήτως μεγέθους και σχήματος:<br>$$A_1 > A_2 \\Leftrightarrow F_1 > F_2$$<br>(Για να δέχεται το ίδιο σώμα)."
+            },
+            {
+                category: "Τυποι Μηχανικων Ιδιοτητων",
+                front: "Δώστε τους τύπους για:<br>1. Τάση (σ)<br>2. Παραμόρφωση (e)<br>3. Νόμο Hooke",
+                back: "1. <strong>Τάση:</strong> $$\\sigma = F/A$$ (Pa)<br>2. <strong>Παραμόρφωση:</strong> $$e = (L_i - L_0) / L_0$$ (Καθαρός αριθμός)<br>3. <strong>Νόμος Hooke:</strong> $$E = \\sigma / e$$<br>&rarr; <strong>Μέτρο ακαμψίας υλικού</strong>"
+            },
+            {
+                category: "Διαγραμμα Τασης-Παραμορφωσης",
+                front: "Τι ορίζουμε ως 'Πλαστική Παραμόρφωση' στο διάγραμμα;",
+                back: "Είναι η παραμόρφωση που συμβαίνει όταν ξεπεραστεί το όριο ελαστικότητας. Είναι <strong>μόνιμη</strong> παραμόρφωση (<strong>> 0.2</strong>)."
+            },
+            {
+                category: "Τυποι Τασεων",
+                front: "Ποιοι είναι οι 3 τύποι τάσεων και τι συμβαίνει στα άτομα;",
+                back: "<ul><li><strong>Εφελκυσμός:</strong> Απομάκρυνση ατόμων (&#8593; &#8595;)</li><li><strong>Συμπίεση:</strong> Προσέγγιση ατόμων (&#8595; &#8593;)</li><li><strong>Διάτμηση:</strong> Παράλληλη μετακίνηση ατόμων (&#8599; &#8601;)</li></ul>"
+            },
+            {
+                category: "Ορισμοι Αντοχης",
+                front: "Τι είναι η Τάση Ενδοτικότητας και τι η Τάση Αντοχής;",
+                back: "<strong>Τάση Ενδοτικότητας:</strong> Η τάση όταν αρχίζει η <strong>πλαστική παραμόρφωση</strong> (>Ο.Ε.).<br><br><strong>Τάση Αντοχής:</strong> Η τάση για να παραχθεί <strong>0,2%</strong> μόνιμη (πλαστική) παραμόρφωση."
+            },
+            {
+                category: "Ορισμοι Αντοχης",
+                front: "Τι είναι η Τελική Αντοχή στον Εφελκυσμό και η Ολκιμότητα;",
+                back: "<strong>Τελική αντοχή (σ<sub>UTS</sub>):</strong> Η <strong>μέγιστη</strong> τάση που αντέχει το δοκίμιο.<br><br><strong>Ολκιμότητα:</strong> Το μέγεθος της <strong>πλαστικής παραμόρφωσης</strong> κατά την θραύση."
+            },
+            {
+                category: "Ιδιοτητες Ενεργειας",
+                front: "Τι είναι η Ευκαμψία (R) και ποιος ο τύπος της;",
+                back: "Είναι το ποσό ενέργειας που απορροφά το υλικό <strong>χωρίς</strong> να υποστεί μόνιμη παραμόρφωση.<br><br>Τύπος: $$R = P^2 / 2E$$<br>*(P: όριο αναλογίας, E: συντελεστής ελαστικότητας)*"
+            },
+            {
+                category: "Ιδιοτητες Ενεργειας",
+                front: "Τι είναι το Μέτρο Σκληρότητας (Toughness);",
+                back: "Το <strong>συνολικό</strong> ποσό ενέργειας που μπορεί να απορροφηθεί από το υλικό προτού σπάσει (ένδειξη αντίστασης υλικού)."
+            },
+            {
+                category: "Φαινομενα Εφελκυσμου",
+                front: "Τι συμβαίνει στα ολίσιμα υλικά κατά τον εφελκυσμό;",
+                back: "Κατά την πλαστική παραμόρφωση, η αύξηση του μήκους ($$l \\uparrow$$) οδηγεί σε <strong>μείωση της επιφάνειας διατομής</strong> ($$A \\downarrow$$)."
+            },
+            {
+                category: "Ειδικοι Τυποι",
+                front: "Ποιος είναι ο τύπος για την Τάση Εφελκυσμού σε δίσκο (Diametral);",
+                back: "$$\\sigma = \\frac{2 \\cdot P}{\\pi \\cdot D \\cdot T}$$<br><small>(Με κάθετη φόρτιση)</small>"
+            },
+            {
+                category: "Δοκιμασιες & Θραυση",
+                front: "Τι είναι η Θραύση Ακαμψίας;",
+                back: "Η <strong>ταχεία θραύση</strong> λόγω επέκτασης ασταθούς ρωγμής."
+            },
+            {
+                category: "Δοκιμασιες",
+                front: "Τι μετράμε στη Δοκιμασία Κρούσης;",
+                back: "Η μεταβολή της ενέργειας του εκκρεμούς ($$\\Delta H$$) αποτελεί το ποσό ενέργειας που απορροφήθηκε από το δοκίμιο για την θραύση."
+            },
+            {
+                category: "Δοκιμασιες",
+                front: "Τι είναι η Κόπωση (Fatigue);",
+                back: "Η σταδιακή συσσώρευση μικρών ποσοτήτων <strong>πλαστικής παραμόρφωσης</strong> που παράγονται σε κύκλο εναλλασσόμενων τάσεων.<br><br><em>(Δημιουργία ρωγμών σε ενδοδομικές ατέλειες).</em>"
+            },
+            {
+                category: "Δοκιμασιες",
+                front: "Τι είναι ο Ερπυσμός (Creep);",
+                back: "Μόνιμη παραμόρφωση υλικού υπό την επίδραση <strong>σταθερής τάσης</strong> για μεγάλο χρονικό διάστημα.<br><br><em>(Ακόμα και αν η τάση < Ο.Ε.)</em>"
+            },
+            {
+                category: "Κλινικη Σημασια",
+                front: "Τι συμβαίνει κατά τη μεταφορά φορτίου στο δόντι;",
+                back: "Προκαλείται ανάπτυξη τάσεων - παραμορφώσεων. Εάν οι τάσεις υπερβούν την <strong>μέγιστη τιμή αντοχής</strong>, μπορεί να προκληθεί <strong>κάταγμα</strong>."
+            },
+            {
+                category: "Κλινικη Σημασια",
+                front: "Τι συμβαίνει αν σε μεταλλική αποκατάσταση η τάση εφελκυσμού υπερβεί την τάση ενδοτικότητας;",
+                back: "Θα προκληθεί <strong>μόνιμη παραμόρφωση</strong>."
+            },
+            {
+                category: "Κλινικη Σημασια",
+                front: "Αρκεί ένα υλικό να είναι ανθεκτικό στα αρχικά φορτία;",
+                back: "<strong>Όχι</strong>. Εάν ένα υλικό είναι πολύ ανθεκτικό στα φορτία που επιβάλλονται αρχικά, αυτό δεν διασφαλίζει ότι θα αντέχει πάντοτε τα φορτία (λόγω <strong>κόπωσης</strong>)."
+            }
+        ];
+
+        let currentIndex = 0;
+        const cardElement = document.querySelector('.card');
+        const frontText = document.getElementById('frontText');
+        const backText = document.getElementById('backText');
+        const categoryText = document.querySelectorAll('.category');
+        const progressText = document.getElementById('progress');
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        function renderCard() {
+            // Reset flip
+            cardElement.classList.remove('is-flipped');
+            
+            // Wait a tiny bit for flip animation to reset before changing text if needed, 
+            // but for instant feedback we change content immediately.
+            const data = flashcards[currentIndex];
+            
+            // Update Category
+            categoryText.forEach(el => el.textContent = data.category);
+
+            // Update Content
+            frontText.innerHTML = data.front;
+            backText.innerHTML = data.back;
+
+            // Update Progress
+            progressText.textContent = `${currentIndex + 1} / ${flashcards.length}`;
+
+            // Update Buttons
+            prevBtn.disabled = currentIndex === 0;
+            nextBtn.disabled = currentIndex === flashcards.length - 1;
+
+            // Re-render MathJax
+            if (window.MathJax) {
+                MathJax.typesetPromise();
+            }
+        }
+
+        function nextCard() {
+            if (currentIndex < flashcards.length - 1) {
+                currentIndex++;
+                renderCard();
+            }
+        }
+
+        function prevCard() {
+            if (currentIndex > 0) {
+                currentIndex--;
+                renderCard();
+            }
+        }
+
+        function flipCard() {
+            cardElement.classList.toggle('is-flipped');
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', (e) => {
+            if (e.code === 'Space' || e.code === 'Enter') {
+                flipCard();
+            } else if (e.code === 'ArrowRight') {
+                nextCard();
+            } else if (e.code === 'ArrowLeft') {
+                prevCard();
+            }
+        });
+
+        // Initial Render
+        renderCard();
+
+    </script>
+</body>
+</html>
+
