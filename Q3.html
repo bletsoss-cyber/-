@@ -1,5 +1,25 @@
 import React, { useState } from 'react';
-import { CheckCircle, XCircle, RefreshCw, Trophy, ArrowRight, MousePointer2 } from 'lucide-react';
+
+// --- Ενσωματωμένα Εικονίδια (SVGs) για να μην εξαρτόμαστε από εξωτερικές βιβλιοθήκες ---
+const IconCheckCircle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg>
+);
+const IconXCircle = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="15" y1="9" x2="9" y2="15"/><line x1="9" y1="9" x2="15" y2="15"/></svg>
+);
+const IconRefreshCw = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M3 12a9 9 0 0 1 9-9 9.75 9.75 0 0 1 6.74 2.74L21 8"/><path d="M21 3v5h-5"/><path d="M21 12a9 9 0 0 1-9 9 9.75 9.75 0 0 1-6.74-2.74L3 16"/><path d="M8 16H3v5"/></svg>
+);
+const IconTrophy = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-yellow-500 mx-auto mb-4"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 1 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2Z"/></svg>
+);
+const IconArrowRight = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+);
+const IconMousePointer2 = () => (
+  <svg xmlns="http://www.w3.org/2000/svg" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="m12 19-7-7 7-7"/><path d="M19 12H5"/></svg> 
+  // Changed to a simpler arrow/pointer icon just for visual hint
+);
 
 const quizData = [
   // --- Ενότητα 1: Πολυμερισμός ---
@@ -14,7 +34,7 @@ const quizData = [
       'Οξείδωση και Αναγωγή',
       'Συμπύκνωση και Εξάτμιση'
     ],
-    correctAnswer: 1 // Index of correct option
+    correctAnswer: 1
   },
   {
     id: 2,
@@ -268,7 +288,7 @@ export default function App() {
     return (
       <div className="min-h-screen bg-slate-50 flex flex-col items-center justify-center p-4">
         <div className="bg-white p-8 rounded-2xl shadow-xl max-w-md w-full text-center">
-          <Trophy className="w-16 h-16 text-yellow-500 mx-auto mb-4" />
+          <IconTrophy />
           <h2 className="text-2xl font-bold text-slate-800 mb-2">Ολοκλήρωση Κουίζ!</h2>
           <p className="text-slate-600 mb-6">
             Το σκορ σου είναι: <span className="text-2xl font-bold text-blue-600">{score}</span> / {quizData.length}
@@ -285,7 +305,7 @@ export default function App() {
             onClick={restartQuiz}
             className="flex items-center justify-center w-full gap-2 bg-blue-600 text-white py-3 px-6 rounded-xl hover:bg-blue-700 transition font-semibold"
           >
-            <RefreshCw className="w-5 h-5" />
+            <IconRefreshCw />
             Πάμε πάλι
           </button>
         </div>
@@ -352,8 +372,8 @@ export default function App() {
                     >
                       <div className="flex justify-between items-center">
                         <span>{option}</span>
-                        {isAnswered && index === currentQuestion.correctAnswer && <CheckCircle className="w-5 h-5 text-green-600"/>}
-                        {isAnswered && selectedOption === index && index !== currentQuestion.correctAnswer && <XCircle className="w-5 h-5 text-red-600"/>}
+                        {isAnswered && index === currentQuestion.correctAnswer && <IconCheckCircle />}
+                        {isAnswered && selectedOption === index && index !== currentQuestion.correctAnswer && <IconXCircle />}
                       </div>
                     </button>
                   );
@@ -410,7 +430,7 @@ export default function App() {
                 </div>
                 {!isAnswered && (
                   <div className="text-center text-xs text-slate-400 flex items-center justify-center gap-1">
-                    <MousePointer2 className="w-3 h-3" />
+                    <IconMousePointer2 />
                     Σύρε ή κάνε κλικ στη σωστή λέξη
                   </div>
                 )}
@@ -425,12 +445,12 @@ export default function App() {
                 <div className={`font-bold flex items-center gap-2 ${isCorrect ? 'text-green-600' : 'text-red-600'}`}>
                   {isCorrect ? (
                     <>
-                      <CheckCircle className="w-6 h-6" />
+                      <IconCheckCircle />
                       Σωστά!
                     </>
                   ) : (
                     <>
-                      <XCircle className="w-6 h-6" />
+                      <IconXCircle />
                       Λάθος!
                       <span className="text-slate-500 text-sm font-normal ml-1">
                         Η απάντηση ήταν: {currentQuestion.type === 'mc' ? currentQuestion.options[currentQuestion.correctAnswer] : currentQuestion.correctAnswer}
@@ -443,7 +463,7 @@ export default function App() {
                   className="bg-blue-600 text-white px-6 py-2.5 rounded-lg font-semibold hover:bg-blue-700 transition flex items-center gap-2"
                 >
                   {currentQuestionIndex === quizData.length - 1 ? 'Αποτελέσματα' : 'Επόμενο'}
-                  <ArrowRight className="w-4 h-4" />
+                  <IconArrowRight />
                 </button>
               </div>
             )}
