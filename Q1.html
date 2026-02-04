@@ -3,14 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Βιοϋλικά Master Quiz & Ασκήσεις</title>
+    <title>Βιοϋλικά - Πλήρες Quiz (15Q)</title>
     <!-- MathJax for formulas -->
-    <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+    <script>
+        window.MathJax = {
+            tex: { inlineMath: [['$', '$'], ['\\(', '\\)']] },
+            startup: {
+                pageReady: () => {
+                    return MathJax.startup.defaultPageReady();
+                }
+            }
+        };
+    </script>
     <script id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    
     <style>
         :root {
             --primary: #2c3e50;
-            --secondary: #27ae60; /* Green from your notes */
+            --secondary: #27ae60;
             --accent: #e74c3c;
             --bg: #f3f4f6;
             --card: #ffffff;
@@ -18,7 +28,7 @@
         }
 
         body {
-            font-family: 'Segoe UI', system-ui, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             background-color: var(--bg);
             color: var(--text);
             margin: 0;
@@ -36,16 +46,16 @@
             box-shadow: 0 4px 6px rgba(0,0,0,0.1);
         }
 
-        h1 { margin: 0; font-size: 1.5rem; }
-        h2 { color: var(--secondary); margin-top: 0; }
-
         .container {
             max-width: 800px;
             margin: 20px auto;
             padding: 0 20px;
             flex: 1;
+            width: 100%;
+            box-sizing: border-box;
         }
 
+        /* Menu Styles */
         .menu-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -53,30 +63,43 @@
             margin-top: 40px;
         }
 
-        .menu-card {
+        .menu-btn {
             background: var(--card);
+            border: 2px solid transparent;
             padding: 30px;
             border-radius: 12px;
             text-align: center;
             cursor: pointer;
             box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-            transition: transform 0.2s, box-shadow 0.2s;
-            border: 2px solid transparent;
+            transition: transform 0.2s, box-shadow 0.2s, border-color 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+            font-family: inherit;
+            color: inherit;
         }
 
-        .menu-card:hover {
+        .menu-btn:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 15px rgba(0,0,0,0.1);
             border-color: var(--secondary);
         }
 
-        .menu-icon { font-size: 3rem; margin-bottom: 10px; display: block; }
-        .menu-title { font-weight: bold; font-size: 1.2rem; display: block; }
+        .menu-icon { font-size: 3rem; margin-bottom: 10px; }
+        .menu-title { font-weight: bold; font-size: 1.3rem; margin-bottom: 5px; }
+        .menu-desc { font-size: 0.9rem; color: #666; }
 
-        /* Quiz Styles */
-        .quiz-section { display: none; }
-        .active-section { display: block; }
+        /* Sections */
+        .section { display: none; }
+        .section.active { display: block; animation: fadeIn 0.3s ease-in-out; }
 
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Quiz UI */
         .question-card {
             background: var(--card);
             padding: 25px;
@@ -93,53 +116,48 @@
             padding-left: 15px;
         }
 
-        /* MCQ Options */
-        .options-grid {
-            display: grid;
-            gap: 10px;
-        }
-
         .option-btn {
+            display: block;
+            width: 100%;
             background: #f8f9fa;
             border: 2px solid #e9ecef;
             padding: 15px;
+            margin-bottom: 10px;
             border-radius: 8px;
             text-align: left;
             cursor: pointer;
             font-size: 1rem;
             transition: all 0.2s;
+            font-family: inherit;
         }
 
         .option-btn:hover { background: #e9ecef; }
+        .option-btn.correct { background-color: #d1fae5; border-color: var(--secondary); color: #065f46; }
+        .option-btn.wrong { background-color: #fee2e2; border-color: var(--accent); color: #991b1b; }
+
+        /* Gap Fill UI */
+        .gap-sentence { font-size: 1.3rem; line-height: 2.2; margin-bottom: 30px; }
         
-        .correct { background-color: #d1fae5 !important; border-color: var(--secondary) !important; color: #065f46; }
-        .wrong { background-color: #fee2e2 !important; border-color: var(--accent) !important; color: #991b1b; }
-
-        /* Gap Fill Styles */
-        .gap-sentence {
-            font-size: 1.2rem;
-            line-height: 2;
-            margin-bottom: 30px;
-        }
-
         .gap-slot {
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
             min-width: 100px;
-            height: 30px;
-            border-bottom: 2px solid var(--primary);
+            height: 36px;
+            border-bottom: 3px solid var(--primary);
             margin: 0 5px;
-            vertical-align: bottom;
-            text-align: center;
+            vertical-align: middle;
             color: var(--secondary);
             font-weight: bold;
             cursor: pointer;
             background: #eef2ff;
-            border-radius: 4px 4px 0 0;
+            border-radius: 4px;
             padding: 0 10px;
+            transition: background 0.2s;
         }
-
-        .gap-slot.filled { border-bottom-color: var(--secondary); }
-        .gap-slot.error { border-bottom-color: var(--accent); color: var(--accent); }
+        
+        .gap-slot.filled { border-bottom-color: var(--secondary); background: #f0fdf4; }
+        .gap-slot.error { border-bottom-color: var(--accent); color: var(--accent); background: #fef2f2; }
 
         .word-bank {
             display: flex;
@@ -154,469 +172,491 @@
         .draggable-word {
             background: white;
             border: 1px solid #cbd5e1;
-            padding: 8px 16px;
-            border-radius: 20px;
+            padding: 10px 20px;
+            border-radius: 25px;
             cursor: pointer;
             user-select: none;
             box-shadow: 0 2px 2px rgba(0,0,0,0.05);
-            font-size: 0.95rem;
-            transition: transform 0.1s;
+            font-weight: 500;
         }
 
-        .draggable-word:active { transform: scale(0.95); }
-        .draggable-word.used { opacity: 0.5; pointer-events: none; background: #e2e8f0; }
         .draggable-word.selected { border-color: var(--secondary); background: #dcfce7; transform: scale(1.05); }
+        .draggable-word.used { opacity: 0.4; pointer-events: none; background: #e2e8f0; }
 
-        /* Controls */
-        .controls {
-            display: flex;
-            justify-content: space-between;
-            margin-top: 20px;
-        }
+        /* General UI */
+        .controls { display: flex; justify-content: space-between; margin-top: 20px; align-items: center; }
+        .header-bar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px; }
 
         .btn {
             background: var(--primary);
             color: white;
             border: none;
-            padding: 10px 25px;
-            border-radius: 6px;
+            padding: 12px 25px;
+            border-radius: 8px;
             cursor: pointer;
             font-size: 1rem;
+            font-weight: 500;
         }
-        
         .btn:disabled { opacity: 0.5; cursor: not-allowed; }
-        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); }
+        .btn-outline { background: transparent; color: var(--primary); border: 2px solid var(--primary); padding: 8px 16px; font-size: 0.9rem; }
 
         .feedback {
-            margin-top: 15px;
+            margin-top: 20px;
             padding: 15px;
-            border-radius: 6px;
+            border-radius: 8px;
             display: none;
+            line-height: 1.5;
         }
         .feedback.show { display: block; }
-        .feedback-correct { background: #d1fae5; color: #064e3b; }
-        .feedback-wrong { background: #fee2e2; color: #7f1d1d; }
+        .feedback-correct { background: #d1fae5; color: #064e3b; border: 1px solid #a7f3d0; }
+        .feedback-wrong { background: #fee2e2; color: #7f1d1d; border: 1px solid #fecaca; }
 
         @media (max-width: 600px) {
             .menu-grid { grid-template-columns: 1fr; }
+            .menu-btn { padding: 20px; }
         }
     </style>
 </head>
 <body>
 
 <header>
-    <h1>ΒΙΟΫΛΙΚΑ: Διαδραστική Εξάσκηση</h1>
+    <h1>ΒΙΟΫΛΙΚΑ: Master Quiz</h1>
 </header>
 
-<div class="container" id="mainMenu">
+<!-- MAIN MENU -->
+<div class="container section active" id="menuSection">
     <h2>Επίλεξε Τρόπο Εξέτασης</h2>
     <div class="menu-grid">
-        <div class="menu-card" onclick="startQuiz('mcq')">
+        <button class="menu-btn" id="btnMcq">
             <span class="menu-icon">📝</span>
             <span class="menu-title">Πολλαπλής Επιλογής</span>
-            <p>15 Ερωτήσεις θεωρίας και ορισμών</p>
-        </div>
-        <div class="menu-card" onclick="startQuiz('gap')">
+            <span class="menu-desc">15 Ερωτήσεις Θεωρίας</span>
+        </button>
+        <button class="menu-btn" id="btnGap">
             <span class="menu-icon">🧩</span>
             <span class="menu-title">Συμπλήρωση Κενών</span>
-            <p>Σύρε τις λέξεις στη σωστή σειρά (Ιεραρχίες & Τύποι)</p>
-        </div>
+            <span class="menu-desc">5 Ασκήσεις (Ιεραρχίες & Τύποι)</span>
+        </button>
     </div>
 </div>
 
-<!-- MCQ Container -->
-<div class="container quiz-section" id="mcqContainer">
-    <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
-        <span id="mcqProgress">Ερώτηση 1/10</span>
-        <button class="btn-outline" style="padding: 5px 10px;" onclick="goHome()">Έξοδος</button>
-    </div>
-    <div class="question-card">
-        <div class="question-text" id="mcqQuestion"></div>
-        <div class="options-grid" id="mcqOptions"></div>
-        <div class="feedback" id="mcqFeedback"></div>
-    </div>
-    <div class="controls">
-        <button class="btn" id="mcqNext" onclick="nextMcq()" disabled>Επόμενο</button>
-    </div>
-</div>
-
-<!-- Gap Fill Container -->
-<div class="container quiz-section" id="gapContainer">
-    <div style="margin-bottom: 10px; display: flex; justify-content: space-between;">
-        <span id="gapProgress">Άσκηση 1/5</span>
-        <button class="btn-outline" style="padding: 5px 10px;" onclick="goHome()">Έξοδος</button>
+<!-- MCQ SECTION -->
+<div class="container section" id="mcqSection">
+    <div class="header-bar">
+        <span id="mcqProgress" style="font-weight:bold; color:var(--primary);">Ερώτηση 1/15</span>
+        <button class="btn-outline" id="btnExitMcq">Έξοδος</button>
     </div>
     
     <div class="question-card">
-        <p style="color: #666; font-size: 0.9rem;">Κάνε κλικ σε μια λέξη από την τράπεζα και μετά κάνε κλικ στο κενό που θέλεις να τη βάλεις.</p>
+        <div class="question-text" id="mcqQuestion">Loading...</div>
+        <div id="mcqOptions"></div>
+        <div class="feedback" id="mcqFeedback"></div>
+    </div>
+    
+    <div class="controls">
+        <button class="btn" id="mcqNext" disabled>Επόμενο</button>
+    </div>
+</div>
+
+<!-- GAP FILL SECTION -->
+<div class="container section" id="gapSection">
+    <div class="header-bar">
+        <span id="gapProgress" style="font-weight:bold; color:var(--primary);">Άσκηση 1/5</span>
+        <button class="btn-outline" id="btnExitGap">Έξοδος</button>
+    </div>
+    
+    <div class="question-card">
+        <p style="color: #666; font-size: 0.9rem; margin-top:0;">1. Κλικ στη λέξη. 2. Κλικ στο κενό.</p>
         <div class="gap-sentence" id="gapSentence"></div>
         <div class="word-bank" id="gapBank"></div>
         <div class="feedback" id="gapFeedback"></div>
     </div>
 
     <div class="controls">
-        <button class="btn btn-outline" onclick="resetGap()">Καθαρισμός</button>
-        <button class="btn" id="gapNext" onclick="checkGap()">Έλεγχος & Επόμενο</button>
+        <button class="btn btn-outline" id="gapReset">Καθαρισμός</button>
+        <button class="btn" id="gapCheck">Έλεγχος</button>
     </div>
 </div>
 
 <script>
-    /* --- DATA SOURCES --- */
-    
-    // MCQ Data
+    // --- DATA ---
+    // Expanded to 15 Questions based on all notes
     const mcqData = [
+        // Page 1: Structure & Bonds
         {
             q: "Ποια είναι η σωστή ιεραρχία ισχύος των δεσμών (από τον ασθενέστερο στον ισχυρότερο);",
-            options: [
-                "Ιοντικός < Μεταλλικός < Ομοιοπολικός",
-                "Μεταλλικός < Ιοντικός < Ομοιοπολικός",
-                "Ομοιοπολικός < Ιοντικός < Μεταλλικός",
-                "Μεταλλικός < Ομοιοπολικός < Ιοντικός"
-            ],
+            options: ["Ιοντικός < Μεταλλικός < Ομοιοπολικός", "Μεταλλικός < Ιοντικός < Ομοιοπολικός", "Ομοιοπολικός < Ιοντικός < Μεταλλικός", "Μεταλλικός < Ομοιοπολικός < Ιοντικός"],
             correct: 1,
-            explanation: "Σύμφωνα με τις σημειώσεις, ο Μεταλλικός είναι ο πιο ασθενής και ο Ομοιοπολικός ο πιο ισχυρός."
+            explanation: "Σύμφωνα με τις σημειώσεις: Μεταλλικός < Ιοντικός < Ομοιοπολικός."
         },
         {
-            q: "Τι συμβαίνει στα άτομα μετάλλων κατά τον μεταλλικό δεσμό;",
-            options: [
-                "Δημιουργούνται πολύ ισχυρές κατευθυντικές δυνάμεις",
-                "Τα ηλεκτρόνια σθένους είναι σταθερά και ακίνητα",
-                "Τα ηλεκτρόνια σθένους κινούνται μεταξύ των ατόμων (χαλαρώνουν οι αποστάσεις)",
-                "Τα άτομα απομακρύνονται πλήρως μεταξύ τους"
-            ],
-            correct: 2,
-            explanation: "Στον μεταλλικό δεσμό τα ηλεκτρόνια κινούνται ελεύθερα ("νέφος"), δημιουργώντας όχι ισχυρές ηλεκτροστατικές δυνάμεις."
-        },
-        {
-            q: "Ποιος είναι ο Νόμος του Hooke και τι εκφράζει;",
-            options: [
-                "\\( \\sigma = F/A \\) (Τάση)",
-                "\\( E = \\sigma / e \\) (Μέτρο ακαμψίας)",
-                "\\( e = \\Delta L / L_0 \\) (Παραμόρφωση)",
-                "\\( R = P^2 / 2E \\) (Ευκαμψία)"
-            ],
+            q: "Ποιο από τα παρακάτω ΔΕΝ αναφέρεται ως τύπος δεσμού Van der Waals;",
+            options: ["Διπόλου - Διπόλου", "Ομοιοπολικός", "Εξ επαγωγής", "London"],
             correct: 1,
-            explanation: "Ο Νόμος του Hooke είναι \\( E = \\sigma / e \\) και εκφράζει το Μέτρο Ακαμψίας του υλικού."
+            explanation: "Οι δεσμοί Van der Waals είναι: Διπόλου-Διπόλου, Εξ επαγωγής και London. Ο Ομοιοπολικός είναι κύριος δεσμός."
         },
         {
-            q: "Τι ορίζουμε ως 'Τάση Αντοχής' (Proof Stress);",
-            options: [
-                "Την τάση όπου το υλικό σπάει",
-                "Την τάση όπου αρχίζει η ελαστική παραμόρφωση",
-                "Την τάση για να παραχθεί 0,2% μόνιμη πλαστική παραμόρφωση",
-                "Τη μέγιστη τάση που αντέχει το δοκίμιο"
-            ],
+            q: "Τι χαρακτηρίζει τον μεταλλικό δεσμό;",
+            options: ["Είναι ισχυρός και κατευθυντικός", "Τα ηλεκτρόνια είναι σταθερά", "Είναι μη-κατευθυντικός και έχει ηλεκτρόνια που κινούνται", "Εμφανίζεται μόνο σε κεραμικά"],
             correct: 2,
-            explanation: "Η Τάση Αντοχής είναι η τάση που αντιστοιχεί σε μόνιμη παραμόρφωση 0,2%."
+            explanation: "Ο μεταλλικός δεσμός είναι μη-κατευθυντικός, με 'νέφος' ηλεκτρονίων που κινούνται, δημιουργώντας όχι ισχυρές δυνάμεις."
         },
+        // Page 1: Basics Mechanics
         {
-            q: "Ποια είναι η διαφορά Ευκαμψίας (Resilience) και Σκληρότητας (Toughness);",
-            options: [
-                "Η Ευκαμψία είναι μέχρι το σημείο θραύσης, η Σκληρότητα μέχρι το όριο ελαστικότητας",
-                "Η Ευκαμψία αφορά ενέργεια χωρίς μόνιμη παραμόρφωση, η Σκληρότητα αφορά τη συνολική ενέργεια μέχρι τη θραύση",
-                "Είναι ταυτόσημες έννοιες",
-                "Η Ευκαμψία μετράται σε Pascal, η Σκληρότητα σε Newton"
-            ],
+            q: "Ποιος είναι ο Νόμος του Hooke;",
+            options: ["$\\sigma = F/A$", "$E = \\sigma / e$", "$e = \\Delta L / L_0$", "$R = P^2 / 2E$"],
             correct: 1,
-            explanation: "Ευκαμψία (R): Ενέργεια χωρίς πλαστική παραμόρφωση. Σκληρότητα: Συνολική ενέργεια μέχρι τη θραύση."
+            explanation: "Ο Νόμος του Hooke είναι $E = \\sigma / e$ και εκφράζει το Μέτρο Ακαμψίας."
         },
         {
-            q: "Τι ονομάζουμε 'Κόπωση' (Fatigue) ενός υλικού;",
-            options: [
-                "Τη μόνιμη παραμόρφωση υπό σταθερή τάση για μεγάλο χρόνο",
-                "Την ταχεία θραύση λόγω ασταθούς ρωγμής",
-                "Τη θραύση από συσσώρευση μικρών πλαστικών παραμορφώσεων σε κύκλο εναλλασσόμενων τάσεων",
-                "Την αντοχή του υλικού στην κρούση"
-            ],
-            correct: 2,
-            explanation: "Κόπωση είναι η αστοχία από επαναλαμβανόμενα φορτία (εναλλασσόμενες τάσεις), ακόμα και αν είναι μικρά."
-        },
-        {
-            q: "Τι ισχύει για τα ολίσιμα υλικά κατά τον εφελκυσμό (πλαστική παραμόρφωση);",
-            options: [
-                "Αύξηση μήκους και αύξηση διατομής",
-                "Μείωση μήκους και αύξηση διατομής",
-                "Αύξηση μήκους και μείωση επιφάνειας διατομής",
-                "Το μήκος και η διατομή μένουν σταθερά"
-            ],
-            correct: 2,
-            explanation: "Στα ολίσιμα υλικά: \\( l \\uparrow \\Rightarrow A \\downarrow \\)."
-        },
-        {
-            q: "Ποιος είναι ο τύπος για την Τάση Εφελκυσμού σε δίσκο (με κάθετη φόρτιση);",
-            options: [
-                "\\( \\sigma = F / A \\)",
-                "\\( \\sigma = 2P / (\\pi \\cdot D \\cdot T) \\)",
-                "\\( \\sigma = P^2 / 2E \\)",
-                "\\( \\sigma = \\Delta L / L_0 \\)"
-            ],
+            q: "Ποιος είναι ο τύπος για την Τάση (stress);",
+            options: ["$F \\cdot A$", "$F / A$", "$A / F$", "$(L_i - L_0)/L_0$"],
             correct: 1,
-            explanation: "Για δίσκο: \\( \\sigma = \\frac{2P}{\\pi \\cdot D \\cdot T} \\)."
+            explanation: "Η Τάση ορίζεται ως Δύναμη ανά μονάδα Επιφάνειας: $\\sigma = F/A$ (Pa)."
+        },
+        // Page 2: Stress Types & Definitions
+        {
+            q: "Ποια κίνηση ατόμων χαρακτηρίζει τη Διάτμηση;",
+            options: ["Απομάκρυνση ατόμων ($\\uparrow \\downarrow$)", "Προσέγγιση ατόμων ($\\downarrow \\uparrow$)", "Παράλληλη μετακίνηση ατόμων ($\\nearrow \\swarrow$)", "Περιστροφή ατόμων"],
+            correct: 2,
+            explanation: "Η Διάτμηση προκαλεί παράλληλη μετακίνηση των ατόμων."
         },
         {
-            q: "Τι είναι ο 'Ερπυσμός' (Creep);",
-            options: [
-                "Μόνιμη παραμόρφωση υπό σταθερή τάση για μεγάλο χρονικό διάστημα",
-                "Παραμόρφωση μόνο όταν ξεπεραστεί το όριο θραύσης",
-                "Η ελαστική επαναφορά του υλικού",
-                "Η αντίσταση στην κρούση"
-            ],
+            q: "Τι είναι η 'Τάση Αντοχής' (Proof Stress);",
+            options: ["Η μέγιστη τάση που αντέχει το υλικό", "Η τάση έναρξης ελαστικότητας", "Η τάση για 0,2% μόνιμη (πλαστική) παραμόρφωση", "Η τάση θραύσης"],
+            correct: 2,
+            explanation: "Η Τάση Αντοχής ορίζεται ως η τάση που αντιστοιχεί σε 0,2% μόνιμη παραμόρφωση."
+        },
+        {
+            q: "Τι ορίζουμε ως Ολκιμότητα;",
+            options: ["Το μέγεθος της ελαστικής παραμόρφωσης", "Την αντίσταση στην κρούση", "Το μέγεθος της πλαστικής παραμόρφωσης κατά την θραύση", "Την τάση ενδοτικότητας"],
+            correct: 2,
+            explanation: "Ολκιμότητα είναι το μέγεθος της πλαστικής παραμόρφωσης που έχει συμβεί μέχρι τη θραύση."
+        },
+        {
+            q: "Στον εφελκυσμό ολίσιμων υλικών, τι συμβαίνει στην διατομή (A);",
+            options: ["Αυξάνεται", "Μειώνεται", "Μένει σταθερή", "Μηδενίζεται"],
+            correct: 1,
+            explanation: "Καθώς το μήκος αυξάνεται ($l \\uparrow$), η διατομή μειώνεται ($A \\downarrow$)."
+        },
+        {
+            q: "Ποιος είναι ο τύπος της Διαμετρικής Εφελκυστικής Τάσης (σε δίσκο);",
+            options: ["$\\sigma = F/A$", "$\\sigma = 2P / (\\pi \\cdot D \\cdot T)$", "$\\sigma = P^2 / 2E$", "$\\sigma = \\sigma_{UTS}$"],
+            correct: 1,
+            explanation: "Για δίσκο με κάθετη φόρτιση: $\\sigma = \\frac{2P}{\\pi \\cdot D \\cdot T}$."
+        },
+        // Page 2 & 3: Energy & Fracture
+        {
+            q: "Ποιος είναι ο τύπος της Ευκαμψίας (Resilience);",
+            options: ["$R = P^2 / 2E$", "$R = \\sigma / e$", "$R = F \\cdot A$", "$R = 1/2 \\cdot m \\cdot v^2$"],
             correct: 0,
-            explanation: "Ερπυσμός συμβαίνει με την πάροδο του χρόνου υπό σταθερό φορτίο, ακόμη και σε τάση < Ο.Ε."
+            explanation: "Η Ευκαμψία δίνεται από τον τύπο $R = P^2 / 2E$."
+        },
+        {
+            q: "Τι είναι η 'Θραύση Ακαμψίας' (Brittle Fracture);",
+            options: ["Αργή παραμόρφωση", "Ταχεία θραύση λόγω επέκτασης ασταθούς ρωγμής", "Θραύση μετά από μεγάλες πλαστικές παραμορφώσεις", "Θραύση λόγω κόπωσης"],
+            correct: 1,
+            explanation: "Η θραύση ακαμψίας συμβαίνει ταχέως λόγω ασταθούς ρωγμής."
+        },
+        // Page 3: Tests & Clinical
+        {
+            q: "Τι μετράει η Δοκιμασία Κρούσης;",
+            options: ["Την κόπωση του υλικού", "Τον ερπυσμό", "Την ενέργεια που απορροφήθηκε για τη θραύση ($\\Delta H$)", "Την σκληρότητα επιφάνειας"],
+            correct: 2,
+            explanation: "Η δοκιμασία κρούσης μετράει την ενέργεια (μεταβολή $\\Delta H$ του εκκρεμούς) που απορρόφησε το δοκίμιο."
+        },
+        {
+            q: "Τι είναι η Κόπωση (Fatigue);",
+            options: ["Μόνιμη παραμόρφωση υπό σταθερή τάση", "Θραύση από σταδιακή συσσώρευση παραμόρφωσης σε εναλλασσόμενες τάσεις", "Αντοχή σε κρούση", "Ελαστική επαναφορά"],
+            correct: 1,
+            explanation: "Η κόπωση προκαλείται από κύκλους εναλλασσόμενων τάσεων (όχι σταθερή τάση)."
+        },
+        {
+            q: "Κλινική σημασία: Τι συμβαίνει αν σε μεταλλική αποκατάσταση η τάση ξεπεράσει την τάση ενδοτικότητας;",
+            options: ["Το υλικό σπάει αμέσως", "Προκαλείται μόνιμη (πλαστική) παραμόρφωση", "Δεν συμβαίνει τίποτα", "Το υλικό γίνεται πιο σκληρό"],
+            correct: 1,
+            explanation: "Υπέρβαση τάσης ενδοτικότητας $\\rightarrow$ Μόνιμη παραμόρφωση."
         }
     ];
 
-    // Gap Fill Data
     const gapData = [
         {
-            sentence: "Η ιεραρχία ισχύος των δεσμών είναι: {0} < {1} < {2}",
-            words: ["Ιοντικός", "Μεταλλικός", "Ομοιοπολικός", "Van der Waals"],
-            correctOrder: ["Μεταλλικός", "Ιοντικός", "Ομοιοπολικός"],
-            hint: "Ξεκίνα από τον πιο ασθενή (μη κατευθυντικό)."
+            sentence: "Ιεραρχία: {0} < {1} < {2}",
+            words: ["Ιοντικός", "Μεταλλικός", "Ομοιοπολικός", "VanDerWaals"],
+            correct: ["Μεταλλικός", "Ιοντικός", "Ομοιοπολικός"],
+            hint: "Ο μεταλλικός είναι ο πιο ασθενής."
         },
         {
-            sentence: "Τύποι Τάσεων: Στον {0} έχουμε απομάκρυνση ατόμων, στη {1} έχουμε προσέγγιση ατόμων και στη {2} έχουμε παράλληλη μετακίνηση.",
-            words: ["Διάτμηση", "Συμπίεση", "Εφελκυσμό", "Κάμψη"],
-            correctOrder: ["Εφελκυσμό", "Συμπίεση", "Διάτμηση"],
-            hint: "Θυμήσου τα βελάκια: Εφελκυσμός (πάνω-κάτω έξω), Συμπίεση (μέσα)."
+            sentence: "Τάσεις: {0} (απομάκρυνση), {1} (προσέγγιση), {2} (παράλληλη κίνηση).",
+            words: ["Διάτμηση", "Συμπίεση", "Εφελκυσμός", "Κάμψη"],
+            correct: ["Εφελκυσμός", "Συμπίεση", "Διάτμηση"],
+            hint: "Εφελκυσμός τραβάει, Συμπίεση πιέζει."
         },
         {
-            sentence: "Η {0} είναι η τάση όταν αρχίζει η πλαστική παραμόρφωση. Η {1} είναι η τάση που απαιτείται για τη θραύση. Η {2} είναι η μέγιστη τάση που αντέχει το δοκίμιο.",
+            sentence: "Η {0} είναι η τάση έναρξης πλαστικής παραμόρφωσης. Η {1} είναι η τάση θραύσης.",
             words: ["Τάση Αντοχής", "Τάση Ενδοτικότητας", "Τάση Θραύσης", "Τελική Αντοχή"],
-            correctOrder: ["Τάση Ενδοτικότητας", "Τάση Θραύσης", "Τελική Αντοχή"],
-            hint: "Ενδοτικότητα = αρχή πλαστικής, Τελική = κορυφή καμπύλης."
+            correct: ["Τάση Ενδοτικότητας", "Τάση Θραύσης"],
+            hint: "Η ενδοτικότητα είναι το όριο."
         },
         {
-            sentence: "Μηχανικοί Τύποι: Τάση σ = {0}, Παραμόρφωση e = {1}, Ευκαμψία R = {2}",
+            sentence: "Τύποι: Τάση $\\sigma$ = {0}, Παραμόρφωση $e$ = {1}",
             words: ["F/A", "(Li-Lo)/Lo", "P^2/2E", "σ/e"],
-            correctOrder: ["F/A", "(Li-Lo)/Lo", "P^2/2E"],
-            hint: "Τάση είναι δύναμη ανά επιφάνεια. Ευκαμψία έχει τετράγωνο."
+            correct: ["F/A", "(Li-Lo)/Lo"],
+            hint: "Δύναμη προς επιφάνεια."
         },
         {
-            sentence: "Κλινική Σημασία: Αν οι τάσεις υπερβούν τη μέγιστη τιμή αντοχής προκαλείται {0}. Αν σε μεταλλική αποκατάσταση ξεπεραστεί η τάση ενδοτικότητας προκαλείται {1}.",
-            words: ["κάταγμα", "μόνιμη παραμόρφωση", "ελαστική παραμόρφωση", "ερπυσμός"],
-            correctOrder: ["κάταγμα", "μόνιμη παραμόρφωση"],
-            hint: "Υπέρβαση μέγιστης αντοχής = σπάσιμο."
+            sentence: "Ερπυσμός: Μόνιμη παραμόρφωση υπό {0} τάση. Κόπωση: Θραύση υπό {1} τάσεις.",
+            words: ["σταθερή", "εναλλασσόμενες", "μηδενική", "μέγιστη"],
+            correct: ["σταθερή", "εναλλασσόμενες"],
+            hint: "Ο ερπυσμός θέλει χρόνο και σταθερότητα."
         }
     ];
 
-    /* --- LOGIC --- */
-    
-    let currentMcqIndex = 0;
-    let mcqScore = 0;
-    
-    let currentGapIndex = 0;
-    let selectedWord = null;
-    let userGapAnswers = [];
+    // --- STATE & DOM ELEMENTS ---
+    let currentMcq = 0;
+    let currentGap = 0;
+    let gapSelection = null; // {el, text}
+    let gapAnswers = [];
 
-    // Navigation
-    function goHome() {
-        document.getElementById('mcqContainer').classList.remove('active-section');
-        document.getElementById('gapContainer').classList.remove('active-section');
-        document.getElementById('mainMenu').style.display = 'block';
-    }
+    // --- EVENT LISTENERS (Safe Loading) ---
+    document.addEventListener('DOMContentLoaded', () => {
+        
+        // Navigation Buttons
+        document.getElementById('btnMcq').addEventListener('click', () => switchSection('mcqSection'));
+        document.getElementById('btnGap').addEventListener('click', () => switchSection('gapSection'));
+        document.getElementById('btnExitMcq').addEventListener('click', () => switchSection('menuSection'));
+        document.getElementById('btnExitGap').addEventListener('click', () => switchSection('menuSection'));
 
-    function startQuiz(type) {
-        document.getElementById('mainMenu').style.display = 'none';
-        if (type === 'mcq') {
-            document.getElementById('mcqContainer').classList.add('active-section');
-            currentMcqIndex = 0;
-            mcqScore = 0;
-            loadMcq();
-        } else {
-            document.getElementById('gapContainer').classList.add('active-section');
-            currentGapIndex = 0;
-            loadGap();
+        // MCQ Actions
+        document.getElementById('mcqNext').addEventListener('click', nextMcq);
+
+        // Gap Actions
+        document.getElementById('gapCheck').addEventListener('click', handleGapAction);
+        document.getElementById('gapReset').addEventListener('click', loadGap);
+
+        // Initial Load
+        loadMcq();
+        loadGap();
+    });
+
+    function switchSection(id) {
+        document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+        document.getElementById(id).classList.add('active');
+        
+        // Refresh MathJax if needed
+        if(window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise();
         }
     }
 
     // --- MCQ LOGIC ---
     function loadMcq() {
-        const qData = mcqData[currentMcqIndex];
-        document.getElementById('mcqProgress').textContent = `Ερώτηση ${currentMcqIndex + 1}/${mcqData.length}`;
-        document.getElementById('mcqQuestion').innerHTML = qData.q;
-        document.getElementById('mcqFeedback').className = 'feedback'; // hide feedback
-        document.getElementById('mcqFeedback').innerHTML = '';
-        document.getElementById('mcqNext').disabled = true;
-
-        const optionsHtml = qData.options.map((opt, idx) => 
-            `<button class="option-btn" onclick="checkMcq(this, ${idx})">${opt}</button>`
-        ).join('');
-        document.getElementById('mcqOptions').innerHTML = optionsHtml;
-        
-        // Render math
-        if(window.MathJax) MathJax.typeset();
-    }
-
-    function checkMcq(btn, selectedIdx) {
-        const allBtns = document.querySelectorAll('.option-btn');
-        allBtns.forEach(b => b.disabled = true); // Disable all
-
-        const qData = mcqData[currentMcqIndex];
-        const feedbackDiv = document.getElementById('mcqFeedback');
-
-        if (selectedIdx === qData.correct) {
-            btn.classList.add('correct');
-            feedbackDiv.innerHTML = `<strong>Σωστά!</strong> <br> ${qData.explanation}`;
-            feedbackDiv.classList.add('feedback-correct');
-            mcqScore++;
-        } else {
-            btn.classList.add('wrong');
-            allBtns[qData.correct].classList.add('correct'); // Show correct
-            feedbackDiv.innerHTML = `<strong>Λάθος.</strong> Η σωστή απάντηση ήταν: <br> ${qData.options[qData.correct]} <br><br> ${qData.explanation}`;
-            feedbackDiv.classList.add('feedback-wrong');
-        }
-        
-        feedbackDiv.classList.add('show');
-        document.getElementById('mcqNext').disabled = false;
-        
-        // Re-render math in feedback
-        if(window.MathJax) MathJax.typeset();
-    }
-
-    function nextMcq() {
-        if (currentMcqIndex < mcqData.length - 1) {
-            currentMcqIndex++;
-            loadMcq();
-        } else {
-            // End of quiz
-            document.getElementById('mcqContainer').innerHTML = `
-                <div class="question-card" style="text-align:center;">
-                    <h2>Τέλος Κουίζ!</h2>
-                    <p style="font-size: 1.5rem;">Σκορ: ${mcqScore} / ${mcqData.length}</p>
-                    <button class="btn" onclick="goHome()">Επιστροφή στο Μενού</button>
-                </div>
-            `;
-        }
-    }
-
-    // --- GAP FILL LOGIC ---
-    function loadGap() {
-        const data = gapData[currentGapIndex];
-        document.getElementById('gapProgress').textContent = `Άσκηση ${currentGapIndex + 1}/${gapData.length}`;
-        document.getElementById('gapFeedback').className = 'feedback';
-        document.getElementById('gapNext').textContent = "Έλεγχος";
-        document.getElementById('gapNext').setAttribute('onclick', 'checkGap()');
-        
-        selectedWord = null;
-        userGapAnswers = new Array(data.correctOrder.length).fill(null);
-
-        // Build Sentence with slots
-        let htmlSentence = data.sentence;
-        for(let i=0; i<data.correctOrder.length; i++) {
-            htmlSentence = htmlSentence.replace(`{${i}}`, `<span class="gap-slot" onclick="placeWord(${i})" id="slot-${i}"></span>`);
-        }
-        document.getElementById('gapSentence').innerHTML = htmlSentence;
-
-        // Build Word Bank
-        // Shuffle words
-        const shuffled = [...data.words].sort(() => Math.random() - 0.5);
-        const bankHtml = shuffled.map(word => 
-            `<div class="draggable-word" onclick="selectWord(this, '${word}')">${word}</div>`
-        ).join('');
-        document.getElementById('gapBank').innerHTML = bankHtml;
-    }
-
-    function selectWord(el, word) {
-        // Deselect prev
-        document.querySelectorAll('.draggable-word').forEach(d => d.classList.remove('selected'));
-        
-        // If clicking already used word, do nothing
-        if (el.classList.contains('used')) return;
-
-        // Select new
-        el.classList.add('selected');
-        selectedWord = { element: el, text: word };
-    }
-
-    function placeWord(slotIndex) {
-        if (!selectedWord) return;
-
-        const slot = document.getElementById(`slot-${slotIndex}`);
-        
-        // If slot already has a word, return it to bank (visually)
-        if (userGapAnswers[slotIndex]) {
-            // Find the bank element corresponding to this text and enable it
-            const prevWord = userGapAnswers[slotIndex];
-            const bankItems = document.querySelectorAll('.draggable-word');
-            bankItems.forEach(item => {
-                if (item.textContent === prevWord && item.classList.contains('used')) {
-                    item.classList.remove('used');
-                }
-            });
-        }
-
-        // Place new word
-        slot.textContent = selectedWord.text;
-        slot.classList.add('filled');
-        slot.classList.remove('error'); // remove error state if retrying
-        
-        userGapAnswers[slotIndex] = selectedWord.text;
-
-        // Mark word as used in bank
-        selectedWord.element.classList.remove('selected');
-        selectedWord.element.classList.add('used');
-        selectedWord = null;
-    }
-
-    function resetGap() {
-        loadGap();
-    }
-
-    function checkGap() {
-        const data = gapData[currentGapIndex];
-        let correctCount = 0;
-        let isAllFilled = true;
-
-        // Check each slot
-        for(let i=0; i<data.correctOrder.length; i++) {
-            const slot = document.getElementById(`slot-${i}`);
-            if (!userGapAnswers[i]) {
-                isAllFilled = false;
-                slot.style.borderBottomColor = 'var(--accent)';
-            } else if (userGapAnswers[i] === data.correctOrder[i]) {
-                slot.style.color = '#065f46'; // Dark green
-                slot.style.borderBottomColor = '#065f46';
-                correctCount++;
-            } else {
-                slot.classList.add('error');
-            }
-        }
-
-        const feedbackDiv = document.getElementById('gapFeedback');
-        
-        if (!isAllFilled) {
-            feedbackDiv.textContent = "Συμπλήρωσε όλα τα κενά!";
-            feedbackDiv.className = 'feedback feedback-wrong show';
+        if(currentMcq >= mcqData.length) {
+            finishMcq();
             return;
         }
 
-        if (correctCount === data.correctOrder.length) {
-            feedbackDiv.innerHTML = `<strong>Μπράβο!</strong> Σωστή σειρά.`;
-            feedbackDiv.className = 'feedback feedback-correct show';
-            document.getElementById('gapNext').textContent = "Επόμενη Άσκηση";
-            document.getElementById('gapNext').setAttribute('onclick', 'nextGap()');
-        } else {
-            feedbackDiv.innerHTML = `<strong>Προσπάθησε ξανά.</strong><br> Hint: ${data.hint}`;
-            feedbackDiv.className = 'feedback feedback-wrong show';
-        }
+        const data = mcqData[currentMcq];
+        document.getElementById('mcqProgress').textContent = `Ερώτηση ${currentMcq + 1} / ${mcqData.length}`;
+        document.getElementById('mcqQuestion').innerHTML = data.q;
+        document.getElementById('mcqFeedback').className = 'feedback';
+        document.getElementById('mcqFeedback').innerHTML = '';
+        document.getElementById('mcqNext').disabled = true;
+        document.getElementById('mcqNext').textContent = 'Επόμενο';
+        document.getElementById('mcqNext').onclick = nextMcq; // Reset handler
+
+        const container = document.getElementById('mcqOptions');
+        container.innerHTML = '';
+        
+        data.options.forEach((opt, idx) => {
+            const btn = document.createElement('button');
+            btn.className = 'option-btn';
+            btn.innerHTML = opt;
+            btn.onclick = () => checkMcq(btn, idx);
+            container.appendChild(btn);
+        });
+
+        renderMath();
     }
 
-    function nextGap() {
-        if (currentGapIndex < gapData.length - 1) {
-            currentGapIndex++;
+    function checkMcq(btn, idx) {
+        const data = mcqData[currentMcq];
+        const allBtns = document.querySelectorAll('.option-btn');
+        allBtns.forEach(b => b.disabled = true);
+
+        const feedback = document.getElementById('mcqFeedback');
+        
+        if(idx === data.correct) {
+            btn.classList.add('correct');
+            feedback.innerHTML = `<strong>Σωστά!</strong><br>${data.explanation}`;
+            feedback.classList.add('feedback-correct');
+        } else {
+            btn.classList.add('wrong');
+            allBtns[data.correct].classList.add('correct');
+            feedback.innerHTML = `<strong>Λάθος.</strong> Η σωστή απάντηση είναι:<br>${data.options[data.correct]}<br><br><em>${data.explanation}</em>`;
+            feedback.classList.add('feedback-wrong');
+        }
+        
+        feedback.classList.add('show');
+        document.getElementById('mcqNext').disabled = false;
+        renderMath();
+    }
+
+    function nextMcq() {
+        currentMcq++;
+        loadMcq();
+    }
+
+    function finishMcq() {
+        document.getElementById('mcqQuestion').innerHTML = "<h2>Τέλος Κουίζ!</h2>";
+        document.getElementById('mcqOptions').innerHTML = "<p>Μπράβο! Ολοκλήρωσες όλες τις ερωτήσεις.</p>";
+        document.getElementById('mcqFeedback').className = 'feedback';
+        document.getElementById('mcqNext').textContent = "Επιστροφή";
+        document.getElementById('mcqNext').disabled = false;
+        document.getElementById('mcqNext').onclick = () => {
+            currentMcq = 0;
+            loadMcq();
+            switchSection('menuSection');
+        };
+    }
+
+    // --- GAP LOGIC ---
+    function loadGap() {
+        if(currentGap >= gapData.length) {
+            finishGap();
+            return;
+        }
+
+        const data = gapData[currentGap];
+        gapSelection = null;
+        gapAnswers = new Array(data.correct.length).fill(null);
+
+        document.getElementById('gapProgress').textContent = `Άσκηση ${currentGap + 1} / ${gapData.length}`;
+        document.getElementById('gapFeedback').className = 'feedback';
+        document.getElementById('gapCheck').textContent = "Έλεγχος";
+        
+        // Build Sentence
+        let html = data.sentence;
+        for(let i=0; i<data.correct.length; i++) {
+            html = html.replace(`{${i}}`, `<span class="gap-slot" data-index="${i}" id="slot-${i}"></span>`);
+        }
+        document.getElementById('gapSentence').innerHTML = html;
+
+        // Build Bank
+        const words = [...data.words].sort(() => Math.random() - 0.5);
+        const bank = document.getElementById('gapBank');
+        bank.innerHTML = '';
+        words.forEach(w => {
+            const el = document.createElement('div');
+            el.className = 'draggable-word';
+            el.textContent = w;
+            el.onclick = () => selectWord(el, w);
+            bank.appendChild(el);
+        });
+
+        // Add click listeners to slots
+        document.querySelectorAll('.gap-slot').forEach(slot => {
+            slot.onclick = () => fillSlot(slot);
+        });
+
+        renderMath();
+    }
+
+    function selectWord(el, text) {
+        if(el.classList.contains('used')) return;
+        
+        document.querySelectorAll('.draggable-word').forEach(d => d.classList.remove('selected'));
+        el.classList.add('selected');
+        gapSelection = {el, text};
+    }
+
+    function fillSlot(slot) {
+        if(!gapSelection) return;
+
+        const idx = slot.dataset.index;
+        
+        // Restore old word if exists
+        if(gapAnswers[idx]) {
+            const oldText = gapAnswers[idx];
+            document.querySelectorAll('.draggable-word.used').forEach(w => {
+                if(w.textContent === oldText) w.classList.remove('used');
+            });
+        }
+
+        // Fill
+        slot.textContent = gapSelection.text;
+        slot.classList.add('filled');
+        slot.classList.remove('error');
+        gapAnswers[idx] = gapSelection.text;
+
+        // Mark used
+        gapSelection.el.classList.remove('selected');
+        gapSelection.el.classList.add('used');
+        gapSelection = null;
+    }
+
+    function handleGapAction() {
+        const btn = document.getElementById('gapCheck');
+        if(btn.textContent === "Επόμενη Άσκηση") {
+            currentGap++;
             loadGap();
+            return;
+        }
+
+        const data = gapData[currentGap];
+        let correctCount = 0;
+        let allFilled = true;
+
+        gapAnswers.forEach((ans, i) => {
+            const slot = document.getElementById(`slot-${i}`);
+            if(!ans) {
+                allFilled = false;
+                slot.classList.add('error');
+            } else if(ans === data.correct[i]) {
+                correctCount++;
+                slot.style.backgroundColor = "#d1fae5";
+                slot.style.borderColor = "#064e3b";
+                slot.style.color = "#064e3b";
+            } else {
+                slot.classList.add('error');
+            }
+        });
+
+        const feedback = document.getElementById('gapFeedback');
+        
+        if(!allFilled) {
+            feedback.textContent = "Συμπλήρωσε όλα τα κενά!";
+            feedback.className = 'feedback feedback-wrong show';
+            return;
+        }
+
+        if(correctCount === data.correct.length) {
+            feedback.innerHTML = "<strong>Μπράβο!</strong> Σωστή σειρά.";
+            feedback.className = 'feedback feedback-correct show';
+            btn.textContent = "Επόμενη Άσκηση";
         } else {
-            document.getElementById('gapContainer').innerHTML = `
-                <div class="question-card" style="text-align:center;">
-                    <h2>Τέλος Ασκήσεων!</h2>
-                    <p>Ολοκλήρωσες όλες τις ασκήσεις κενών.</p>
-                    <button class="btn" onclick="goHome()">Επιστροφή στο Μενού</button>
-                </div>
-            `;
+            feedback.innerHTML = `<strong>Προσπάθησε ξανά.</strong><br>Hint: ${data.hint}`;
+            feedback.className = 'feedback feedback-wrong show';
         }
     }
 
+    function finishGap() {
+        document.getElementById('gapSentence').innerHTML = "<h2>Τέλος Ασκήσεων!</h2><p>Τα πήγες περίφημα.</p>";
+        document.getElementById('gapBank').innerHTML = "";
+        document.getElementById('gapFeedback').className = 'feedback';
+        document.getElementById('gapCheck').textContent = "Επιστροφή";
+        document.getElementById('gapCheck').onclick = () => {
+            currentGap = 0;
+            loadGap();
+            switchSection('menuSection');
+        };
+    }
+
+    function renderMath() {
+        if(window.MathJax && window.MathJax.typesetPromise) {
+            window.MathJax.typesetPromise().catch(err => console.log('MathJax error', err));
+        }
+    }
 </script>
 
 </body>
