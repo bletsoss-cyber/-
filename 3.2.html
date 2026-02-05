@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Οδοντιατρικά Υλικά: Cheat Sheet & Quiz</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --light-bg: #f5f6fa;
+            --correct-color: #27ae60;
+            --wrong-color: #c0392b;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #eef2f3;
+        }
+
+        h1, h2, h3 {
+            color: var(--primary-color);
+            border-bottom: 2px solid var(--accent-color);
+            padding-bottom: 10px;
+        }
+
+        .container {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+
+        /* Tables Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+        }
+
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+
+        tr:hover {
+            background-color: #ddd;
+        }
+
+        .highlight-num {
+            font-weight: bold;
+            color: #d35400;
+        }
+
+        /* Quiz Styling */
+        .quiz-question {
+            background: #fff;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        .options label {
+            display: block;
+            margin: 10px 0;
+            padding: 10px;
+            background: var(--light-bg);
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .options label:hover {
+            background: #e1e8ed;
+        }
+
+        input[type="radio"] {
+            margin-right: 10px;
+        }
+
+        button#submit-quiz {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 15px 30px;
+            font-size: 1.1em;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+        }
+
+        button#submit-quiz:hover {
+            background-color: #2980b9;
+        }
+
+        .result-message {
+            margin-top: 10px;
+            font-weight: bold;
+            padding: 10px;
+            border-radius: 4px;
+            display: none;
+        }
+
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+
+        .wrong {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+
+        .explanation {
+            font-size: 0.9em;
+            color: #555;
+            margin-top: 5px;
+            font-style: italic;
+        }
+        
+        .score-box {
+            text-align: center;
+            font-size: 1.5em;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>📚 Cheat Sheet: Ρητίνες Βάσης Οδοντοστοιχίας</h1>
+    <p>Συγκεντρωτικός οδηγός με βάση τις εικόνες του βιβλίου.</p>
+
+    <div class="container">
+        <h2>1. Χημική Σύσταση & Αντίδραση</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Συστατικό / Παράγοντας</th>
+                    <th>Ρόλος / Ουσία</th>
+                    <th>Λεπτομέρειες / Ποσοστά</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Μονομερές</td>
+                    <td>Μεθακρυλικός Μεθυλεστέρας (MMA)</td>
+                    <td>Εύφλεκτο, πτητικό, σημείο βρασμού <span class="highlight-num">100.8°C</span>.</td>
+                </tr>
+                <tr>
+                    <td>Πολυμερές (Σκόνη)</td>
+                    <td>Πολυ(μεθακρυλικός μεθυλεστέρας) (PMMA)</td>
+                    <td>Σφαιρίδια ή κόκκοι.</td>
+                </tr>
+                <tr>
+                    <td>Εκκινητής (Initiator)</td>
+                    <td>Υπεροξείδιο του Βενζολίου</td>
+                    <td>Περιέχεται στη σκόνη (<span class="highlight-num">0.2 - 0.5%</span>).</td>
+                </tr>
+                <tr>
+                    <td>Αναστολέας (Inhibitor)</td>
+                    <td>Υδροκινόνη</td>
+                    <td>Εμποδίζει τον αυθόρμητο πολυμερισμό, παρατείνει το χρόνο ζωής.</td>
+                </tr>
+                <tr>
+                    <td>Ενεργοποιητής (Activator) - Εν Ψυχρώ</td>
+                    <td>Τριτοταγής Αμίνη</td>
+                    <td>π.χ. Διμεθυλο-P-τολουϊδίνη ή σουλφονικό οξύ. Προκαλεί κιτρίνισμα μακροπρόθεσμα.</td>
+                </tr>
+                <tr>
+                    <td>Παράγοντας Σταυροειδούς Σύνδεσης</td>
+                    <td>Διμεθακρυλική Γλυκόλη</td>
+                    <td>Βελτιώνει μηχανικές ιδιότητες, μειώνει μικρορωγμές (crazing).</td>
+                </tr>
+                <tr>
+                    <td>Θερμότητα Αντίδρασης</td>
+                    <td>Εξώθερμη Αντίδραση</td>
+                    <td>Απελευθερώνει <span class="highlight-num">80 kJ/mol</span> (ή 129 kcal/mol).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2. Φυσικές & Μηχανικές Ιδιότητες</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Ιδιότητα</th>
+                    <th>Τιμή / Περιγραφή</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Συντελεστής Θερμικής Διαστολής</td>
+                    <td><span class="highlight-num">80 ppm/°C</span> (Πολύ υψηλός).</td>
+                </tr>
+                <tr>
+                    <td>Θερμική Αγωγιμότητα</td>
+                    <td>Χαμηλή (<span class="highlight-num">6 x 10⁻⁴ cal g⁻¹ cm⁻²</span>). Μονώνει τους ιστούς (αρνητικό για αίσθηση θερμοκρασίας).</td>
+                </tr>
+                <tr>
+                    <td>Θερμοκρασία Υαλώδους Μετάπτωσης (Tg) PMMA</td>
+                    <td><span class="highlight-num">105°C - 125°C</span> (Για καθαρό μεθύλιο).</td>
+                </tr>
+                <tr>
+                    <td>Μέτρο Ελαστικότητας</td>
+                    <td><span class="highlight-num">2200 - 2500 MPa</span>.</td>
+                </tr>
+                <tr>
+                    <td>Αντοχή στον εφελκυσμό</td>
+                    <td>Περίπου <span class="highlight-num">50 MPa</span> (Χαμηλή).</td>
+                </tr>
+                <tr>
+                    <td>Προσρόφηση Νερού</td>
+                    <td><span class="highlight-num">1.0 - 2.0%</span> κατά βάρος (προκαλεί μικρή διαστολή που αντισταθμίζει τη συστολή πολυμερισμού).</td>
+                </tr>
+                <tr>
+                    <td>Συστολή Πολυμερισμού (Ογκομετρική)</td>
+                    <td><span class="highlight-num">21%</span> (για καθαρό μονομερές), <span class="highlight-num">5-8%</span> (μίγμα σκόνης-υγρού).</td>
+                </tr>
+                <tr>
+                    <td>Συστολή Πολυμερισμού (Γραμμική)</td>
+                    <td>Θεωρητική: 1.5-2%, Πραγματική: <span class="highlight-num">0.2 - 0.5%</span>.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. Προβλήματα & Φαινόμενα</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Φαινόμενο</th>
+                    <th>Αιτία & Λεπτομέρειες</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Αεραιώδης Πόρωση (Gaseous Porosity)</td>
+                    <td>Εξάτμιση μονομερούς όταν η θερμοκρασία στο κέντρο της μάζας ξεπεράσει τους <span class="highlight-num">100.8°C</span>. Εμφανίζεται ως φυσαλίδες.</td>
+                </tr>
+                <tr>
+                    <td>Πόρωση Συστολής (Contraction Porosity)</td>
+                    <td>Ανεπαρκής πίεση ή έλλειψη υλικού κατά τη συστολή πολυμερισμού.</td>
+                </tr>
+                <tr>
+                    <td>Μικρορωγμές (Crazing)</td>
+                    <td>Επιφανειακές ατέλειες λόγω εσωτερικών τάσεων. Δεν είναι πραγματικά ραγίσματα, αλλά περιοχές πλαστικής παραμόρφωσης.</td>
+                </tr>
+                <tr>
+                    <td>Τύπος Συγκράτησης</td>
+                    <td>F = 3πηR⁴ / 2h³ (δh/δt). Εξαρτάται από το ιξώδες του σάλιου (η) και την επιφάνεια (R).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>4. Υλικά Αναγόμωσης & Μαλακά Επιστρώματα</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Υλικό</th>
+                    <th>Σύνθεση / Ιδιότητες</th>
+                    <th>Θερμοκρασία Υαλώδους Μετάπτωσης (Tg)</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Πλαστικοποιητές (Plasticizers)</td>
+                    <td>π.χ. Φθαλικό διβουτύλιο. Μειώνουν την Tg, κάνουν το υλικό μαλακό. Ξεπλένονται με τον χρόνο (σκλήρυνση).</td>
+                    <td>-</td>
+                </tr>
+                <tr>
+                    <td>Μεθακρυλικός Μεθυλεστέρας (Methyl)</td>
+                    <td>Σκληρό υλικό.</td>
+                    <td><span class="highlight-num">125°C</span></td>
+                </tr>
+                <tr>
+                    <td>Μεθακρυλικός Αιθυλεστέρας (Ethyl)</td>
+                    <td>Πιο μαλακό (PEMA).</td>
+                    <td><span class="highlight-num">65°C</span></td>
+                </tr>
+                <tr>
+                    <td>Μεθακρυλικός Προπυλεστέρας</td>
+                    <td>-</td>
+                    <td><span class="highlight-num">38°C</span></td>
+                </tr>
+                <tr>
+                    <td>Μεθακρυλικός Βουτυλεστέρας</td>
+                    <td>Πολύ μαλακό.</td>
+                    <td><span class="highlight-num">33°C</span></td>
+                </tr>
+                <tr>
+                    <td>Μαλακά Επιστρώματα Σιλικόνης</td>
+                    <td>Δεν έχουν χημική ένωση με την ακρυλική βάση (απαιτούν συγκολλητικό). Πιο ανθεκτικά στο χρόνο αλλά ευπαθή σε Candida albicans.</td>
+                    <td>-</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="container">
+        <h2>📝 Quiz Γνώσεων (Hard Mode)</h2>
+        <p>Επίλεξε τη σωστή απάντηση. Τα δεδομένα βασίζονται αυστηρά στις εικόνες.</p>
+        
+        <form id="quiz-form">
+            <div class="quiz-question" id="q1">
+                <h3>1. Ποια είναι η θερμοκρασία βρασμού του μονομερούς (ΜΜΑ) που αν ξεπεραστεί προκαλεί αεραιώδη πόρωση;</h3>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="a"> 75°C</label>
+                    <label><input type="radio" name="q1" value="b"> 80°C</label>
+                    <label><input type="radio" name="q1" value="c"> 100.8°C</label>
+                    <label><input type="radio" name="q1" value="d"> 125°C</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Το μονομερές βράζει στους 100.8°C, δημιουργώντας φυσαλίδες (αεραιώδη πόρωση).</div>
+            </div>
+
+            <div class="quiz-question" id="q2">
+                <h3>2. Ποιος είναι ο ρόλος της υδροκινόνης στη σύνθεση;</h3>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="a"> Εκκινητής της αντίδρασης</label>
+                    <label><input type="radio" name="q2" value="b"> Αναστολέας για αποφυγή αυθόρμητου πολυμερισμού</label>
+                    <label><input type="radio" name="q2" value="c"> Πλαστικοποιητής για ελαστικότητα</label>
+                    <label><input type="radio" name="q2" value="d"> Παράγοντας σταυροειδούς σύνδεσης</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Η υδροκινόνη δρα ως αναστολέας (inhibitor) για να παρατείνει τη διάρκεια ζωής του μονομερούς.</div>
+            </div>
+
+            <div class="quiz-question" id="q3">
+                <h3>3. Ποια είναι η τιμή της θερμοκρασίας υαλώδους μετάπτωσης (Tg) για τον μεθακρυλικό αιθυλεστέρα (σύμφωνα με τον πίνακα 3.2.4);</h3>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="a"> 125°C</label>
+                    <label><input type="radio" name="q3" value="b"> 65°C</label>
+                    <label><input type="radio" name="q3" value="c"> 38°C</label>
+                    <label><input type="radio" name="q3" value="d"> 33°C</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Μεθύλιο: 125°C, Αιθύλιο: 65°C, Προπύλιο: 38°C, Βουτύλιο: 33°C.</div>
+            </div>
+
+            <div class="quiz-question" id="q4">
+                <h3>4. Ποια ουσία χρησιμοποιείται συνήθως ως ενεργοποιητής στις εν ψυχρώ πολυμεριζόμενες ρητίνες;</h3>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="a"> Υπεροξείδιο του βενζολίου</label>
+                    <label><input type="radio" name="q4" value="b"> Διμεθακρυλική γλυκόλη</label>
+                    <label><input type="radio" name="q4" value="c"> Τριτοταγής αμίνη (π.χ. διμεθυλο-p-τολουϊδίνη)</label>
+                    <label><input type="radio" name="q4" value="d"> Φθαλικό διβουτύλιο</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Στις εν ψυχρώ ρητίνες, η διάσπαση του υπεροξειδίου γίνεται χημικά με τη βοήθεια τριτοταγούς αμίνης.</div>
+            </div>
+
+            <div class="quiz-question" id="q5">
+                <h3>5. Ποιο είναι το ποσοστό της γραμμικής συστολής που παρατηρείται στην πραγματικότητα (λόγω θερμικής συστολής);</h3>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="a"> 21%</label>
+                    <label><input type="radio" name="q5" value="b"> 5-8%</label>
+                    <label><input type="radio" name="q5" value="c"> 1.5-2%</label>
+                    <label><input type="radio" name="q5" value="d"> 0.2 - 0.5%</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Η θεωρητική είναι 1.5-2%, αλλά η παρατηρούμενη στην πράξη είναι 0.2-0.5% λόγω της τεχνικής κατεργασίας.</div>
+            </div>
+
+            <div class="quiz-question" id="q6">
+                <h3>6. Πόση θερμότητα απελευθερώνεται ανά mol κατά τον πολυμερισμό (εξώθερμη αντίδραση);</h3>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="a"> 50 kJ/mol</label>
+                    <label><input type="radio" name="q6" value="b"> 80 kJ/mol</label>
+                    <label><input type="radio" name="q6" value="c"> 100 kJ/mol</label>
+                    <label><input type="radio" name="q6" value="d"> 120 kJ/mol</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Η μετατροπή των δεσμών C=C σε C-C απελευθερώνει 80 kJ/mol.</div>
+            </div>
+
+            <div class="quiz-question" id="q7">
+                <h3>7. Τι είναι οι "μικρορωγμές" (crazes) όπως περιγράφονται στο κείμενο;</h3>
+                <div class="options">
+                    <label><input type="radio" name="q7" value="a"> Πραγματικά ραγίσματα που οδηγούν άμεσα σε θραύση</label>
+                    <label><input type="radio" name="q7" value="b"> Περιοχές πλαστικής παραμόρφωσης με μικροσκοπικά κενά, όχι πραγματικά ραγίσματα</label>
+                    <label><input type="radio" name="q7" value="c"> Αποτέλεσμα της προσρόφησης νερού</label>
+                    <label><input type="radio" name="q7" value="d"> Γρατσουνιές από τον καθαρισμό</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Είναι περιοχές τοπικής πλαστικής παραμόρφωσης (yielding) και μπορούν να αντέξουν φορτία, σε αντίθεση με τα κανονικά ραγίσματα.</div>
+            </div>
+
+            <div class="quiz-question" id="q8">
+                <h3>8. Ποιο είναι το κύριο μειονέκτημα των μαλακών επιστρωμάτων σιλικόνης σε σχέση με τα ακρυλικά;</h3>
+                <div class="options">
+                    <label><input type="radio" name="q8" value="a"> Δεν παραμένουν μαλακά για πολύ καιρό</label>
+                    <label><input type="radio" name="q8" value="b"> Έχουν πολύ υψηλή θερμική αγωγιμότητα</label>
+                    <label><input type="radio" name="q8" value="c"> Αδύναμη σύνδεση με τη βάση (απαιτούν συγκολλητικό) και ανάπτυξη Candida</label>
+                    <label><input type="radio" name="q8" value="d"> Γίνονται πολύ σκληρά αμέσως</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Τα σιλικονούχα δεν συνδέονται χημικά με το PMMA και είναι επιρρεπή σε αποίκηση από μύκητες (Candida).</div>
+            </div>
+
+            <div class="quiz-question" id="q9">
+                <h3>9. Ποιο είναι το τυπικό εύρος προσρόφησης νερού για το PMMA;</h3>
+                <div class="options">
+                    <label><input type="radio" name="q9" value="a"> 0.1 - 0.2%</label>
+                    <label><input type="radio" name="q9" value="b"> 1.0 - 2.0%</label>
+                    <label><input type="radio" name="q9" value="c"> 5 - 8%</label>
+                    <label><input type="radio" name="q9" value="d"> 10 - 15%</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Το PMMA προσροφά νερό σε ποσοστό 1.0-2.0% κατά βάρος λόγω της πολικής του φύσης.</div>
+            </div>
+
+            <div class="quiz-question" id="q10">
+                <h3>10. Τι προκαλεί η προσθήκη γλυκόλης διμεθακρυλικής (glycol dimethacrylate);</h3>
+                <div class="options">
+                    <label><input type="radio" name="q10" value="a"> Μείωση του χρόνου πήξης</label>
+                    <label><input type="radio" name="q10" value="b"> Σχηματισμό σταυροειδών δεσμών (cross-linking) για βελτίωση αντοχής</label>
+                    <label><input type="radio" name="q10" value="c"> Αύξηση της πλαστικότητας</label>
+                    <label><input type="radio" name="q10" value="d"> Ενεργοποίηση του πολυμερισμού</label>
+                </div>
+                <div class="result-message"></div>
+                <div class="explanation">Είναι παράγοντας σταυροειδούς σύνδεσης που συνδέει τις αλυσίδες πολυμερούς μεταξύ τους.</div>
+            </div>
+
+            <button type="button" id="submit-quiz">Έλεγχος Αποτελεσμάτων</button>
+        </form>
+
+        <div class="score-box" id="score-display"></div>
+    </div>
+
+    <script>
+        document.getElementById('submit-quiz').addEventListener('click', function() {
+            const answers = {
+                q1: 'c', // 100.8
+                q2: 'b', // Αναστολέας
+                q3: 'b', // 65 (Ethyl)
+                q4: 'c', // Αμίνη
+                q5: 'd', // 0.2-0.5%
+                q6: 'b', // 80 kJ/mol
+                q7: 'b', // Πλαστική παραμόρφωση
+                q8: 'c', // Αδύναμη σύνδεση/Candida
+                q9: 'b', // 1.0-2.0%
+                q10: 'b' // Cross-linking
+            };
+
+            let score = 0;
+            const total = Object.keys(answers).length;
+
+            for (let question in answers) {
+                const selected = document.querySelector(`input[name="${question}"]:checked`);
+                const resultDiv = document.querySelector(`#${question} .result-message`);
+                const explanationDiv = document.querySelector(`#${question} .explanation`);
+                
+                // Reset styles
+                resultDiv.classList.remove('correct', 'wrong');
+                resultDiv.style.display = 'block';
+                explanationDiv.style.display = 'block';
+
+                if (selected) {
+                    if (selected.value === answers[question]) {
+                        score++;
+                        resultDiv.textContent = "✅ Σωστό!";
+                        resultDiv.classList.add('correct');
+                    } else {
+                        resultDiv.textContent = "❌ Λάθος.";
+                        resultDiv.classList.add('wrong');
+                    }
+                } else {
+                    resultDiv.textContent = "⚠️ Δεν απαντήθηκε.";
+                    resultDiv.classList.add('wrong');
+                }
+            }
+
+            const scoreDisplay = document.getElementById('score-display');
+            scoreDisplay.style.display = 'block';
+            scoreDisplay.textContent = `Σκορ: ${score} / ${total}`;
+            
+            if (score === total) {
+                scoreDisplay.style.backgroundColor = '#27ae60';
+                scoreDisplay.textContent += " - Άριστα!";
+            } else if (score > total / 2) {
+                scoreDisplay.style.backgroundColor = '#f39c12';
+                scoreDisplay.textContent += " - Καλά, αλλά θέλει επανάληψη.";
+            } else {
+                scoreDisplay.style.backgroundColor = '#c0392b';
+                scoreDisplay.textContent += " - Χρειάζεται διάβασμα.";
+            }
+
+            // Scroll to bottom
+            scoreDisplay.scrollIntoView({ behavior: 'smooth' });
+        });
+    </script>
+</body>
+</html>
