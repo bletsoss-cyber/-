@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <title>Χημεία Πολυμερών & Συμπύκνωσης</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 800px; margin: auto; padding: 20px; background: #f4f4f4; }
+        .container { background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 5px rgba(0,0,0,0.1); }
+        h2 { color: #2c3e50; border-bottom: 2px solid #3498db; }
+        .quiz-section { margin-top: 30px; padding: 15px; border: 1px solid #ddd; border-radius: 5px; }
+        .question { font-weight: bold; margin-bottom: 10px; }
+        .result { margin-top: 10px; font-weight: bold; color: #27ae60; display: none; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Σύνοψη Θεωρίας</h2>
+    <ul>
+        <li><strong>Cross-Aldol:</strong> Για να αποφευχθεί το μίγμα προϊόντων, το ένα καρβονύλιο πρέπει να στερείται <strong>α-υδρογόνων</strong> (π.χ. βενζαλδεΰδη).</li>
+        <li><strong>Συμπύκνωση & Διασταύρωση:</strong> Απαιτείται μονομερές με <strong>λειτουργικότητα > 2</strong> (π.χ. γλυκερίνη). Δημιουργεί τρισδιάστατα δίκτυα (Bakelite).</li>
+        <li><strong>Προσθήκη & Διασταύρωση:</strong> Επιτυγχάνεται με προσθήκη <strong>διενίων</strong> (π.χ. DVB στο πολυστυρένιο) ή με βουλκανισμό (γέφυρες θείου).</li>
+    </ul>
+
+    <div class="quiz-section">
+        <h2>Quick Quiz</h2>
+        
+        <div id="q1">
+            <p class="question">1. Γιατί η αντίδραση ακεταλδεΰδης με φορμαλδεΰδη δίνει ένα κύριο προϊόν και όχι μίγμα;</p>
+            <input type="radio" name="r1" id="a1"> Επειδή η φορμαλδεΰδη είναι πιο δραστική.<br>
+            <input type="radio" name="r1" id="a2"> Επειδή η φορμαλδεΰδη δεν έχει α-υδρογόνα για σχηματισμό ενολικού.<br>
+            <button onclick="check(1, 'a2')">Έλεγχος</button>
+            <p id="res1" class="result">Σωστά! Μόνο η ακεταλδεΰδη μπορεί να γίνει πυρηνόφιλο.</p>
+        </div>
+
+        <div id="q2">
+            <p class="question">2. Ποιο υλικό απαιτεί διασταύρωση για να αποκτήσει ελαστική μνήμη;</p>
+            <input type="radio" name="r2" id="a3"> Το γραμμικό πολυαιθυλένιο.<br>
+            <input type="radio" name="r2" id="a4"> Το καουτσούκ (μέσω βουλκανισμού).<br>
+            <button onclick="check(2, 'a4')">Έλεγχος</button>
+            <p id="res2" class="result">Σωστά! Οι γέφυρες θείου εμποδίζουν τη μόνιμη ολίσθηση των αλυσίδων.</p>
+        </div>
+
+        <div id="q3">
+            <p class="question">3. Τι θα συμβεί αν πολυμερίσουμε ένα δικαρβονικό οξύ με μια τριόλη (π.χ. γλυκερίνη);</p>
+            <input type="radio" name="r3" id="a5"> Θα προκύψει θερμοσκληρυνόμενο δικτυωμένο πολυμερές.<br>
+            <input type="radio" name="r3" id="a6"> Θα προκύψει ένα απλό γραμμικό πολυμερές.<br>
+            <button onclick="check(3, 'a5')">Έλεγχος</button>
+            <p id="res3" class="result">Σωστό! Η 3η ομάδα -OH δημιουργεί τη διασταύρωση.</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function check(qNum, correctId) {
+        if(document.getElementById(correctId).checked) {
+            document.getElementById('res' + qNum).style.display = 'block';
+        } else {
+            alert('Δοκίμασε ξανά!');
+        }
+    }
+</script>
+
+</body>
+</html>
