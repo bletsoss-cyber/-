@@ -1,0 +1,1094 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Επιστήμη Οδοντιατρικών Υλικών - Study App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap');
+        
+        body {
+            font-family: 'Roboto', sans-serif;
+            background-color: #f3f4f6;
+        }
+
+        /* 3D Flip Animation for Flashcards */
+        .perspective {
+            perspective: 1000px;
+        }
+        
+        .card-inner {
+            position: relative;
+            width: 100%;
+            height: 100%;
+            text-align: center;
+            transition: transform 0.6s;
+            transform-style: preserve-3d;
+            cursor: pointer;
+        }
+        
+        .card-inner.is-flipped {
+            transform: rotateY(180deg);
+        }
+        
+        .card-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            -webkit-backface-visibility: hidden;
+            backface-visibility: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            border-radius: 1rem;
+            padding: 2rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+        
+        .card-front {
+            background-color: white;
+            color: #1f2937;
+            border: 2px solid #e5e7eb;
+        }
+        
+        .card-back {
+            background-color: #4f46e5; /* Indigo-600 */
+            color: white;
+            transform: rotateY(180deg);
+            overflow-y: auto;
+        }
+
+        /* Custom Scrollbar for lengthy answers */
+        .card-back::-webkit-scrollbar {
+            width: 8px;
+        }
+        .card-back::-webkit-scrollbar-track {
+            background: rgba(255,255,255,0.1); 
+        }
+        .card-back::-webkit-scrollbar-thumb {
+            background: rgba(255,255,255,0.3); 
+            border-radius: 4px;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col text-gray-800">
+
+    <!-- Header -->
+    <header class="bg-indigo-900 text-white shadow-lg sticky top-0 z-50">
+        <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <h1 class="text-xl md:text-2xl font-bold flex items-center gap-2">
+                <i class="fas fa-tooth"></i> Οδοντιατρικά Υλικά
+            </h1>
+            <nav class="hidden md:flex gap-4">
+                <button onclick="switchAppMode('home')" class="hover:text-indigo-200 transition">Αρχική</button>
+                <button onclick="switchAppMode('flashcards')" class="hover:text-indigo-200 transition">Flashcards</button>
+                <button onclick="switchAppMode('quiz')" class="hover:text-indigo-200 transition">Quiz</button>
+            </nav>
+            <!-- Mobile Menu Button -->
+            <button onclick="toggleMobileMenu()" class="md:hidden text-2xl focus:outline-none">
+                <i class="fas fa-bars"></i>
+            </button>
+        </div>
+        <!-- Mobile Menu Dropdown -->
+        <div id="mobileMenu" class="hidden md:hidden bg-indigo-800 p-4 absolute w-full shadow-xl">
+            <button onclick="switchAppMode('home'); toggleMobileMenu()" class="block w-full text-left py-2 border-b border-indigo-700">Αρχική</button>
+            <button onclick="switchAppMode('flashcards'); toggleMobileMenu()" class="block w-full text-left py-2 border-b border-indigo-700">Flashcards</button>
+            <button onclick="switchAppMode('quiz'); toggleMobileMenu()" class="block w-full text-left py-2">Quiz</button>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="flex-grow container mx-auto px-4 py-8 max-w-4xl">
+        
+        <!-- View: HOME -->
+        <div id="view-home" class="fade-in space-y-8">
+            <div class="text-center space-y-4 mb-12">
+                <h2 class="text-4xl font-bold text-indigo-900">Εργαλείο Μελέτης</h2>
+                <p class="text-lg text-gray-600">Επιλέξτε τρόπο μελέτης για τα Κεφάλαια 1.2, 1.3 και 1.4</p>
+                <p class="text-sm font-bold text-teal-600 mt-2">Τώρα με 35 ερωτήσεις για πλήρη κάλυψη!</p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-8">
+                <!-- Card 1: Flashcards -->
+                <div onclick="switchAppMode('flashcards')" class="bg-white rounded-xl shadow-md p-8 hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer border-l-8 border-purple-500 group">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-gray-800">Flashcards</h3>
+                        <i class="fas fa-clone text-4xl text-purple-200 group-hover:text-purple-500 transition"></i>
+                    </div>
+                    <p class="text-gray-600">Μελετήστε όρους και ορισμούς με κάρτες μνήμης. Ιδανικό για απομνημόνευση.</p>
+                    <div class="mt-6 text-purple-600 font-semibold group-hover:underline">Έναρξη Μελέτης &rarr;</div>
+                </div>
+
+                <!-- Card 2: Quiz -->
+                <div onclick="switchAppMode('quiz')" class="bg-white rounded-xl shadow-md p-8 hover:shadow-2xl transition transform hover:-translate-y-1 cursor-pointer border-l-8 border-teal-500 group">
+                    <div class="flex justify-between items-center mb-4">
+                        <h3 class="text-2xl font-bold text-gray-800">Quiz Ερωτήσεων</h3>
+                        <i class="fas fa-clipboard-check text-4xl text-teal-200 group-hover:text-teal-500 transition"></i>
+                    </div>
+                    <p class="text-gray-600">Τεστ πολλαπλής επιλογής για να ελέγξετε τις γνώσεις σας. Δείτε το σκορ σας άμεσα.</p>
+                    <div class="mt-6 text-teal-600 font-semibold group-hover:underline">Έναρξη Quiz &rarr;</div>
+                </div>
+            </div>
+
+            <div class="mt-12 bg-blue-50 p-6 rounded-lg border border-blue-100">
+                <h4 class="font-bold text-blue-800 mb-2">Καλυπτόμενη Ύλη:</h4>
+                <ul class="list-disc list-inside text-blue-700 space-y-1">
+                    <li><strong>Κεφ 1.2:</strong> Ατομική Δομή, Δεσμοί, Μοριακά Στερεά, Κρυσταλλικά Πλέγματα.</li>
+                    <li><strong>Κεφ 1.3:</strong> Κεραμικά, Τετράεδρα Πυριτίου, Άστριοι, Μεταπτώσεις, Ιξώδες.</li>
+                    <li><strong>Κεφ 1.4:</strong> Μέταλλα, Κράματα, Solidus/Liquidus, Δενδριτική Δομή, Ομογενοποίηση.</li>
+                </ul>
+            </div>
+        </div>
+
+        <!-- View: FLASHCARDS -->
+        <div id="view-flashcards" class="hidden fade-in">
+            <!-- Controls -->
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div>
+                    <button onclick="switchAppMode('home')" class="text-gray-500 hover:text-indigo-600 mr-4"><i class="fas fa-arrow-left"></i> Πίσω</button>
+                    <span class="font-bold text-xl text-indigo-900">Flashcards</span>
+                </div>
+                <select id="chapterSelectFC" onchange="initFlashcards()" class="p-2 border rounded shadow-sm focus:ring focus:ring-indigo-200 bg-white">
+                    <option value="all">Όλα τα Κεφάλαια</option>
+                    <option value="1.2">Κεφ 1.2: Ατομική Δομή</option>
+                    <option value="1.3">Κεφ 1.3: Κεραμικά</option>
+                    <option value="1.4">Κεφ 1.4: Μέταλλα & Κράματα</option>
+                </select>
+            </div>
+
+            <!-- Progress -->
+            <div class="w-full bg-gray-200 rounded-full h-2.5 mb-6">
+                <div id="fc-progress" class="bg-purple-600 h-2.5 rounded-full" style="width: 0%"></div>
+            </div>
+            <div class="text-center text-sm text-gray-500 mb-4">
+                Κάρτα <span id="fc-current">1</span> από <span id="fc-total">10</span>
+            </div>
+
+            <!-- Card Container -->
+            <div class="flex justify-center mb-8">
+                <div class="w-full max-w-lg h-80 perspective group" onclick="flipCard()">
+                    <div id="flashcard-inner" class="card-inner duration-500">
+                        <!-- Front -->
+                        <div class="card-face card-front">
+                            <div class="text-sm uppercase tracking-wide text-gray-400 font-bold mb-4" id="fc-category">ΚΑΤΗΓΟΡΙΑ</div>
+                            <h3 class="text-2xl font-bold text-center px-4" id="fc-front-text">Όρος</h3>
+                            <div class="absolute bottom-4 text-gray-400 text-sm">
+                                <i class="fas fa-sync-alt mr-1"></i> Πατήστε για αναστροφή
+                            </div>
+                        </div>
+                        <!-- Back -->
+                        <div class="card-face card-back">
+                            <h3 class="text-xl font-bold mb-4 border-b border-white/30 pb-2">Απάντηση</h3>
+                            <p class="text-lg leading-relaxed px-2" id="fc-back-text">Επεξήγηση</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Navigation Buttons -->
+            <div class="flex justify-center gap-4">
+                <button onclick="prevCard()" class="bg-white text-indigo-900 px-6 py-3 rounded-full shadow hover:bg-gray-50 transition border border-gray-200">
+                    <i class="fas fa-chevron-left"></i> Προηγούμενο
+                </button>
+                <button onclick="nextCard()" class="bg-indigo-600 text-white px-6 py-3 rounded-full shadow-lg hover:bg-indigo-700 transition font-bold">
+                    Επόμενο <i class="fas fa-chevron-right ml-2"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- View: QUIZ -->
+        <div id="view-quiz" class="hidden fade-in">
+             <!-- Controls -->
+             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div>
+                    <button onclick="switchAppMode('home')" class="text-gray-500 hover:text-indigo-600 mr-4"><i class="fas fa-arrow-left"></i> Πίσω</button>
+                    <span class="font-bold text-xl text-indigo-900">Quiz</span>
+                </div>
+                <select id="chapterSelectQuiz" onchange="initQuiz()" class="p-2 border rounded shadow-sm focus:ring focus:ring-teal-200 bg-white">
+                    <option value="all">Όλα τα Κεφάλαια</option>
+                    <option value="1.2">Κεφ 1.2: Ατομική Δομή</option>
+                    <option value="1.3">Κεφ 1.3: Κεραμικά</option>
+                    <option value="1.4">Κεφ 1.4: Μέταλλα & Κράματα</option>
+                </select>
+            </div>
+
+            <!-- Score Board -->
+            <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200 flex justify-between items-center mb-6">
+                <div>
+                    <span class="text-gray-500 text-sm block">Τρέχον Σκορ</span>
+                    <span class="text-2xl font-bold text-teal-600" id="quiz-score">0</span>
+                </div>
+                <div class="text-right">
+                    <span class="text-gray-500 text-sm block">Ερώτηση</span>
+                    <span class="font-bold"><span id="quiz-current">1</span>/<span id="quiz-total">10</span></span>
+                </div>
+            </div>
+
+            <!-- Question Card -->
+            <div id="quiz-container" class="bg-white rounded-xl shadow-lg p-6 md:p-8">
+                <div class="mb-6">
+                    <span class="inline-block px-3 py-1 bg-gray-100 text-gray-600 rounded-full text-xs font-bold mb-2" id="quiz-category">TAG</span>
+                    <h3 class="text-xl md:text-2xl font-bold text-gray-800 leading-snug" id="quiz-question">
+                        Ερώτηση...
+                    </h3>
+                </div>
+
+                <!-- Answers -->
+                <div class="space-y-3" id="quiz-options">
+                    <!-- Dynamic Buttons Generated Here -->
+                </div>
+
+                <!-- Feedback Area -->
+                <div id="quiz-feedback" class="hidden mt-6 p-4 rounded-lg bg-gray-50 border-l-4">
+                    <h4 class="font-bold mb-1" id="feedback-title">Σωστό!</h4>
+                    <p class="text-sm" id="feedback-text">Επεξήγηση...</p>
+                    <button onclick="nextQuestion()" class="mt-4 bg-teal-600 text-white px-6 py-2 rounded shadow hover:bg-teal-700 transition">Επόμενη Ερώτηση</button>
+                </div>
+            </div>
+            
+            <!-- Result Screen (Hidden initially) -->
+            <div id="quiz-result" class="hidden text-center py-12 bg-white rounded-xl shadow-lg">
+                <div class="text-6xl text-teal-500 mb-4"><i class="fas fa-trophy"></i></div>
+                <h2 class="text-3xl font-bold text-gray-800 mb-2">Ολοκληρώθηκε!</h2>
+                <p class="text-xl text-gray-600 mb-8">Το τελικό σκορ σου είναι: <span class="font-bold text-teal-600" id="final-score">8/10</span></p>
+                <button onclick="initQuiz()" class="bg-indigo-600 text-white px-8 py-3 rounded-full shadow-lg hover:bg-indigo-700 transition font-bold">
+                    Παίξε ξανά
+                </button>
+            </div>
+        </div>
+
+    </main>
+
+    <footer class="bg-gray-800 text-gray-400 py-6 text-center text-sm mt-auto">
+        <p>Dental Materials Review App</p>
+        <p>Βασισμένο στις σημειώσεις: Κεφ 1.2, 1.3, 1.4</p>
+    </footer>
+
+    <script>
+        // --- DATA SOURCE ---
+        const allData = [
+            // --- CHAPTER 1.2: ΑΤΟΜΙΚΗ ΔΟΜΗ ---
+            {
+                id: 1,
+                chapter: "1.2",
+                term: "Απόσταση Ισορροπίας (a0)",
+                definition: "Η απόσταση μεταξύ δύο ατόμων όπου η συνολική ενέργεια είναι η ελάχιστη δυνατή (Em). Εκεί εξισορροπούνται οι δυνάμεις έλξης και άπωσης.",
+                quiz: {
+                    q: "Τι συμβαίνει όταν δύο άτομα βρίσκονται στην απόσταση ισορροπίας (a0);",
+                    options: [
+                        "Η ολική ενέργεια είναι η ελάχιστη δυνατή.",
+                        "Οι δυνάμεις άπωσης είναι μεγαλύτερες από τις έλξης.",
+                        "Η ολική ενέργεια είναι μηδέν.",
+                        "Τα άτομα αρχίζουν να απομακρύνονται."
+                    ],
+                    correct: 0,
+                    explanation: "Στην απόσταση a0, η ενέργεια είναι ελάχιστη (Em) και το σύστημα είναι σταθερό."
+                }
+            },
+            {
+                id: 2,
+                chapter: "1.2",
+                term: "Ιοντικός Δεσμός",
+                definition: "Πρωτεύων δεσμός που προκύπτει από τη μεταφορά ηλεκτρονίων από ένα άτομο σε ένα άλλο, δημιουργώντας θετικά και αρνητικά ιόντα που έλκονται ηλεκτροστατικά. Είναι μη κατευθυντικός.",
+                quiz: {
+                    q: "Ποιο από τα παρακάτω είναι χαρακτηριστικό του ιοντικού δεσμού;",
+                    options: [
+                        "Μοιράζονται ηλεκτρόνια.",
+                        "Είναι εξαιρετικά κατευθυντικός δεσμός.",
+                        "Είναι μη κατευθυντικός και βασίζεται σε ηλεκτροστατική έλξη.",
+                        "Δημιουργεί νέφος ελεύθερων ηλεκτρονίων."
+                    ],
+                    correct: 2,
+                    explanation: "Στον ιοντικό δεσμό έχουμε μεταφορά ηλεκτρονίων και ηλεκτροστατική έλξη που ασκείται προς όλες τις κατευθύνσεις (μη κατευθυντικός)."
+                }
+            },
+            {
+                id: 3,
+                chapter: "1.2",
+                term: "Ομοιοπολικός Δεσμός",
+                definition: "Πρωτεύων δεσμός όπου δύο άτομα μοιράζονται ηλεκτρόνια. Είναι ισχυρός και κατευθυντικός (π.χ. Διαμάντι, Πολυμερή).",
+                quiz: {
+                    q: "Σε ποια υλικά κυριαρχούν συνήθως οι ομοιοπολικοί δεσμοί;",
+                    options: [
+                        "Στα καθαρά μέταλλα.",
+                        "Στα άλατα.",
+                        "Στο διαμάντι και τα οργανικά πολυμερή.",
+                        "Στα αδρανή αέρια."
+                    ],
+                    correct: 2,
+                    explanation: "Το διαμάντι και τα οργανικά μόρια (πολυμερή) σχηματίζονται κυρίως με ομοιοπολικούς δεσμούς."
+                }
+            },
+            {
+                id: 4,
+                chapter: "1.2",
+                term: "Μεταλλικός Δεσμός",
+                definition: "Πρωτεύων δεσμός όπου τα εξωτερικά ηλεκτρόνια σχηματίζουν ένα 'νέφος' που κινείται ελεύθερα ανάμεσα στους θετικούς πυρήνες. Προσδίδει αγωγιμότητα και ολκιμότητα.",
+                quiz: {
+                    q: "Γιατί τα μέταλλα είναι καλοί αγωγοί του ρεύματος;",
+                    options: [
+                        "Λόγω των ισχυρών ομοιοπολικών δεσμών.",
+                        "Λόγω του 'νέφους' ελεύθερων ηλεκτρονίων που κινούνται ελεύθερα.",
+                        "Επειδή έχουν κρυσταλλική δομή.",
+                        "Επειδή έχουν υψηλό σημείο τήξης."
+                    ],
+                    correct: 1,
+                    explanation: "Τα ελεύθερα ηλεκτρόνια στο μεταλλικό δεσμό μπορούν να μεταφέρουν φορτίο και θερμότητα."
+                }
+            },
+            {
+                id: 5,
+                chapter: "1.2",
+                term: "Δευτερεύοντες Δεσμοί (van der Waals)",
+                definition: "Ασθενείς δεσμοί που οφείλονται σε διπόλα (μόνιμα ή στιγμιαία). Περιλαμβάνουν τους δεσμούς υδρογόνου. Καθορίζουν ιδιότητες όπως το σημείο τήξης στα πολυμερή.",
+                quiz: {
+                    q: "Ποιος τύπος δεσμού είναι υπεύθυνος για τη συνοχή μεταξύ των μορίων του νερού (πάγος);",
+                    options: [
+                        "Ιοντικός δεσμός.",
+                        "Μεταλλικός δεσμός.",
+                        "Δεσμός Υδρογόνου (Δευτερεύων).",
+                        "Ομοιοπολικός δεσμός δικτύου."
+                    ],
+                    correct: 2,
+                    explanation: "Οι δεσμοί υδρογόνου είναι ισχυροί δευτερεύοντες δεσμοί που συγκρατούν τα μόρια του νερού."
+                }
+            },
+            {
+                id: 6,
+                chapter: "1.2",
+                term: "Κρυσταλλικά vs Άμορφα Στερεά",
+                definition: "Κρυσταλλικά: Άτομα σε κανονική, επαναλαμβανόμενη διάταξη μακράς εμβέλειας. Άμορφα: Τυχαία διάταξη ατόμων, χωρίς μακρινή τάξη (π.χ. γυαλί).",
+                quiz: {
+                    q: "Ποια είναι η βασική διαφορά μεταξύ κρυσταλλικών και άμορφων υλικών;",
+                    options: [
+                        "Τα κρυσταλλικά έχουν τυχαία δομή, τα άμορφα οργανωμένη.",
+                        "Τα κρυσταλλικά έχουν επαναλαμβανόμενη δομή (τάξη), τα άμορφα είναι αταξινόμητα.",
+                        "Τα άμορφα είναι πάντα μέταλλα.",
+                        "Δεν υπάρχει διαφορά, είναι συνώνυμα."
+                    ],
+                    correct: 1,
+                    explanation: "Η βασική διαφορά είναι η ύπαρξη τάξης μακράς εμβέλειας στα κρυσταλλικά υλικά."
+                }
+            },
+            {
+                id: 101,
+                chapter: "1.2",
+                term: "Κατευθυντικότητα Δεσμών",
+                definition: "Οι ομοιοπολικοί δεσμοί είναι κατευθυντικοί (συγκεκριμένες γωνίες). Οι ιοντικοί και μεταλλικοί είναι μη κατευθυντικοί (σφαιρικό πεδίο).",
+                quiz: {
+                    q: "Ποιος από τους παρακάτω δεσμούς είναι κατευθυντικός;",
+                    options: [
+                        "Ιοντικός δεσμός.",
+                        "Μεταλλικός δεσμός.",
+                        "Ομοιοπολικός δεσμός.",
+                        "Δεσμός van der Waals."
+                    ],
+                    correct: 2,
+                    explanation: "Ο ομοιοπολικός δεσμός αναπτύσσεται σε συγκεκριμένες διευθύνσεις όπου επικαλύπτονται τα τροχιακά."
+                }
+            },
+            {
+                id: 102,
+                chapter: "1.2",
+                term: "Μοριακά Στερεά",
+                definition: "Υλικά αποτελούμενα από μόρια συνδεδεμένα μόνο με δευτερεύοντες δεσμούς. Έχουν χαμηλά σημεία τήξης (π.χ. κερί, πάγος).",
+                quiz: {
+                    q: "Ποιο είναι κύριο χαρακτηριστικό των μοριακών στερεών;",
+                    options: [
+                        "Πολύ υψηλό σημείο τήξης.",
+                        "Εξαιρετική αγωγιμότητα ηλεκτρισμού.",
+                        "Χαμηλό σημείο τήξης και μαλακή σύσταση.",
+                        "Δημιουργούνται από ιοντικούς δεσμούς."
+                    ],
+                    correct: 2,
+                    explanation: "Επειδή οι δευτερεύοντες δεσμοί που τα κρατούν είναι ασθενείς, λιώνουν εύκολα (π.χ. παραφίνη)."
+                }
+            },
+            {
+                id: 103,
+                chapter: "1.2",
+                term: "Ηλεκτρόνια Σθένους",
+                definition: "Τα ηλεκτρόνια στην εξωτερική στιβάδα ενός ατόμου. Καθορίζουν τη χημική συμπεριφορά και τον τύπο του δεσμού που θα σχηματιστεί.",
+                quiz: {
+                    q: "Τι καθορίζουν τα ηλεκτρόνια σθένους;",
+                    options: [
+                        "Το βάρος του πυρήνα.",
+                        "Την αντιδραστικότητα και τον τύπο δεσμού του ατόμου.",
+                        "Τον αριθμό των νετρονίων.",
+                        "Την πυκνότητα του πυρήνα."
+                    ],
+                    correct: 1,
+                    explanation: "Τα εξωτερικά ηλεκτρόνια (σθένους) είναι αυτά που συμμετέχουν στους δεσμούς."
+                }
+            },
+            {
+                id: 104,
+                chapter: "1.2",
+                term: "Παράγοντας Στοιβαγμού (APF)",
+                definition: "Το ποσοστό του όγκου που καταλαμβάνουν τα άτομα σε μια κρυσταλλική δομή. Το FCC και HCP έχουν τον μέγιστο (0.74), ενώ ο απλός κύβος είναι πιο αραιός.",
+                quiz: {
+                    q: "Ποια κρυσταλλική δομή έχει τον μεγαλύτερο παράγοντα στοιβαγμού (πιο πυκνή);",
+                    options: [
+                        "Απλός κύβος.",
+                        "Ενδοκεντρωμένος κύβος (BCC).",
+                        "Εδροκεντρωμένος κύβος (FCC).",
+                        "Όλες έχουν την ίδια πυκνότητα."
+                    ],
+                    correct: 2,
+                    explanation: "Το FCC (Face Centered Cubic) έχει παράγοντα στοιβαγμού 0.74, που είναι η μέγιστη δυνατή πυκνότητα για σφαίρες."
+                }
+            },
+            {
+                id: 105,
+                chapter: "1.2",
+                term: "Δυνάμεις Άπωσης",
+                definition: "Προκύπτουν όταν τα άτομα πλησιάζουν πολύ κοντά και τα νέφη των ηλεκτρονίων τους επικαλύπτονται και απωθούνται.",
+                quiz: {
+                    q: "Τι προκαλεί την άπωση όταν δύο άτομα πλησιάζουν πολύ κοντά;",
+                    options: [
+                        "Η έλξη των πυρήνων.",
+                        "Η επικάλυψη των ηλεκτρονιακών νεφών.",
+                        "Οι δεσμοί van der Waals.",
+                        "Η βαρύτητα."
+                    ],
+                    correct: 1,
+                    explanation: "Όταν οι στιβάδες ηλεκτρονίων πλησιάσουν πολύ, απωθούνται έντονα (αρχή Pauli)."
+                }
+            },
+
+
+            // --- CHAPTER 1.3: ΚΕΡΑΜΙΚΑ ---
+            {
+                id: 7,
+                chapter: "1.3",
+                term: "Πυρίτιο (SiO2) - Πολυμορφισμός",
+                definition: "Το πυρίτιο μπορεί να υπάρχει σε διαφορετικές κρυσταλλικές μορφές (χαλαζίας, κριστομπαλίτης, τριδυμίτης) ή ως άμορφη ύαλος, ανάλογα με τη θερμοκρασία.",
+                quiz: {
+                    q: "Τι ονομάζεται πολυμορφισμός του πυριτίου;",
+                    options: [
+                        "Η ικανότητα να διαλύεται στο νερό.",
+                        "Η ικανότητα να υπάρχει σε διαφορετικές κρυσταλλικές μορφές ανάλογα με τη θερμοκρασία.",
+                        "Η ικανότητα να αντιδρά με οξέα.",
+                        "Η ιδιότητα του να είναι πάντα υγρό."
+                    ],
+                    correct: 1,
+                    explanation: "Πολυμορφισμός είναι η ύπαρξη του ίδιου υλικού σε διαφορετικές κρυσταλλικές δομές (π.χ. χαλαζίας, κριστομπαλίτης)."
+                }
+            },
+            {
+                id: 8,
+                chapter: "1.3",
+                term: "Θερμοκρασία Υαλώδους Μετάπτωσης (Tg)",
+                definition: "Η θερμοκρασία όπου ένα άμορφο υλικό (γυαλί) μεταβαίνει από σκληρή/εύθραυστη κατάσταση σε μαλακή/λαστιχοειδή. Δεν είναι σημείο τήξης.",
+                quiz: {
+                    q: "Τι συμβαίνει στη θερμοκρασία υαλώδους μετάπτωσης (Tg);",
+                    options: [
+                        "Το υλικό λιώνει απότομα και γίνεται υγρό.",
+                        "Το υλικό κρυσταλλώνεται ακαριαία.",
+                        "Υπάρχει αλλαγή στον ρυθμό διαστολής και το υλικό μαλακώνει.",
+                        "Το υλικό εξατμίζεται."
+                    ],
+                    correct: 2,
+                    explanation: "Στην Tg αλλάζει η κλίση της καμπύλης όγκου-θερμοκρασίας και το υλικό γίνεται πλαστικό/μαλακό, δεν λιώνει όπως ένας κρύσταλλος."
+                }
+            },
+            {
+                id: 9,
+                chapter: "1.3",
+                term: "Διαμορφωτές vs Τροποποιητές Υάλου",
+                definition: "Διαμορφωτές (π.χ. SiO2): Φτιάχνουν το δίκτυο. Τροποποιητές (π.χ. Na2O, K2O): Σπάνε το δίκτυο, μειώνουν το σημείο τήξης και το ιξώδες.",
+                quiz: {
+                    q: "Ποιος είναι ο ρόλος των οξειδίων νατρίου (Na2O) και καλίου (K2O) στην παρασκευή υάλου;",
+                    options: [
+                        "Ενισχύουν το δίκτυο και αυξάνουν το σημείο τήξης.",
+                        "Λειτουργούν ως τροποποιητές, σπάζοντας το δίκτυο και μειώνοντας τη θερμοκρασία τήξης.",
+                        "Κάνουν το γυαλί αδιαφανές.",
+                        "Δεν επηρεάζουν τις ιδιότητες."
+                    ],
+                    correct: 1,
+                    explanation: "Τα αλκάλια αυτά διακόπτουν τους δεσμούς Si-O-Si, κάνοντας το γυαλί να λιώνει πιο εύκολα."
+                }
+            },
+            {
+                id: 10,
+                chapter: "1.3",
+                term: "Αποϋαλοποίηση (Devitrification)",
+                definition: "Η ανεπιθύμητη κρυστάλλωση μιας υάλου όταν παραμείνει σε υψηλή θερμοκρασία. Το γυαλί γίνεται θολό/γαλακτώδες.",
+                quiz: {
+                    q: "Τι είναι η αποϋαλοποίηση και τι αποτέλεσμα έχει;",
+                    options: [
+                        "Η τήξη του γυαλιού - γίνεται πιο διαφανές.",
+                        "Η κρυστάλλωση του γυαλιού - γίνεται θολό και αδιαφανές.",
+                        "Η ταχεία ψύξη του γυαλιού - γίνεται πιο σκληρό.",
+                        "Η αφαίρεση φυσαλίδων αέρα."
+                    ],
+                    correct: 1,
+                    explanation: "Είναι η επιστροφή στην κρυσταλλική κατάσταση, η οποία σκεδάζει το φως και κάνει το υλικό θολό."
+                }
+            },
+            {
+                id: 106,
+                chapter: "1.3",
+                term: "Τετράεδρο Πυριτίου (SiO4)",
+                definition: "Η βασική δομική μονάδα των κεραμικών με βάση το πυρίτιο. Ένα άτομο πυριτίου στο κέντρο και τέσσερα άτομα οξυγόνου στις κορυφές.",
+                quiz: {
+                    q: "Ποια είναι η βασική δομική μονάδα του δικτύου του πυριτίου;",
+                    options: [
+                        "Ο κύβος του πυριτίου.",
+                        "Το τετράεδρο SiO4 (Πυρίτιο-Οξυγόνο).",
+                        "Το μόριο του νερού.",
+                        "Το εξάγωνο του άνθρακα."
+                    ],
+                    correct: 1,
+                    explanation: "Το τετράεδρο με το πυρίτιο στο κέντρο και οξυγόνα στις γωνίες είναι το δομικό στοιχείο."
+                }
+            },
+            {
+                id: 107,
+                chapter: "1.3",
+                term: "Άστριοι (Feldspars)",
+                definition: "Αργιλο-πυριτικές ενώσεις που περιέχουν κάλιο (K) και νάτριο (Na). Αποτελούν τη βάση για πολλές οδοντιατρικές πορσελάνες.",
+                quiz: {
+                    q: "Τι είναι οι άστριοι (feldspars) που χρησιμοποιούνται στην οδοντιατρική;",
+                    options: [
+                        "Καθαρά μέταλλα.",
+                        "Πολυμερή πλαστικά.",
+                        "Αργιλο-πυριτικές ενώσεις με κάλιο και νάτριο.",
+                        "Ενώσεις σιδήρου."
+                    ],
+                    correct: 2,
+                    explanation: "Οι άστριοι είναι φυσικά ορυκτά που αποτελούν τη βάση για τις παραδοσιακές οδοντιατρικές πορσελάνες."
+                }
+            },
+            {
+                id: 108,
+                chapter: "1.3",
+                term: "Τήξη Κρυστάλλου vs Υάλου",
+                definition: "Ο κρύσταλλος έχει συγκεκριμένο σημείο τήξης με απότομη αύξηση όγκου. Η ύαλος μαλακώνει σταδιακά χωρίς απότομη αλλαγή όγκου.",
+                quiz: {
+                    q: "Πώς ξεχωρίζουμε την τήξη ενός κρυστάλλου από αυτή μιας υάλου στο διάγραμμα όγκου;",
+                    options: [
+                        "Ο κρύσταλλος έχει σταδιακή καμπύλη, η ύαλος απότομο σκαλοπάτι.",
+                        "Ο κρύσταλλος έχει απότομη ασυνέχεια (σκαλοπάτι), η ύαλος μόνο αλλαγή κλίσης.",
+                        "Και τα δύο συμπεριφέρονται το ίδιο.",
+                        "Η ύαλος δεν αλλάζει όγκο."
+                    ],
+                    correct: 1,
+                    explanation: "Η διάσπαση της οργανωμένης δομής του κρυστάλλου προκαλεί απότομη διαστολή (ασυνέχεια)."
+                }
+            },
+            {
+                id: 109,
+                chapter: "1.3",
+                term: "Ανόπτηση (Annealing)",
+                definition: "Διαδικασία θέρμανσης και αργής ψύξης για την ανακούφιση εσωτερικών τάσεων στο γυαλί, χωρίς να προκληθεί κρυστάλλωση.",
+                quiz: {
+                    q: "Ποιος είναι ο σκοπός της ανόπτησης (annealing) στο γυαλί;",
+                    options: [
+                        "Να το κάνει να κρυσταλλωθεί.",
+                        "Να αφαιρέσει τις εσωτερικές τάσεις μέσω θέρμανσης.",
+                        "Να αλλάξει το χρώμα του.",
+                        "Να το λιώσει τελείως."
+                    ],
+                    correct: 1,
+                    explanation: "Η ανόπτηση αφαιρεί τις τάσεις που δημιουργήθηκαν κατά τη γρήγορη ψύξη, αποτρέποντας το σπάσιμο."
+                }
+            },
+            {
+                id: 110,
+                chapter: "1.3",
+                term: "Ρυθμός Ψύξης και Δομή",
+                definition: "Γρήγορη ψύξη -> Ύαλος (δεν προλαβαίνουν να οργανωθούν). Αργή ψύξη -> Κρύσταλλος (έχουν χρόνο να μπουν σε τάξη).",
+                quiz: {
+                    q: "Τι ευνοεί τον σχηματισμό υάλου αντί κρυστάλλου;",
+                    options: [
+                        "Πολύ αργή ψύξη.",
+                        "Γρήγορη ψύξη που αυξάνει απότομα το ιξώδες.",
+                        "Η παρουσία πολλών πυρήνων κρυστάλλωσης.",
+                        "Η χαμηλή θερμοκρασία τήξης."
+                    ],
+                    correct: 1,
+                    explanation: "Η γρήγορη ψύξη 'παγώνει' τα άτομα σε τυχαίες θέσεις πριν προλάβουν να οργανωθούν."
+                }
+            },
+
+            // --- CHAPTER 1.4: ΜΕΤΑΛΛΑ & ΚΡΑΜΑΤΑ ---
+            {
+                id: 11,
+                chapter: "1.4",
+                term: "Όρια Κόκκων (Grain Boundaries)",
+                definition: "Οι ακανόνιστες ζώνες επαφής μεταξύ γειτονικών κρυστάλλων (κόκκων) σε ένα μέταλλο. Εμποδίζουν την ολίσθηση και αυξάνουν τη σκληρότητα.",
+                quiz: {
+                    q: "Πώς επηρεάζει το μέγεθος των κόκκων τις ιδιότητες ενός μετάλλου;",
+                    options: [
+                        "Μεγάλοι κόκκοι = Μεγαλύτερη σκληρότητα.",
+                        "Μικροί κόκκοι (λεπτόκοκκο) = Μεγαλύτερη σκληρότητα και αντοχή.",
+                        "Το μέγεθος των κόκκων δεν παίζει ρόλο.",
+                        "Μικροί κόκκοι κάνουν το μέταλλο πολύ εύθραυστο."
+                    ],
+                    correct: 1,
+                    explanation: "Τα πολλά όρια κόκκων στα λεπτόκοκκα μέταλλα εμποδίζουν τις παραμορφώσεις, αυξάνοντας την αντοχή."
+                }
+            },
+            {
+                id: 12,
+                chapter: "1.4",
+                term: "Υποκατάστατο Στερεό Διάλυμα",
+                definition: "Κράμα όπου άτομα του διαλύτη αντικαθίστανται από άτομα διαλυμένης ουσίας παρόμοιου μεγέθους και σθένους (π.χ. Χρυσός-Χαλκός).",
+                quiz: {
+                    q: "Ποια είναι απαραίτητη προϋπόθεση για να σχηματιστεί υποκατάστατο στερεό διάλυμα;",
+                    options: [
+                        "Τα άτομα να έχουν πολύ διαφορετικό μέγεθος.",
+                        "Τα άτομα να έχουν διαφορά μεγέθους μικρότερη από 15%.",
+                        "Το ένα στοιχείο να είναι αέριο.",
+                        "Να μην έχουν την ίδια κρυσταλλική δομή."
+                    ],
+                    correct: 1,
+                    explanation: "Για να 'χωρέσει' το ένα άτομο στη θέση του άλλου, πρέπει να έχουν παρόμοιο μέγεθος (διαφορά <15%)."
+                }
+            },
+            {
+                id: 13,
+                chapter: "1.4",
+                term: "Διάμεσο Στερεό Διάλυμα",
+                definition: "Κράμα όπου πολύ μικρά άτομα (π.χ. Άνθρακας) εισχωρούν στα κενά (διάκενα) του πλέγματος μεγαλύτερων ατόμων (π.χ. Σίδηρος). Παράδειγμα: Ατσάλι.",
+                quiz: {
+                    q: "Ποιο από τα παρακάτω είναι παράδειγμα διάμεσου στερεού διαλύματος;",
+                    options: [
+                        "Χρυσός - Χαλκός.",
+                        "Άργυρος - Παλλάδιο.",
+                        "Σίδηρος - Άνθρακας (Ατσάλι).",
+                        "Νερό - Αλάτι."
+                    ],
+                    correct: 2,
+                    explanation: "Ο άνθρακας είναι πολύ μικρότερος από τον σίδηρο και μπαίνει στα διάκενα του πλέγματος."
+                }
+            },
+            {
+                id: 14,
+                chapter: "1.4",
+                term: "Ευτηκτικό Σημείο",
+                definition: "Η σύνθεση κράματος που λιώνει στη χαμηλότερη δυνατή θερμοκρασία. Στερεοποιείται απότομα χωρίς ενδιάμεση φάση πολτού.",
+                quiz: {
+                    q: "Τι χαρακτηρίζει ένα ευτηκτικό κράμα;",
+                    options: [
+                        "Έχει το υψηλότερο σημείο τήξης.",
+                        "Δεν λιώνει ποτέ τελείως.",
+                        "Έχει το χαμηλότερο σημείο τήξης και συμπεριφέρεται σαν καθαρό μέταλλο.",
+                        "Αποτελείται πάντα από τρία μέταλλα."
+                    ],
+                    correct: 2,
+                    explanation: "Στο ευτηκτικό σημείο, το κράμα μεταπίπτει απευθείας από υγρό σε στερεό στη χαμηλότερη θερμοκρασία."
+                }
+            },
+            {
+                id: 15,
+                chapter: "1.4",
+                term: "Δενδριτική Δομή (Coring)",
+                definition: "Ανομοιομορφία στη δομή των κόκκων λόγω γρήγορης ψύξης. Το κέντρο του κόκκου έχει διαφορετική σύσταση από την περιφέρεια. Διορθώνεται με ομογενοποίηση.",
+                quiz: {
+                    q: "Πώς δημιουργείται η δενδριτική δομή (coring) στα κράματα;",
+                    options: [
+                        "Λόγω πολύ αργής ψύξης.",
+                        "Λόγω γρήγορης ψύξης που δεν επιτρέπει την εξισορρόπηση των ατόμων.",
+                        "Λόγω ανάμειξης με κεραμικά.",
+                        "Είναι η επιθυμητή δομή για όλα τα κράματα."
+                    ],
+                    correct: 1,
+                    explanation: "Η γρήγορη ψύξη (συνθήκες μη εξισορρόπησης) εμποδίζει τη διάχυση, δημιουργώντας κόκκους με ανομοιογενή σύσταση."
+                }
+            },
+            {
+                id: 111,
+                chapter: "1.4",
+                term: "Γραμμή Liquidus",
+                definition: "Η γραμμή στο διάγραμμα φάσεων πάνω από την οποία όλο το κράμα είναι πλήρως υγρό.",
+                quiz: {
+                    q: "Τι αντιπροσωπεύει η γραμμή Liquidus σε ένα διάγραμμα φάσεων;",
+                    options: [
+                        "Τη θερμοκρασία όπου το κράμα είναι πλήρως στερεό.",
+                        "Τη θερμοκρασία πάνω από την οποία το κράμα είναι πλήρως υγρό.",
+                        "Τη θερμοκρασία δωματίου.",
+                        "Το σημείο βρασμού."
+                    ],
+                    correct: 1,
+                    explanation: "Πάνω από τη Liquidus όλα είναι υγρά. Κάτω από αυτήν ξεκινά η στερεοποίηση."
+                }
+            },
+            {
+                id: 112,
+                chapter: "1.4",
+                term: "Γραμμή Solidus",
+                definition: "Η γραμμή στο διάγραμμα φάσεων κάτω από την οποία όλο το κράμα είναι πλήρως στερεό.",
+                quiz: {
+                    q: "Τι συμβαίνει κάτω από τη γραμμή Solidus;",
+                    options: [
+                        "Το υλικό είναι πλήρως στερεό.",
+                        "Το υλικό είναι πλήρως υγρό.",
+                        "Συνυπάρχουν υγρό και στερεό.",
+                        "Το υλικό εξατμίζεται."
+                    ],
+                    correct: 0,
+                    explanation: "Κάτω από τη Solidus, η διαδικασία στερεοποίησης έχει ολοκληρωθεί."
+                }
+            },
+            {
+                id: 113,
+                chapter: "1.4",
+                term: "Πυρηνοποίηση (Nucleation)",
+                definition: "Το πρώτο στάδιο της στερεοποίησης, όπου σχηματίζονται οι πρώτοι σταθεροί μικροί κρύσταλλοι (πυρήνες) από το τήγμα.",
+                quiz: {
+                    q: "Τι είναι η πυρηνοποίηση κατά τη στερεοποίηση ενός μετάλλου;",
+                    options: [
+                        "Η τήξη του μετάλλου.",
+                        "Ο σχηματισμός των πρώτων σταθερών κρυσταλλικών πυρήνων.",
+                        "Η διάβρωση του μετάλλου.",
+                        "Η ανάμειξη δύο μετάλλων."
+                    ],
+                    correct: 1,
+                    explanation: "Είναι το αρχικό στάδιο όπου άτομα οργανώνονται σε μικροσκοπικές ομάδες που θα γίνουν οι κόκκοι."
+                }
+            },
+            {
+                id: 114,
+                chapter: "1.4",
+                term: "Ομογενοποίηση (Homogenization)",
+                definition: "Θερμική επεξεργασία (θέρμανση κάτω από το σημείο τήξης) για την εξάλειψη της δενδριτικής δομής και την εξίσωση της σύστασης.",
+                quiz: {
+                    q: "Πώς διορθώνεται η ανομοιογένεια (coring) σε ένα χυτό κράμα;",
+                    options: [
+                        "Με ταχεία ψύξη.",
+                        "Με ομογενοποίηση (θέρμανση για διάχυση των ατόμων).",
+                        "Με προσθήκη κεραμικού.",
+                        "Δεν διορθώνεται ποτέ."
+                    ],
+                    correct: 1,
+                    explanation: "Η θέρμανση δίνει ενέργεια στα άτομα να μετακινηθούν (διάχυση) και να κατανεμηθούν ομοιόμορφα."
+                }
+            },
+            {
+                id: 115,
+                chapter: "1.4",
+                term: "Χημικές Ενώσεις Μετάλλων",
+                definition: "Φάσεις όπου τα μέταλλα αντιδρούν χημικά σχηματίζοντας νέα ένωση με συγκεκριμένη αναλογία και διαφορετικές ιδιότητες από τα συστατικά.",
+                quiz: {
+                    q: "Πώς διαφέρουν οι χημικές ενώσεις μετάλλων από τα στερεά διαλύματα;",
+                    options: [
+                        "Δεν διαφέρουν.",
+                        "Οι ενώσεις έχουν συγκεκριμένη χημική αναλογία και διαφορετικές ιδιότητες.",
+                        "Οι ενώσεις είναι πάντα υγρά.",
+                        "Τα διαλύματα είναι πιο σκληρά."
+                    ],
+                    correct: 1,
+                    explanation: "Στις ενώσεις (π.χ. Ag3Sn) τα άτομα ενώνονται με συγκεκριμένη αναλογία, όχι τυχαία όπως στα διαλύματα."
+                }
+            },
+            {
+                id: 116,
+                chapter: "1.2",
+                term: "Δυνάμεις Έλξης και Άπωσης",
+                definition: "Η έλξη φέρνει τα άτομα κοντά, η άπωση τα κρατά μακριά. Η ισορροπία τους καθορίζει την απόσταση του δεσμού.",
+                quiz: {
+                    q: "Τι καθορίζει την τελική απόσταση μεταξύ δύο ατόμων σε έναν δεσμό;",
+                    options: [
+                        "Μόνο η βαρύτητα.",
+                        "Η ισορροπία μεταξύ δυνάμεων έλξης και άπωσης.",
+                        "Το μέγεθος των νετρονίων.",
+                        "Η θερμοκρασία του περιβάλλοντος μόνο."
+                    ],
+                    correct: 1,
+                    explanation: "Τα άτομα σταματούν να πλησιάζουν όταν η δύναμη έλξης ισούται με τη δύναμη άπωσης."
+                }
+            },
+            {
+                id: 117,
+                chapter: "1.4",
+                term: "Πολυκρυσταλλική Δομή",
+                definition: "Τα περισσότερα μέταλλα αποτελούνται από πολλούς κόκκους με διαφορετικό προσανατολισμό, όχι από έναν ενιαίο κρύσταλλο.",
+                quiz: {
+                    q: "Γιατί τα μέταλλα ονομάζονται πολυκρυσταλλικά υλικά;",
+                    options: [
+                        "Γιατί έχουν πολλούς πυρήνες σε κάθε άτομο.",
+                        "Γιατί αποτελούνται από πολλούς μικρούς κρυστάλλους (κόκκους) με διαφορετικό προσανατολισμό.",
+                        "Γιατί είναι διαφανή σαν κρύσταλλα.",
+                        "Γιατί περιέχουν πλαστικό."
+                    ],
+                    correct: 1,
+                    explanation: "Δεν είναι ένας μονοκόμματος κρύσταλλος, αλλά ένα παζλ από πολλούς μικρούς."
+                }
+            },
+            {
+                id: 118,
+                chapter: "1.2",
+                term: "Δεσμοί Υδρογόνου",
+                definition: "Ειδικός τύπος ισχυρού δευτερεύοντος δεσμού. Συμβαίνει μεταξύ υδρογόνου και ηλεκτραρνητικών ατόμων (O, N, F).",
+                quiz: {
+                    q: "Ποιος δεσμός είναι υπεύθυνος για τις υψηλές θερμοκρασίες βρασμού του νερού;",
+                    options: [
+                        "Ομοιοπολικός δεσμός.",
+                        "Δεσμός Υδρογόνου.",
+                        "Μεταλλικός δεσμός.",
+                        "Ιοντικός δεσμός."
+                    ],
+                    correct: 1,
+                    explanation: "Ο δεσμός υδρογόνου είναι πιο ισχυρός από τους απλούς van der Waals, κρατώντας τα μόρια του νερού ενωμένα."
+                }
+            },
+            {
+                id: 119,
+                chapter: "1.4",
+                term: "Εύρος Τήξης Κραμάτων",
+                definition: "Σε αντίθεση με τα καθαρά μέταλλα, τα κράματα (εκτός των ευτηκτικών) λιώνουν σε ένα εύρος θερμοκρασιών μεταξύ Solidus και Liquidus.",
+                quiz: {
+                    q: "Ποια είναι η διαφορά στην τήξη μεταξύ καθαρού μετάλλου και κράματος;",
+                    options: [
+                        "Το κράμα λιώνει σε σταθερή θερμοκρασία.",
+                        "Το καθαρό μέταλλο λιώνει σε εύρος, το κράμα σε σταθερή.",
+                        "Το καθαρό μέταλλο λιώνει σε σταθερή θερμοκρασία, το κράμα συνήθως σε εύρος.",
+                        "Δεν υπάρχει διαφορά."
+                    ],
+                    correct: 2,
+                    explanation: "Τα κράματα περνούν από μια φάση πολτού (υγρό + στερεό) πριν λιώσουν τελείως."
+                }
+            },
+            {
+                id: 120,
+                chapter: "1.3",
+                term: "Ιξώδες και Υαλοποίηση",
+                definition: "Κατά την ψύξη της υάλου, το ιξώδες αυξάνει τόσο γρήγορα που εμποδίζει τα άτομα να κρυσταλλωθούν.",
+                quiz: {
+                    q: "Ποιος ιδιότητα αυξάνεται δραματικά κατά την ψύξη ενός γυαλιού εμποδίζοντας την κρυστάλλωση;",
+                    options: [
+                        "Η διαφάνεια.",
+                        "Το ιξώδες (αντίσταση στη ροή).",
+                        "Η αγωγιμότητα.",
+                        "Ο μαγνητισμός."
+                    ],
+                    correct: 1,
+                    explanation: "Το υλικό γίνεται τόσο 'πηχτό' (υψηλό ιξώδες) που τα άτομα δεν μπορούν να κουνηθούν για να φτιάξουν κρύσταλλο."
+                }
+            }
+        ];
+
+        // --- STATE MANAGEMENT ---
+        let state = {
+            currentMode: 'home', // home, flashcards, quiz
+            fcIndex: 0,
+            fcFlipped: false,
+            fcFilteredData: [],
+            quizIndex: 0,
+            quizScore: 0,
+            quizFilteredData: [],
+            quizCompleted: false
+        };
+
+        // --- GENERAL FUNCTIONS ---
+        function switchAppMode(mode) {
+            // Hide all views
+            document.getElementById('view-home').classList.add('hidden');
+            document.getElementById('view-flashcards').classList.add('hidden');
+            document.getElementById('view-quiz').classList.add('hidden');
+            
+            // Reset Mobile Menu if open
+            document.getElementById('mobileMenu').classList.add('hidden');
+
+            // Show selected view
+            document.getElementById(`view-${mode}`).classList.remove('hidden');
+            state.currentMode = mode;
+
+            if (mode === 'flashcards') initFlashcards();
+            if (mode === 'quiz') initQuiz();
+        }
+
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            menu.classList.toggle('hidden');
+        }
+
+        function filterData(chapterSelectId) {
+            const selected = document.getElementById(chapterSelectId).value;
+            if (selected === 'all') return allData;
+            return allData.filter(item => item.chapter === selected);
+        }
+
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+
+        // --- FLASHCARD LOGIC ---
+        function initFlashcards() {
+            state.fcFilteredData = filterData('chapterSelectFC');
+            state.fcIndex = 0;
+            state.fcFlipped = false;
+            renderFlashcard();
+        }
+
+        function renderFlashcard() {
+            const card = document.getElementById('flashcard-inner');
+            // Reset flip position without animation first to avoid glitch
+            card.style.transition = 'none';
+            card.classList.remove('is-flipped');
+            state.fcFlipped = false;
+            
+            setTimeout(() => {
+                card.style.transition = 'transform 0.6s';
+                const currentData = state.fcFilteredData[state.fcIndex];
+                
+                // Update text
+                document.getElementById('fc-category').innerText = `ΚΕΦΑΛΑΙΟ ${currentData.chapter}`;
+                document.getElementById('fc-front-text').innerText = currentData.term;
+                document.getElementById('fc-back-text').innerText = currentData.definition;
+                
+                // Update counters
+                document.getElementById('fc-current').innerText = state.fcIndex + 1;
+                document.getElementById('fc-total').innerText = state.fcFilteredData.length;
+                
+                // Update progress bar
+                const percent = ((state.fcIndex + 1) / state.fcFilteredData.length) * 100;
+                document.getElementById('fc-progress').style.width = `${percent}%`;
+            }, 50);
+        }
+
+        function flipCard() {
+            const card = document.getElementById('flashcard-inner');
+            card.classList.toggle('is-flipped');
+            state.fcFlipped = !state.fcFlipped;
+        }
+
+        function nextCard() {
+            if (state.fcIndex < state.fcFilteredData.length - 1) {
+                state.fcIndex++;
+                renderFlashcard();
+            } else {
+                // Loop back to start or alert? Let's loop.
+                state.fcIndex = 0;
+                renderFlashcard();
+            }
+        }
+
+        function prevCard() {
+            if (state.fcIndex > 0) {
+                state.fcIndex--;
+                renderFlashcard();
+            }
+        }
+
+        // --- QUIZ LOGIC ---
+        function initQuiz() {
+            // Get data and shuffle Questions
+            let data = filterData('chapterSelectQuiz');
+            state.quizFilteredData = shuffleArray([...data]); // Clone and shuffle
+            state.quizIndex = 0;
+            state.quizScore = 0;
+            state.quizCompleted = false;
+
+            // Reset UI
+            document.getElementById('quiz-result').classList.add('hidden');
+            document.getElementById('quiz-container').classList.remove('hidden');
+            updateQuizUI();
+        }
+
+        function updateQuizUI() {
+            const currentQ = state.quizFilteredData[state.quizIndex];
+            
+            // Text Content
+            document.getElementById('quiz-category').innerText = `ΚΕΦ ${currentQ.chapter}`;
+            document.getElementById('quiz-question').innerText = currentQ.quiz.q;
+            
+            // Score Board
+            document.getElementById('quiz-score').innerText = state.quizScore;
+            document.getElementById('quiz-current').innerText = state.quizIndex + 1;
+            document.getElementById('quiz-total').innerText = state.quizFilteredData.length;
+
+            // Options generation
+            const optionsContainer = document.getElementById('quiz-options');
+            optionsContainer.innerHTML = '';
+            document.getElementById('quiz-feedback').classList.add('hidden'); // Hide feedback
+
+            // Create buttons
+            currentQ.quiz.options.forEach((opt, index) => {
+                const btn = document.createElement('button');
+                btn.className = "w-full text-left p-4 rounded border border-gray-200 hover:bg-teal-50 hover:border-teal-300 transition flex items-center";
+                btn.innerHTML = `<span class="w-8 h-8 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center mr-3 font-bold text-sm">${String.fromCharCode(65 + index)}</span> ${opt}`;
+                btn.onclick = () => checkAnswer(index, btn);
+                optionsContainer.appendChild(btn);
+            });
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            // Disable all buttons
+            const allBtns = document.querySelectorAll('#quiz-options button');
+            allBtns.forEach(b => b.disabled = true);
+
+            const currentQ = state.quizFilteredData[state.quizIndex];
+            const isCorrect = selectedIndex === currentQ.quiz.correct;
+
+            // Styling
+            if (isCorrect) {
+                btnElement.classList.remove('border-gray-200', 'hover:bg-teal-50');
+                btnElement.classList.add('bg-green-100', 'border-green-500', 'text-green-800');
+                btnElement.querySelector('span').classList.add('bg-green-500', 'text-white');
+                state.quizScore++;
+                document.getElementById('quiz-score').innerText = state.quizScore;
+                
+                showFeedback(true, "Σωστό!", currentQ.quiz.explanation);
+            } else {
+                btnElement.classList.remove('border-gray-200', 'hover:bg-teal-50');
+                btnElement.classList.add('bg-red-100', 'border-red-500', 'text-red-800');
+                btnElement.querySelector('span').classList.add('bg-red-500', 'text-white');
+                
+                // Highlight correct answer
+                const correctBtn = allBtns[currentQ.quiz.correct];
+                correctBtn.classList.add('bg-green-50', 'border-green-500');
+                
+                showFeedback(false, "Λάθος...", currentQ.quiz.explanation);
+            }
+        }
+
+        function showFeedback(isSuccess, title, text) {
+            const fbBox = document.getElementById('quiz-feedback');
+            const fbTitle = document.getElementById('feedback-title');
+            const fbText = document.getElementById('feedback-text');
+
+            fbBox.classList.remove('hidden');
+            fbBox.className = `mt-6 p-4 rounded-lg border-l-4 ${isSuccess ? 'bg-green-50 border-green-500 text-green-800' : 'bg-red-50 border-red-500 text-red-800'}`;
+            
+            fbTitle.innerText = title;
+            fbText.innerText = text;
+        }
+
+        function nextQuestion() {
+            if (state.quizIndex < state.quizFilteredData.length - 1) {
+                state.quizIndex++;
+                updateQuizUI();
+            } else {
+                showQuizResult();
+            }
+        }
+
+        function showQuizResult() {
+            document.getElementById('quiz-container').classList.add('hidden');
+            const resultDiv = document.getElementById('quiz-result');
+            resultDiv.classList.remove('hidden');
+            
+            document.getElementById('final-score').innerText = `${state.quizScore} / ${state.quizFilteredData.length}`;
+        }
+    </script>
+</body>
+</html>
