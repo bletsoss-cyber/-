@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Οδοντιατρικά Υλικά: Σύγκριση & Quiz</title>
+    <style>
+        :root {
+            --primary: #2c3e50;
+            --accent: #3498db;
+            --light: #ecf0f1;
+            --success: #27ae60;
+            --error: #c0392b;
+        }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; line-height: 1.6; margin: 0; padding: 20px; background-color: #f4f4f9; color: #333; }
+        h1, h2 { text-align: center; color: var(--primary); }
+        
+        /* Navigation Tabs */
+        .nav-tabs { display: flex; justify-content: center; margin-bottom: 20px; gap: 10px; }
+        .nav-btn { padding: 10px 20px; background: var(--primary); color: white; border: none; cursor: pointer; border-radius: 5px; font-size: 1.1em; transition: 0.3s; }
+        .nav-btn:hover, .nav-btn.active { background: var(--accent); }
+
+        /* Sections */
+        .section { display: none; background: white; padding: 20px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .section.active { display: block; }
+
+        /* Table Styling */
+        .table-container { overflow-x: auto; }
+        table { width: 100%; border-collapse: collapse; min-width: 800px; }
+        th, td { padding: 12px; border: 1px solid #ddd; text-align: left; font-size: 0.9em; }
+        th { background-color: var(--primary); color: white; position: sticky; top: 0; }
+        tr:nth-child(even) { background-color: #f9f9f9; }
+        tr:hover { background-color: #f1f1f1; }
+        .highlight-num { font-weight: bold; color: var(--error); }
+
+        /* Quiz Styling */
+        .quiz-container { max-width: 800px; margin: 0 auto; }
+        .question-card { margin-bottom: 20px; padding: 15px; border-left: 5px solid var(--accent); background: #fafafa; }
+        .question-text { font-weight: bold; margin-bottom: 10px; font-size: 1.05em; }
+        .options label { display: block; margin: 5px 0; cursor: pointer; padding: 5px; border-radius: 4px; transition: background 0.2s; }
+        .options label:hover { background: #e8e8e8; }
+        .options input { margin-right: 10px; }
+        
+        /* Quiz Feedback */
+        .correct-answer { background-color: #d4edda !important; color: #155724; border: 1px solid #c3e6cb; }
+        .wrong-answer { background-color: #f8d7da !important; color: #721c24; border: 1px solid #f5c6cb; }
+        .score-box { text-align: center; font-size: 1.5em; margin-top: 20px; padding: 20px; background: var(--primary); color: white; border-radius: 8px; display: none; }
+        
+        .action-btn { display: block; width: 100%; padding: 15px; background: var(--success); color: white; border: none; font-size: 1.2em; border-radius: 5px; cursor: pointer; margin-top: 20px; }
+        .action-btn:hover { background-color: #219150; }
+    </style>
+</head>
+<body>
+
+    <h1>Εργαλείο Μελέτης Οδοντιατρικών Υλικών</h1>
+
+    <div class="nav-tabs">
+        <button class="nav-btn active" onclick="switchTab('table-view')">Συγκριτικός Πίνακας</button>
+        <button class="nav-btn" onclick="switchTab('quiz-view')">Hardcore Quiz (25 Ερ.)</button>
+    </div>
+
+    <div id="table-view" class="section active">
+        <h2>Αναλυτική Σύγκριση Ιδιοτήτων & Σύνθεσης</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Χαρακτηριστικό</th>
+                        <th>Σύνθετο (Compo)</th>
+                        <th>Πάστα Ψευδαργύρου-Ευγενόλης (ZOE)</th>
+                        <th>Γύψος Αποτύπωσης</th>
+                        <th>Άγαρ (Υδροκολλοειδές)</th>
+                        <th>Αλγινικό (Υδροκολλοειδές)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td><strong>Τύπος & Μηχανισμός</strong></td>
+                        <td>Θερμοπλαστικό (Φυσική ψύξη)</td>
+                        <td>Άκαμπτο (Χημική: Χηλίωση)</td>
+                        <td>Άκαμπτο (Χημική: Κρυστάλλωση)</td>
+                        <td>Ελαστικό Αντιστρεπτό (Φυσική: Sol-Gel)</td>
+                        <td>Ελαστικό Μη Αντιστρεπτό (Χημική: Διασταύρωση)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Κρίσιμες Θερμοκρασίες</strong></td>
+                        <td>Tg: <span class="highlight-num">55-60°C</span> (Μαλακώνει)</td>
+                        <td>Επιτάχυνση πήξης με θερμότητα</td>
+                        <td>Εξώθερμη αντίδραση</td>
+                        <td>Ρευστοποίηση: <span class="highlight-num">71-100°C</span><br>Πήξη: <span class="highlight-num">30-50°C</span></td>
+                        <td>Νερό ανάμιξης: <span class="highlight-num">18-24°C</span> (ιδανικά)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Βασικά Συστατικά</strong></td>
+                        <td>Ρητίνες, Κεριά, Γουταπέρκα, Τάλκης</td>
+                        <td>Βάση: ZnO<br>Ενεργοποιητής: Ευγενόλη (12-15%), Ρητίνη</td>
+                        <td>Ημιένυδρο CaSO₄ + K₂SO₄ + Βόρακας</td>
+                        <td>Νερό (<span class="highlight-num">85%</span>), Άγαρ (12-15%), Βόρακας, Θειικά άλατα</td>
+                        <td>Αλγινικό Νάτριο (18%), Διένυδρο CaSO₄ (14%), Na₃PO₄ (2%)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ρόλος Προσθέτων</strong></td>
+                        <td>Τάλκης: Ενίσχυση ακαμψίας</td>
+                        <td>CaCl₂/Νερό: Επιταχυντές<br>Φυτικά έλαια: Πλαστικοποιητές</td>
+                        <td>K₂SO₄: Μειώνει διαστολή<br>Βόρακας: Επιβραδυντής</td>
+                        <td>Βόρακας: Αντοχή γέλης<br>Θειικό Κάλιο: Επιτάχυνση γύψου</td>
+                        <td>Φωσφορικό Νάτριο (Na₃PO₄): Επιβραδυντής<br>Γη Διατόμων: Ενισχυτικό</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Συστολή & Σταθερότητα</strong></td>
+                        <td>Μεγάλη <span class="highlight-num">Θερμική</span> Συστολή</td>
+                        <td>Ελάχιστη Συστολή (<span class="highlight-num">0.1%</span>)</td>
+                        <td>Διαστολή Πήξης (ελέγχεται χημικά)</td>
+                        <td>Ευαίσθητο σε Εξίδρωση & Απορρόφηση</td>
+                        <td>Εξίδρωση (Συστολή) & Απορρόφηση (Διόγκωση)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Χρόνος Χύτευσης</strong></td>
+                        <td><span class="highlight-num">&lt; 1 ώρα</span> (Τάσεις)</td>
+                        <td>Δεν βιάζει (σταθερό)</td>
+                        <td>Άμεσα (με διαχωριστικό)</td>
+                        <td>Άμεσα (άμεση συστολή)</td>
+                        <td><span class="highlight-num">10-15 λεπτά</span> (το πολύ 1 ώρα σε 100% υγρασία)</td>
+                    </tr>
+                    <tr>
+                        <td><strong>Ιξώδες / Ιστοί</strong></td>
+                        <td>Πολύ Υψηλό (Συμπιεστικό)</td>
+                        <td>Χαμηλό (Βλεννογονοστατικό)</td>
+                        <td>Πολύ Χαμηλό (Κίνδυνος ροής)</td>
+                        <td>Ρευστό (Εξαιρετική λεπτομέρεια)</td>
+                        <td>Ιξωδοελαστικό (Υποσκαφές με "snap")</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <div id="quiz-view" class="section">
+        <h2>Hardcore Quiz Γνώσεων (25 Ερωτήσεις)</h2>
+        <p>Επίλεξε τη σωστή απάντηση. Προσοχή στις λεπτομέρειες!</p>
+        
+        <form id="quiz-form">
+            <div id="questions-container"></div>
+            <button type="button" class="action-btn" onclick="submitQuiz()">Υποβολή Απαντήσεων</button>
+        </form>
+
+        <div id="result-box" class="score-box"></div>
+    </div>
+
+    <script>
+        // Data for Quiz
+        const quizData = [
+            { q: "Ποια είναι η Θερμοκρασία Υαλώδους Μετάπτωσης (Tg) του σύνθετου αποτυπωτικού υλικού;", options: ["37-40°C", "45-50°C", "55-60°C", "70-80°C"], a: 2 },
+            { q: "Ποιο συστατικό προστίθεται στον γύψο αποτύπωσης για τη μείωση της διαστολής πήξης;", options: ["Βόρακας", "Θειικό Κάλιο", "Χλωριούχο Νάτριο", "Άμυλο"], a: 1 },
+            { q: "Ποιος είναι ο ρόλος του Φωσφορικού Νατρίου (Na3PO4) στο αλγινικό;", options: ["Επιταχυντής αντίδρασης", "Επιβραδυντής (αντιδρά πρώτο με το ασβέστιο)", "Ενισχυτικό γέλης", "Ρυθμιστής pH"], a: 1 },
+            { q: "Τι ποσοστό νερού περιέχει περίπου η γέλη του Άγαρ;", options: ["50%", "65%", "85%", "95%"], a: 2 },
+            { q: "Ποιο φαινόμενο ευθύνεται για τη συρρίκνωση των υδροκολλοειδών όταν αφήνονται στον αέρα;", options: ["Απορρόφηση (Imbibition)", "Εξίδρωση (Syneresis)", "Πολυμερισμός", "Κρυστάλλωση"], a: 1 },
+            { q: "Ποια είναι η χημική φύση της αντίδρασης πήξης της πάστας ΖΟΕ;", options: ["Πολυμερισμός προσθήκης", "Οξειδοαναγωγή", "Χηλίωση", "Κρυστάλλωση"], a: 2 },
+            { q: "Ποιο υλικό έχει τη μικρότερη συστολή πήξης (περίπου 0.1%);", options: ["Αλγινικό", "Πολυσουλφίδια", "Πάστα Οξειδίου Ψευδαργύρου-Ευγενόλης", "Σύνθετο (Compo)"], a: 2 },
+            { q: "Σε ποια θερμοκρασία γίνεται η ρευστοποίηση (liquefaction) του Άγαρ;", options: ["37-45°C", "55-60°C", "71-100°C", "120°C"], a: 2 },
+            { q: "Ποιο είναι το 'αντιδραστήριο' (reactor) που παρέχει τα ιόντα ασβεστίου στο αλγινικό;", options: ["Αλγινικό Νάτριο", "Διένυδρο Θειικό Ασβέστιο", "Φωσφορικό Νάτριο", "Θειικό Κάλιο"], a: 1 },
+            { q: "Γιατί το Compo πρέπει να χυθεί εντός 1 ώρας;", options: ["Λόγω εξάτμισης αλκοόλης", "Λόγω απορρόφησης υγρασίας", "Λόγω απελευθέρωσης εσωτερικών τάσεων", "Λόγω συνεχιζόμενου πολυμερισμού"], a: 2 },
+            { q: "Ποιο υλικό απαιτεί τη χρήση διαχωριστικού μέσου πριν τη χύτευση του γύψου;", options: ["Αλγινικό", "Άγαρ", "Γύψος Αποτύπωσης", "ΖΟΕ"], a: 2 },
+            { q: "Ποιο συστατικό λειτουργεί ως επιβραδυντής στον γύψο αποτύπωσης;", options: ["Θειικό Κάλιο", "Βόρακας", "Χλωριούχο Νάτριο", "Γουταπέρκα"], a: 1 },
+            { q: "Τι προκαλεί η παρουσία νερού ή υψηλής υγρασίας στην πήξη της πάστας ΖΟΕ;", options: ["Επιβραδύνει την πήξη", "Επιταχύνει την πήξη", "Δεν την επηρεάζει", "Εμποδίζει πλήρως την πήξη"], a: 1 },
+            { q: "Ποιο είναι το κύριο μειονέκτημα της Ευγενόλης;", options: ["Υψηλή συστολή", "Δημιουργία φυσαλίδων", "Αίσθημα καύσου/ερεθισμός", "Πολύ γρήγορη πήξη"], a: 2 },
+            { q: "Ποια είναι η συνιστώμενη μέγιστη χρονική διάρκεια για τη χύτευση του αλγινικού;", options: ["1 ώρα", "10-15 λεπτά", "24 ώρες", "Δεν υπάρχει περιορισμός"], a: 1 },
+            { q: "Ποιο υλικό χρησιμοποιείται κυρίως για αρχικά αποτυπώματα σε νωδούς λόγω του ότι είναι βλεννογόνιο-συμπιεστικό;", options: ["Αλγινικό", "Γύψος", "Σύνθετο (Compo)", "Άγαρ"], a: 2 },
+            { q: "Ποιο από τα παρακάτω υλικά είναι Θερμοπλαστικό;", options: ["ΖΟΕ", "Αλγινικό", "Σύνθετο (Compo)", "Γύψος"], a: 2 },
+            { q: "Τι συμβαίνει στο αποτύπωμα αλγινικού αν τοποθετηθεί σε νερό (Imbibition);", options: ["Συρρικνώνεται", "Διογκώνεται", "Παραμένει σταθερό", "Διαλύεται"], a: 1 },
+            { q: "Ποιος είναι ο ρόλος του Βόρακα στη σύνθεση του Άγαρ;", options: ["Επιταχυντής", "Αυξάνει την αντοχή της γέλης", "Πλαστικοποιητής", "Χρωστική"], a: 1 },
+            { q: "Ποιο ελαστομερές παρουσιάζει τη μεγαλύτερη θερμική συστολή και συστολή πήξης;", options: ["Πολυαιθέρες", "Σιλικόνες Προσθήκης", "Πολυσουλφίδια", "Σιλικόνες Συμπύκνωσης"], a: 2 },
+            { q: "Ποιο συστατικό αποτελεί το 56% του αλγινικού και δρει ως ενισχυτικό (filler);", options: ["Γη Διατόμων", "Τάλκης", "Οξείδιο Ψευδαργύρου", "Θειικό Ασβέστιο"], a: 0 },
+            { q: "Γιατί προστίθεται Θειικό Κάλιο στο Άγαρ;", options: ["Για να αυξήσει τη ροή", "Για να επιταχύνει την πήξη του γύψου του εκμαγείου", "Για να μειώσει τη θερμοκρασία πήξης", "Για χρώμα"], a: 1 },
+            { q: "Σε ποια κατάσταση πρέπει να βρίσκονται τα ελαστομερή κατά τη χρήση (σε σχέση με το Tg);", options: ["Κάτω από το Tg", "Πάνω από το Tg", "Ακριβώς στο Tg", "Δεν σχετίζεται"], a: 1 },
+            { q: "Ποιο υλικό έχει πολύ χαμηλή θερμική αγωγιμότητα με αποτέλεσμα να κρυώνει ανισομερώς;", options: ["ΖΟΕ", "Σύνθετο (Compo)", "Αλγινικό", "Γύψος"], a: 1 },
+            { q: "Η μόνιμη παραμόρφωση του αλγινικού μειώνεται όταν η αφαίρεση γίνεται:", options: ["Αργά και προσεκτικά", "Με περιστροφικές κινήσεις", "Απότομα (snap removal)", "Μετά από 10 λεπτά"], a: 2 }
+        ];
+
+        // Function to Switch Tabs
+        function switchTab(tabId) {
+            document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+            document.querySelectorAll('.nav-btn').forEach(b => b.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            event.target.classList.add('active');
+        }
+
+        // Function to Render Quiz
+        function renderQuiz() {
+            const container = document.getElementById('questions-container');
+            container.innerHTML = '';
+            quizData.forEach((item, index) => {
+                let optionsHtml = '';
+                item.options.forEach((opt, optIndex) => {
+                    optionsHtml += `
+                        <label id="q${index}_opt${optIndex}">
+                            <input type="radio" name="q${index}" value="${optIndex}">
+                            ${opt}
+                        </label>
+                    `;
+                });
+                container.innerHTML += `
+                    <div class="question-card" id="card_${index}">
+                        <div class="question-text">${index + 1}. ${item.q}</div>
+                        <div class="options">${optionsHtml}</div>
+                    </div>
+                `;
+            });
+        }
+
+        // Function to Submit and Grade Quiz
+        function submitQuiz() {
+            let score = 0;
+            quizData.forEach((item, index) => {
+                const selected = document.querySelector(`input[name="q${index}"]:checked`);
+                const card = document.getElementById(`card_${index}`);
+                const labels = card.querySelectorAll('label');
+                
+                // Reset styles
+                labels.forEach(l => {
+                    l.classList.remove('correct-answer', 'wrong-answer');
+                });
+
+                if (selected) {
+                    const val = parseInt(selected.value);
+                    if (val === item.a) {
+                        score++;
+                        document.getElementById(`q${index}_opt${val}`).classList.add('correct-answer');
+                    } else {
+                        document.getElementById(`q${index}_opt${val}`).classList.add('wrong-answer');
+                        document.getElementById(`q${index}_opt${item.a}`).classList.add('correct-answer'); // Show correct
+                    }
+                } else {
+                    // Show correct answer even if not selected
+                     document.getElementById(`q${index}_opt${item.a}`).classList.add('correct-answer');
+                }
+            });
+
+            const resultBox = document.getElementById('result-box');
+            resultBox.style.display = 'block';
+            resultBox.innerHTML = `Σκορ: ${score} / ${quizData.length} (${Math.round((score/quizData.length)*100)}%)`;
+            
+            if(score === quizData.length) {
+                resultBox.style.backgroundColor = "#27ae60";
+                resultBox.innerHTML += "<br> Άριστα! Κατέχεις όλες τις λεπτομέρειες.";
+            } else if (score > 18) {
+                resultBox.style.backgroundColor = "#f39c12";
+                resultBox.innerHTML += "<br> Πολύ καλά! Λίγη προσοχή στις παγίδες.";
+            } else {
+                resultBox.style.backgroundColor = "#c0392b";
+                resultBox.innerHTML += "<br> Χρειάζεται επανάληψη στα νούμερα και τις συνθέσεις.";
+            }
+            
+            // Scroll to results
+            resultBox.scrollIntoView({behavior: "smooth"});
+        }
+
+        // Initialize
+        renderQuiz();
+    </script>
+
+</body>
+</html>
