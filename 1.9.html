@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κεφάλαιο 1.9: Αρχές Σύνδεσης/Συγκόλλησης - Οδοντιατρικά Υλικά</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f9f9f9;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            padding: 12px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:hover {background-color: #f1f1f1;}
+        
+        .highlight {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        .concept-col { font-weight: bold; color: #2980b9; width: 20%; }
+        .def-col { width: 45%; }
+        .details-col { width: 35%; background-color: #fffdf0; }
+
+        /* Notes Section */
+        .notes-box {
+            background-color: #e8f4f8;
+            padding: 20px;
+            border-radius: 8px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 30px;
+        }
+        .notes-box li { margin-bottom: 10px; }
+
+        /* Quiz Styles */
+        .quiz-container {
+            background-color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+        .question {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            background-color: #f8f9fa;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background-color: #e2e6ea;
+        }
+        .feedback {
+            margin-top: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            display: none;
+            font-size: 0.9em;
+        }
+        .correct {
+            background-color: #d4edda;
+            color: #155724;
+            border: 1px solid #c3e6cb;
+        }
+        .incorrect {
+            background-color: #f8d7da;
+            color: #721c24;
+            border: 1px solid #f5c6cb;
+        }
+        .btn-correct {
+            background-color: #28a745 !important;
+            color: white;
+            border-color: #28a745;
+        }
+        .btn-wrong {
+            background-color: #dc3545 !important;
+            color: white;
+            border-color: #dc3545;
+        }
+
+    </style>
+</head>
+<body>
+
+    <h1>Κεφάλαιο 1.9: Αρχές της Σύνδεσης/Συγκόλλησης</h1>
+    <p>Συνοπτικός πίνακας εννοιών και τεστ αυτοαξιολόγησης βάσει του βιβλίου.</p>
+
+    <h2>1. Πίνακας Βασικών Εννοιών</h2>
+    <table>
+        <thead>
+            <tr>
+                <th>Έννοια</th>
+                <th>Ορισμός / Λειτουργία</th>
+                <th>Κρίσιμες Λεπτομέρειες (SOS)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="concept-col">Συγκόλληση (Adhesion) vs Συνοχή (Cohesion)</td>
+                <td class="def-col"><strong>Συγκόλληση:</strong> Έλξη μεταξύ <em>διαφορετικών</em> υλικών.<br><strong>Συνοχή:</strong> Έλξη μεταξύ <em>ομοίων</em> μορίων εντός της ίδιας ουσίας.</td>
+                <td class="details-col">Για συγκόλληση, η απόσταση πρέπει να είναι <span class="highlight">< 0,0007 μm</span>.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Ικανότητα Διαβροχής (Wetting)</td>
+                <td class="def-col">Η ικανότητα του υγρού να απλώνεται πλήρως στο στερεό, εκτοπίζοντας τον αέρα.</td>
+                <td class="details-col">Μετριέται με τη <strong>Γωνία Επαφής</strong>. <br>Ιδανική γωνία = <span class="highlight">0 μοίρες</span> (τέλεια διαβροχή).</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Επιφανειακή Ενέργεια vs Τάση</td>
+                <td class="def-col">Το κριτήριο για να πετύχει η διαβροχή.</td>
+                <td class="details-col"><strong>Στερεό:</strong> Πρέπει να έχει <span class="highlight">ΥΨΗΛΗ</span> επιφανειακή ενέργεια (καθαρό).<br><strong>Υγρό:</strong> Πρέπει να έχει <span class="highlight">ΧΑΜΗΛΗ</span> επιφανειακή τάση.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Πολυ-τετρα-φθόριο-αιθυλένιο (PTFE/Teflon)</td>
+                <td class="def-col">Παράδειγμα υλικού που ΔΕΝ διαβρέχεται εύκολα.</td>
+                <td class="details-col">Έχει πολύ <span class="highlight">χαμηλή</span> επιφανειακή ενέργεια. Το νερό σχηματίζει σταγόνες πάνω του.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Μηχανική Σύνδεση</td>
+                <td class="def-col">Το υγρό εισχωρεί σε πόρους/ανωμαλίες και "κλειδώνει" (micromechanical locking).</td>
+                <td class="details-col">Απαιτεί αδρή επιφάνεια. Παράδειγμα: <span class="highlight">Αδροποίηση με οξύ</span>.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Φυσική Σύνδεση</td>
+                <td class="def-col">Δευτερογενείς δυνάμεις (Van der Waals, δίπολα).</td>
+                <td class="details-col">Ασθενής, <span class="highlight">ταχύς</span> και αναστρέψιμος δεσμός. Εύκολα σπάει από θερμική ενέργεια.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Χημική Σύνδεση</td>
+                <td class="def-col">Ισχυροί δεσμοί (Ιοντικοί, Ομοιοπολικοί) με ανταλλαγή ηλεκτρονίων.</td>
+                <td class="details-col">Παράδειγμα: Ισοκυανικά με υδροξυλικές ομάδες. Είναι ο <span class="highlight">ισχυρότερος</span> τύπος.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Διάχυση (Diffusion)</td>
+                <td class="def-col">Μοριακή περιπλοκή. Το υγρό διεισδύει και απορροφάται από το υπόστρωμα.</td>
+                <td class="details-col">Δημιουργεί "ζώνη ανάμειξης" (diffuse layer).</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Συζευκτικοί Παράγοντες (Coupling Agents)</td>
+                <td class="def-col">Ενώνουν δύο <strong>ανόμοια</strong> υλικά (Ανόργανο + Οργανικό).</td>
+                <td class="details-col">Κύριος εκπρόσωπος: <span class="highlight">Σιλάνια (Silanes)</span>.</td>
+            </tr>
+            <tr>
+                <td class="concept-col">Λειτουργία Σιλανίων</td>
+                <td class="def-col">Μόριο με δύο άκρα: Ένα για το γυαλί (ανόργανο) και ένα για τη ρητίνη (οργανικό).</td>
+                <td class="details-col">Απαιτείται <span class="highlight">νερό</span> για την <strong>υδρόλυση</strong> και ενεργοποίησή τους πριν τη χρήση.</td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Σημειώσεις "SOS" για Πολλαπλής Επιλογής</h2>
+    <div class="notes-box">
+        <ul>
+            <li><strong>Προσοχή στα Μεγέθη:</strong>
+                <ul>
+                    <li>Απόσταση για χημικό δεσμό: <strong>0,0007 μm</strong> (0,7 nm).</li>
+                    <li>Θεωρητική αντοχή δεσμού: <strong>~200 MPa</strong> (αλλά η πραγματική είναι πολύ μικρότερη).</li>
+                    <li>Ενέργεια φυσικών δεσμών: <strong>< 0,2 eV</strong> (πολύ μικρή).</li>
+                </ul>
+            </li>
+            <li><strong>Ο Κανόνας της Διαβροχής:</strong> Πάντα θυμήσου: Το Στερεό θέλουμε να είναι "δυνατό" (Υψηλή Ενέργεια) και το Υγρό "χαλαρό" (Χαμηλή Τάση).</li>
+            <li><strong>Ιξώδες:</strong> Χαμηλό ιξώδες = Καλύτερη ροή = Καλύτερη διείσδυση.</li>
+            <li><strong>Συζευκτικοί Παράγοντες:</strong>
+                <ul>
+                    <li>Τύπος: <strong>R-Si-X3</strong>.</li>
+                    <li>Το νερό είναι <em>φίλος</em> πριν τη σύνδεση (υδρόλυση σιλανίου) αλλά <em>εχθρός</em> μετά (υδρόλυση δεσμού).</li>
+                </ul>
+            </li>
+            <li><strong>Ατέλειες:</strong> Οι φυσαλίδες αέρα και οι ακαθαρσίες μειώνουν δραματικά την αντοχή γιατί λειτουργούν ως σημεία συγκέντρωσης τάσεων.</li>
+        </ul>
+    </div>
+
+    <h2>3. Τεστ Αυτοαξιολόγησης (20 Ερωτήσεις)</h2>
+    <div id="quiz-area">
+        </div>
+
+    <script>
+        const questions = [
+            {
+                q: "Ποια είναι η ιδανική γωνία επαφής (contact angle) για τέλεια διαβροχή;",
+                options: ["90 μοίρες", "0 μοίρες", "45 μοίρες", "180 μοίρες"],
+                correct: 1,
+                explanation: "Σύμφωνα με το βιβλίο, γωνία 0° σημαίνει τέλεια διαβροχή όπου το υγρό απλώνεται πλήρως."
+            },
+            {
+                q: "Για να επιτευχθεί καλή διαβροχή, τι χαρακτηριστικά πρέπει να έχουν οι επιφάνειες;",
+                options: [
+                    "Χαμηλή επιφανειακή ενέργεια στερεού - Υψηλή επιφανειακή τάση υγρού",
+                    "Υψηλή επιφανειακή ενέργεια στερεού - Υψηλή επιφανειακή τάση υγρού",
+                    "Υψηλή επιφανειακή ενέργεια στερεού - Χαμηλή επιφανειακή τάση υγρού",
+                    "Χαμηλή επιφανειακή ενέργεια στερεού - Χαμηλή επιφανειακή τάση υγρού"
+                ],
+                correct: 2,
+                explanation: "Ο χρυσός κανόνας (σελ. 75): Το στερεό πρέπει να έχει υψηλή ενέργεια για να έλκει το υγρό, και το υγρό χαμηλή τάση για να απλώνεται εύκολα."
+            },
+            {
+                q: "Ποια είναι η διαφορά μεταξύ Συγκόλλησης (Adhesion) και Συνοχής (Cohesion);",
+                options: [
+                    "Η συγκόλληση είναι μεταξύ όμοιων μορίων, η συνοχή μεταξύ διαφορετικών.",
+                    "Η συγκόλληση είναι μεταξύ διαφορετικών υλικών, η συνοχή μεταξύ όμοιων μορίων.",
+                    "Δεν υπάρχει διαφορά, είναι συνώνυμα.",
+                    "Η συνοχή αφορά μόνο τα υγρά."
+                ],
+                correct: 1,
+                explanation: "Η συνοχή (cohesion) είναι η έλξη εντός της ουσίας (όμοια μόρια), ενώ η συγκόλληση (adhesion) ενώνει διαφορετικά υλικά."
+            },
+            {
+                q: "Ποια είναι η μέγιστη απόσταση μεταξύ δύο υλικών για να θεωρηθεί ότι υπάρχει συγκόλληση;",
+                options: ["1 mm", "0,1 mm", "0,0007 μm", "0,5 cm"],
+                correct: 2,
+                explanation: "Το βιβλίο (σελ. 74) αναφέρει ότι η απόσταση πρέπει να είναι μικρότερη από 0,0007 μm για να υπάρξει αλληλεπίδραση."
+            },
+            {
+                q: "Το PTFE (Teflon) είναι παράδειγμα υλικού με:",
+                options: [
+                    "Πολύ υψηλή επιφανειακή ενέργεια",
+                    "Πολύ χαμηλή επιφανειακή ενέργεια",
+                    "Μηδενική επιφανειακή τάση",
+                    "Ικανότητα σχηματισμού ιοντικών δεσμών"
+                ],
+                correct: 1,
+                explanation: "Το PTFE έχει χαμηλή επιφανειακή ενέργεια, γι' αυτό τα υγρά δεν απλώνονται πάνω του αλλά κάνουν σταγόνες."
+            },
+            {
+                q: "Τι είναι ο 'Συντελεστής Διείσδυσης' (PC);",
+                options: [
+                    "Μέτρο της σκληρότητας του υλικού",
+                    "Μέτρο της ικανότητας του υγρού να γεμίζει ρωγμές και πόρους",
+                    "Ο χρόνος που χρειάζεται για να στεγνώσει η κόλλα",
+                    "Η θερμοκρασία τήξης του συγκολλητικού"
+                ],
+                correct: 1,
+                explanation: "Το PC (Penetration Coefficient) μετρά την ικανότητα ενός υγρού να εισχωρεί σε τριχοειδή κενά."
+            },
+            {
+                q: "Ποιος τύπος δεσμού θεωρείται ο ισχυρότερος;",
+                options: ["Φυσικός δεσμός", "Μηχανική συγκράτηση", "Χημικός δεσμός", "Δεσμός Van der Waals"],
+                correct: 2,
+                explanation: "Οι χημικοί δεσμοί (ομοιοπολικοί, ιοντικοί) είναι πολύ ισχυρότεροι από τους φυσικούς ή μηχανικούς."
+            },
+            {
+                q: "Τι χαρακτηρίζει τους φυσικούς δεσμούς (Physical bonding);",
+                options: [
+                    "Είναι μόνιμοι και μη αναστρέψιμοι",
+                    "Βασίζονται σε ανταλλαγή ηλεκτρονίων",
+                    "Είναι ταχείς, αναστρέψιμοι και σχετικά ασθενείς",
+                    "Απαιτούν υψηλές θερμοκρασίες"
+                ],
+                correct: 2,
+                explanation: "Οι φυσικοί δεσμοί (π.χ. Van der Waals) είναι ασθενείς, γίνονται γρήγορα και σπάνε εύκολα (αναστρέψιμοι)."
+            },
+            {
+                q: "Ποια είναι η θεωρητική αντοχή ενός δεσμού σε σύγκριση με την πραγματική;",
+                options: [
+                    "Η πραγματική είναι ίση με τη θεωρητική",
+                    "Η πραγματική είναι μεγαλύτερη",
+                    "Η πραγματική είναι πολύ μικρότερη (π.χ. 200MPa θεωρητική vs χαμηλότερη πραγματική)",
+                    "Δεν μπορούν να υπολογιστούν"
+                ],
+                correct: 2,
+                explanation: "Λόγω ατελειών (φυσαλίδες, ρωγμές), η πραγματική αντοχή είναι πάντα τάξεις μεγέθους μικρότερη από τη θεωρητική."
+            },
+            {
+                q: "Τι είναι οι 'Συζευκτικοί Παράγοντες' (Coupling Agents);",
+                options: [
+                    "Ουσίες που καθαρίζουν την επιφάνεια",
+                    "Ουσίες που ενώνουν ανόμοια υλικά (π.χ. ανόργανο με οργανικό)",
+                    "Εργαλεία για την λείανση των δοντιών",
+                    "Είδος κόλλας για μέταλλα μόνο"
+                ],
+                correct: 1,
+                explanation: "Χρησιμοποιούνται για να ενώσουν υλικά που δεν έχουν χημική συγγένεια, όπως η ύαλος με τη ρητίνη."
+            },
+            {
+                q: "Ποια ουσία χρησιμοποιείται κυρίως ως συζευκτικός παράγοντας στην οδοντιατρική;",
+                options: ["Αιθανόλη", "Φωσφορικό οξύ", "Σιλάνια (Silanes)", "Υποχλωριώδες νάτριο"],
+                correct: 2,
+                explanation: "Τα σιλάνια είναι οι κύριοι συζευκτικοί παράγοντες για σύνθετες ρητίνες και πορσελάνες."
+            },
+            {
+                q: "Ποιος είναι ο ρόλος του νερού στη χρήση των σιλανίων;",
+                options: [
+                    "Το νερό πρέπει να αποφεύγεται τελείως",
+                    "Το νερό προκαλεί υδρόλυση και ενεργοποίηση του σιλανίου",
+                    "Το νερό χρησιμεύει μόνο για ξέπλυμα",
+                    "Το νερό αυξάνει το ιξώδες"
+                ],
+                correct: 1,
+                explanation: "Το σιλάνιο πρέπει να υδρολυθεί (αντίδραση με νερό) για να σχηματίσει σιλανόλες και να μπορέσει να αντιδράσει."
+            },
+            {
+                q: "Τι σημαίνει 'Σύνδεση μέσω διάχυσης' (Diffusion);",
+                options: [
+                    "Απλή επαφή επιφανειών",
+                    "Μοριακή περιπλοκή και δημιουργία ζώνης ανάμειξης",
+                    "Κλείδωμα σε μακροσκοπικές τρύπες",
+                    "Ηλεκτροστατική έλξη"
+                ],
+                correct: 1,
+                explanation: "Η διάχυση περιλαμβάνει την κίνηση μορίων μέσα στο υπόστρωμα και το 'μπλέξιμο' των αλυσίδων τους."
+            },
+            {
+                q: "Στο μόριο του σιλανίου R-Si-X3, με τι αντιδρά η ομάδα X;",
+                options: [
+                    "Με την οργανική ρητίνη",
+                    "Με τον αέρα",
+                    "Με το ανόργανο υπόστρωμα (π.χ. γυαλί)",
+                    "Με καμία επιφάνεια"
+                ],
+                correct: 2,
+                explanation: "Η ομάδα X (υδρολυόμενη) αντιδρά με το ανόργανο υλικό (γυαλί/πορσελάνη), ενώ η R με την οργανική ρητίνη."
+            },
+            {
+                q: "Ποιο από τα παρακάτω βοηθάει στην αύξηση της μηχανικής συγκράτησης;",
+                options: [
+                    "Η λεία επιφάνεια",
+                    "Η δημιουργία μικροσκοπικών ανωμαλιών/πόρων (αδροποίηση)",
+                    "Η χρήση παχύρρευστου υγρού",
+                    "Η αφαίρεση του συγκολλητικού παράγοντα"
+                ],
+                correct: 1,
+                explanation: "Η αδροποίηση δημιουργεί μικρο-υποσκαφές όπου το υγρό εισχωρεί και 'κλειδώνει' μηχανικά."
+            },
+            {
+                q: "Τι επίδραση έχει το υψηλό ιξώδες (viscosity) του συγκολλητικού;",
+                options: [
+                    "Βοηθάει στη ροή και τη διαβροχή",
+                    "Εμποδίζει την εξάπλωση και τη διείσδυση στις ρωγμές",
+                    "Αυξάνει την επιφανειακή ενέργεια του δοντιού",
+                    "Δεν παίζει κανένα ρόλο"
+                ],
+                correct: 1,
+                explanation: "Το υψηλό ιξώδες σημαίνει ότι το υγρό είναι παχύρρευστο και δυσκολεύεται να ρέει και να μπει στις μικρές σχισμές."
+            },
+            {
+                q: "Τι συμβαίνει αν εγκλωβιστεί αέρας στη μεσόφαση της συγκόλλησης;",
+                options: [
+                    "Αυξάνεται η αντοχή του δεσμού",
+                    "Δημιουργείται κενό που δεν επηρεάζει τη σύνδεση",
+                    "Λειτουργεί ως σημείο συγκέντρωσης τάσεων και προκαλεί αποτυχία",
+                    "Βοηθάει στον πολυμερισμό"
+                ],
+                correct: 2,
+                explanation: "Ο αέρας εμποδίζει την επαφή και, υπό πίεση, η τάση συγκεντρώνεται εκεί οδηγώντας σε σπάσιμο του δεσμού."
+            },
+            {
+                q: "Ποια είναι η ενέργεια των δευτερογενών δεσμών (Van der Waals);",
+                options: [
+                    "Περίπου 2,0 - 6,0 eV",
+                    "Μικρότερη από 0,2 eV",
+                    "Πάνω από 100 eV",
+                    "Είναι ίση με τους ομοιοπολικούς"
+                ],
+                correct: 1,
+                explanation: "Είναι πολύ ασθενείς δεσμοί, με ενέργεια κάτω από 0,2 eV (σε αντίθεση με τους πρωτογενείς που είναι 2-6 eV)."
+            },
+            {
+                q: "Γιατί είναι επιθυμητό το μικρό πάχος του συγκολλητικού στρώματος;",
+                options: [
+                    "Για να ξοδεύουμε λιγότερο υλικό",
+                    "Γιατί μειώνονται οι ατέλειες και η συστολή πολυμερισμού",
+                    "Για να φαίνεται πιο ωραίο το χρώμα",
+                    "Δεν είναι επιθυμητό, θέλουμε παχύ στρώμα"
+                ],
+                correct: 1,
+                explanation: "Το λεπτό στρώμα έχει λιγότερες πιθανότητες να περιέχει φυσαλίδες και παρουσιάζει μικρότερη συστολή κατά τη σκλήρυνση."
+            },
+            {
+                q: "Οι οργανικοί διαλύτες (π.χ. αιθανόλη) στα σιλάνια βοηθούν:",
+                options: [
+                    "Στη μείωση της διαβροχής",
+                    "Στη διάλυση του σιλανίου και την απομάκρυνση του νερού μέσω εξάτμισης",
+                    "Στη δημιουργία μηχανικού δεσμού",
+                    "Στην αύξηση του ιξώδους"
+                ],
+                correct: 1,
+                explanation: "Οι διαλύτες βοηθούν να διαλυθεί το σιλάνιο, να απλωθεί στην επιφάνεια και μετά εξατμίζονται παίρνοντας μαζί και την υγρασία."
+            }
+        ];
+
+        function loadQuiz() {
+            const quizArea = document.getElementById('quiz-area');
+            questions.forEach((item, index) => {
+                const questionDiv = document.createElement('div');
+                questionDiv.className = 'quiz-container';
+                
+                let optionsHtml = '';
+                item.options.forEach((opt, i) => {
+                    optionsHtml += `<div class="option-btn" onclick="checkAnswer(this, ${index}, ${i})">${opt}</div>`;
+                });
+
+                questionDiv.innerHTML = `
+                    <div class="question">${index + 1}. ${item.q}</div>
+                    <div class="options">${optionsHtml}</div>
+                    <div class="feedback" id="feedback-${index}"></div>
+                `;
+                quizArea.appendChild(questionDiv);
+            });
+        }
+
+        function checkAnswer(btn, questionIndex, selectedOption) {
+            const questionData = questions[questionIndex];
+            const feedbackDiv = document.getElementById(`feedback-${questionIndex}`);
+            const allOptions = btn.parentElement.children;
+
+            // Disable further clicks
+            for (let i = 0; i < allOptions.length; i++) {
+                allOptions[i].onclick = null;
+                allOptions[i].style.cursor = 'default';
+                if (i === questionData.correct) {
+                    allOptions[i].classList.add('btn-correct');
+                } else if (i === selectedOption) {
+                    allOptions[i].classList.add('btn-wrong');
+                }
+            }
+
+            feedbackDiv.style.display = 'block';
+            if (selectedOption === questionData.correct) {
+                feedbackDiv.className = 'feedback correct';
+                feedbackDiv.innerHTML = `<strong>Σωστά!</strong> ${questionData.explanation}`;
+            } else {
+                feedbackDiv.className = 'feedback incorrect';
+                feedbackDiv.innerHTML = `<strong>Λάθος.</strong> ${questionData.explanation}`;
+            }
+        }
+
+        // Initialize Quiz on load
+        window.onload = loadQuiz;
+    </script>
+
+</body>
+</html>
