@@ -1,0 +1,456 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Study Guide: Υλικά Συγκόλλησης (Κεφ. 3.8)</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-color: #3498db;
+            --success-color: #27ae60;
+            --error-color: #c0392b;
+            --bg-color: #f4f6f7;
+            --card-bg: #ffffff;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            background-color: var(--bg-color);
+            color: #333;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 40px;
+            background: var(--primary-color);
+            color: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-size: 2.2rem; }
+        h2 { color: var(--primary-color); border-bottom: 2px solid var(--accent-color); padding-bottom: 10px; margin-top: 40px; }
+        h3 { color: var(--accent-color); margin-top: 25px; }
+
+        /* Tables Styling */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: var(--card-bg);
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 12px 15px;
+            text-align: left;
+            border-bottom: 1px solid #ddd;
+        }
+
+        th {
+            background-color: var(--primary-color);
+            color: white;
+            font-weight: 600;
+        }
+
+        tr:hover { background-color: #f1f1f1; }
+        
+        .highlight {
+            font-weight: bold;
+            color: var(--error-color);
+        }
+
+        /* Quiz Styling */
+        .quiz-section {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            margin-top: 50px;
+        }
+
+        .question-card {
+            margin-bottom: 25px;
+            padding: 15px;
+            border: 1px solid #e0e0e0;
+            border-radius: 6px;
+        }
+
+        .question-text {
+            font-weight: 700;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--primary-color);
+        }
+
+        .options label {
+            display: block;
+            margin-bottom: 10px;
+            cursor: pointer;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 4px;
+            transition: background 0.2s;
+        }
+
+        .options label:hover { background: #e9ecef; }
+        
+        input[type="radio"] { margin-right: 10px; }
+
+        .feedback {
+            margin-top: 10px;
+            font-weight: bold;
+            display: none;
+            padding: 10px;
+            border-radius: 4px;
+        }
+        
+        .correct { background-color: #d4edda; color: #155724; }
+        .incorrect { background-color: #f8d7da; color: #721c24; }
+
+        .btn {
+            background-color: var(--accent-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: block;
+            width: 100%;
+            margin-top: 20px;
+            transition: background 0.3s;
+        }
+
+        .btn:hover { background-color: #2980b9; }
+
+        .score-box {
+            text-align: center;
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-top: 20px;
+            padding: 20px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 8px;
+            display: none;
+        }
+
+        .chem-formula { font-family: 'Courier New', monospace; background: #eee; padding: 2px 5px; border-radius: 3px; }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <header>
+        <h1>Cheat Sheet & Quiz: Υλικά Συγκόλλησης</h1>
+        <p>Κεφάλαιο 3.8 - Βασισμένο στις εικόνες του βιβλίου</p>
+    </header>
+
+    <section id="cheat-sheet">
+        <h2>1. Cheat Sheet: Αριθμοί & Φυσικές Ιδιότητες</h2>
+        <p>Τα παρακάτω δεδομένα προέρχονται από τον Πίνακα 3.8.2 και το κείμενο.</p>
+        
+        <table>
+            <thead>
+                <tr>
+                    <th>Ιδιότητα / Παράμετρος</th>
+                    <th>Τιμή / Λεπτομέρεια</th>
+                    <th>Σχόλια</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Ιδανικό πάχος φιλμ</td>
+                    <td><span class="highlight">&lt; 25 μm</span></td>
+                    <td>Για σωστή έδραση της αποκατάστασης.</td>
+                </tr>
+                <tr>
+                    <td>Διαλυτότητα στο νερό (1 ώρα)</td>
+                    <td>0,40% - 0,46%</td>
+                    <td>Για Υαλοϊονομερείς (GIC) τύπου Aqua-Cem / Ketac-Cem.</td>
+                </tr>
+                <tr>
+                    <td>Αντοχή στη Συμπίεση (24 ώρες)</td>
+                    <td>82 - 105 MPa</td>
+                    <td>Υψηλή αντοχή, αλλά χαμηλός εφελκυσμός.</td>
+                </tr>
+                <tr>
+                    <td>Αντοχή στον Εφελκυσμό</td>
+                    <td>5 - 7 MPa</td>
+                    <td>Πολύ χαμηλή (ψαθυρά υλικά).</td>
+                </tr>
+                <tr>
+                    <td>Μέτρο Ελαστικότητας Κονίας</td>
+                    <td>~12 GPa</td>
+                    <td>Παρόμοιο με αυτό της οδοντίνης.</td>
+                </tr>
+                <tr>
+                    <td>pH Αυτο-συγκολλητικών Ρητινών</td>
+                    <td>Έναρξη: ~2.0 &rarr; Τέλος: Ουδέτερο (7.0)</td>
+                    <td>Γίνεται ουδέτερο μετά την πήξη.</td>
+                </tr>
+                 <tr>
+                    <td>Χρόνος Ανάμειξης GIC</td>
+                    <td>30-40 δευτερόλεπτα</td>
+                    <td>Σε ψυχρή πλάκα για αύξηση χρόνου εργασίας.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>2. Χημική Σύσταση & Αντιδράσεις</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Κατηγορία Κονίας</th>
+                    <th>Βασικά Συστατικά</th>
+                    <th>Μηχανισμός Πήξης / Δεσμού</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>Φωσφορικού Ψευδαργύρου</b></td>
+                    <td>Σκόνη: ZnO<br>Υγρό: Φωσφορικό Οξύ</td>
+                    <td>Οξινοβασική αντίδραση (Εξώθερμη).<br><b>Μόνο Μηχανική Συγκράτηση</b>.</td>
+                </tr>
+                <tr>
+                    <td><b>Πολυκαρβοξυλική</b></td>
+                    <td>Σκόνη: ZnO<br>Υγρό: Πολυακρυλικό Οξύ</td>
+                    <td>Χηλική ένωση (Chelaion) με το ασβέστιο (Ca).<br><b>Χημικός Δεσμός</b>.</td>
+                </tr>
+                <tr>
+                    <td><b>Ρητινώδεις Κονίες</b></td>
+                    <td>Monomers: Bis-GMA, 4-META, MDP</td>
+                    <td>Πολυμερισμός (Φωτο/Χημικός/Διπλός).</td>
+                </tr>
+                <tr>
+                    <td><b>Αυτο-συγκολλητικές</b></td>
+                    <td>Φωσφορικοί εστέρες (MDP)</td>
+                    <td>Δεν απαιτούν αδροποίηση/παράγοντα συγκόλλησης.</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>3. Ειδικά Μόρια & Τεχνικές (Key Terms)</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>Όρος / Ουσία</th>
+                    <th>Λειτουργία / Σημασία</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><b>MDP</b> <span class="chem-formula">(Methacryloyloxydecyl dihydrogen phosphate)</span></td>
+                    <td>Μονομερές για <b>χημικό δεσμό</b> με μέταλλα (οξείδια) και ζιρκόνιο. Υπάρχει στο Panavia 21.</td>
+                </tr>
+                <tr>
+                    <td><b>4-META</b></td>
+                    <td>Ενεργοποιητής για συγκόλληση με μέταλλα (C&B Superbond).</td>
+                </tr>
+                <tr>
+                    <td><b>Σιλάνιο (Silane)</b></td>
+                    <td>Συνδετικός παράγοντας για <b>Κεραμικά</b> (με πυρίτιο/Leucite). Ενώνει το ανόργανο κεραμικό με την οργανική ρητίνη.</td>
+                </tr>
+                <tr>
+                    <td><b>Υδροφθορικό Οξύ (HF)</b></td>
+                    <td>Αδροποίηση <b>κεραμικών</b> (όχι δοντιού!). Δημιουργεί μικρο-μηχανική συγκράτηση.</td>
+                </tr>
+                <tr>
+                    <td><b>"Ιστοί αράχνης" (Cobwebbing)</b></td>
+                    <td>Στις Πολυκαρβοξυλικές: Σημαίνει ότι η πήξη ξεκίνησε. <b>Το υλικό είναι ακατάλληλο</b>.</td>
+                </tr>
+                <tr>
+                    <td><b>Ψευδοπλαστικότητα</b></td>
+                    <td>Ιδιότητα Πολυκαρβοξυλικών: Γίνονται πιο ρευστές όταν ασκείται πίεση (κατά την τοποθέτηση).</td>
+                </tr>
+                 <tr>
+                    <td><b>Τριβοχημική Επικάλυψη</b></td>
+                    <td>(Rocatec/Cojet): Αμμοβολή μετάλλου με σωματίδια πυριτίου για να κολλήσει το σιλάνιο.</td>
+                </tr>
+            </tbody>
+        </table>
+    </section>
+
+    <section class="quiz-section">
+        <h2 style="text-align: center; border: none;">Test Your Knowledge</h2>
+        <p style="text-align: center;">Επίλεξε τη σωστή απάντηση βάσει των σημειώσεων.</p>
+        
+        <form id="quiz-form">
+            </form>
+
+        <button class="btn" onclick="checkAnswers()">Υποβολή Απαντήσεων</button>
+        <div id="score-display" class="score-box"></div>
+    </section>
+</div>
+
+<script>
+    const quizData = [
+        {
+            question: "1. Ποιο είναι το ιδανικό πάχος φιλμ (film thickness) για μια κονία συγκόλλησης;",
+            options: [
+                "Μικρότερο από 100 μm",
+                "Μικρότερο από 25 μm",
+                "Μεταξύ 50-60 μm",
+                "Δεν έχει σημασία αρκεί να είναι ρευστή"
+            ],
+            answer: 1, // Index of correct option (0-based)
+            explanation: "Βάσει του βιβλίου, το πάχος φιλμ πρέπει να είναι < 25 μm για να μην εμποδίζει την έδραση της στεφάνης."
+        },
+        {
+            question: "2. Ποιο φαινόμενο υποδεικνύει ότι η Πολυκαρβοξυλική κονία έχει αρχίσει να πήζει και δεν πρέπει να χρησιμοποιηθεί;",
+            options: [
+                "Αλλαγή χρώματος σε μπλε",
+                "Έντονη εξώθερμη αντίδραση",
+                "Εμφάνιση 'ιστών αράχνης' (cobwebbing)",
+                "Διαχωρισμός σκόνης-υγρού"
+            ],
+            answer: 2,
+            explanation: "Η εμφάνιση 'ιστών αράχνης' κατά την ανάμειξη δείχνει ότι το πολυακρυλικό οξύ έχει αρχίσει να αντιδρά έντονα και το υλικό είναι ακατάλληλο."
+        },
+        {
+            question: "3. Ποιο υλικό χρησιμοποιείται για την αδροποίηση της εσωτερικής επιφάνειας μιας κεραμικής αποκατάστασης (π.χ. όψης);",
+            options: [
+                "Φωσφορικό οξύ 37%",
+                "Πολυακρυλικό οξύ",
+                "Υδροφθορικό οξύ (HF)",
+                "Σιλάνιο"
+            ],
+            answer: 2,
+            explanation: "Το Υδροφθορικό οξύ (HF) διαβρώνει την υάλινη μήτρα των κεραμικών δημιουργώντας μικρο-πόρους για συγκράτηση."
+        },
+        {
+            question: "4. Ποιο μονομερές είναι υπεύθυνο για τον χημικό δεσμό με τα οξείδια των μετάλλων και το ζιρκόνιο;",
+            options: [
+                "Bis-GMA",
+                "TEGDMA",
+                "MDP",
+                "UDMA"
+            ],
+            answer: 2,
+            explanation: "Το MDP (10-Methacryloyloxydecyl dihydrogen phosphate) περιέχει φωσφορική ομάδα που δεσμεύεται χημικά με μέταλλα και ζιρκόνιο."
+        },
+        {
+            question: "5. Ποιο είναι το κύριο μειονέκτημα της κονίας Φωσφορικού Ψευδαργύρου;",
+            options: [
+                "Πολύ χαμηλή αντοχή στη συμπίεση",
+                "Έλλειψη χημικού δεσμού και πιθανός ερεθισμός πολφού",
+                "Υπερβολική διαστολή κατά την πήξη",
+                "Δεν φαίνεται στην ακτινογραφία"
+            ],
+            answer: 1,
+            explanation: "Η φωσφορική κονία συγκρατείται μόνο μηχανικά και το χαμηλό pH του οξέος μπορεί να ερεθίσει τον πολφό."
+        },
+        {
+            question: "6. Τι σημαίνει ότι μια κονία είναι 'Ψευδοπλαστική' (όπως η πολυκαρβοξυλική);",
+            options: [
+                "Ότι είναι πλαστική και δεν σπάει",
+                "Ότι γίνεται πιο ρευστή όταν αυξάνεται ο ρυθμός διάτμησης (πίεση)",
+                "Ότι σκληραίνει αμέσως μόλις αναμειχθεί",
+                "Ότι μοιάζει με πλαστελίνη"
+            ],
+            answer: 1,
+            explanation: "Ψευδοπλαστικότητα (shear thinning) σημαίνει ότι το ιξώδες μειώνεται όταν ασκείται πίεση, βοηθώντας την ροή του υλικού."
+        },
+        {
+            question: "7. Ποια είναι η τιμή διαλυτότητας στο νερό (μετά από 1 ώρα) για τις Υαλοϊονομερείς κονίες (τύπου Ketac-Cem);",
+            options: [
+                "0%",
+                "~ 0.05%",
+                "~ 0.40% - 0.46%",
+                "~ 2.5%"
+            ],
+            answer: 2,
+            explanation: "Σύμφωνα με τον Πίνακα 3.8.2, η διαλυτότητα κυμαίνεται γύρω στο 0.40% - 0.46%."
+        },
+        {
+            question: "8. Ποια είναι η λειτουργία του Σιλανίου;",
+            options: [
+                "Αδροποιεί την αδαμαντίνη",
+                "Λειτουργεί ως γέφυρα μεταξύ ανόργανου κεραμικού και οργανικής ρητίνης",
+                "Αυξάνει την σκληρότητα του κεραμικού",
+                "Εμποδίζει τον πολυμερισμό"
+            ],
+            answer: 1,
+            explanation: "Το σιλάνιο είναι συζευκτικός παράγοντας. Η μια άκρη του ενώνεται με το πυρίτιο (κεραμικό) και η άλλη με το μεθακρυλικό μονομερές (ρητίνη)."
+        }
+    ];
+
+    function loadQuiz() {
+        const form = document.getElementById('quiz-form');
+        quizData.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            
+            let optionsHtml = '';
+            q.options.forEach((opt, i) => {
+                optionsHtml += `
+                    <label>
+                        <input type="radio" name="q${index}" value="${i}">
+                        ${opt}
+                    </label>
+                `;
+            });
+
+            card.innerHTML = `
+                <div class="question-text">${q.question}</div>
+                <div class="options">${optionsHtml}</div>
+                <div id="feedback-${index}" class="feedback"></div>
+            `;
+            form.appendChild(card);
+        });
+    }
+
+    function checkAnswers() {
+        let score = 0;
+        
+        quizData.forEach((q, index) => {
+            const selected = document.querySelector(`input[name="q${index}"]:checked`);
+            const feedbackDiv = document.getElementById(`feedback-${index}`);
+            
+            if (!selected) {
+                feedbackDiv.textContent = "Παρακαλώ επιλέξτε μια απάντηση.";
+                feedbackDiv.className = "feedback incorrect";
+                feedbackDiv.style.display = "block";
+                return;
+            }
+
+            const answer = parseInt(selected.value);
+            
+            if (answer === q.answer) {
+                score++;
+                feedbackDiv.textContent = "Σωστό! " + q.explanation;
+                feedbackDiv.className = "feedback correct";
+            } else {
+                feedbackDiv.textContent = "Λάθος. " + q.explanation;
+                feedbackDiv.className = "feedback incorrect";
+            }
+            feedbackDiv.style.display = "block";
+        });
+
+        const scoreDiv = document.getElementById('score-display');
+        scoreDiv.textContent = `Σκορ: ${score} / ${quizData.length}`;
+        scoreDiv.style.display = "block";
+        
+        // Scroll to score
+        scoreDiv.scrollIntoView({ behavior: 'smooth' });
+    }
+
+    // Load quiz on page start
+    loadQuiz();
+</script>
+
+</body>
+</html>
