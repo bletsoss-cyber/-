@@ -1,0 +1,340 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cheat Sheet & Quiz: Ενδιάμεσα Αποκαταστατικά Υλικά</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f4f4f9;
+        }
+        h1, h2 {
+            color: #2c3e50;
+            border-bottom: 2px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .section {
+            background: white;
+            padding: 20px;
+            margin-bottom: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            font-size: 0.95em;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #3498db;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        .highlight {
+            font-weight: bold;
+            color: #e74c3c;
+        }
+        /* Quiz Styles */
+        .question {
+            margin-bottom: 20px;
+            padding: 15px;
+            border-left: 4px solid #3498db;
+            background-color: #f9f9f9;
+        }
+        .options label {
+            display: block;
+            margin-bottom: 8px;
+            cursor: pointer;
+        }
+        button {
+            background-color: #27ae60;
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 1.1em;
+            margin-top: 10px;
+        }
+        button:hover {
+            background-color: #219150;
+        }
+        #result {
+            margin-top: 20px;
+            font-weight: bold;
+            font-size: 1.2em;
+            padding: 15px;
+            border-radius: 5px;
+            display: none;
+        }
+        .correct { color: green; }
+        .wrong { color: red; }
+    </style>
+</head>
+<body>
+
+    <h1 style="text-align: center;">Ενδιάμεσα Αποκαταστατικά Υλικά</h1>
+    <p style="text-align: center;">Cheat Sheet & Κουίζ Γνώσεων (Βασισμένο στο Κεφάλαιο 2.4)</p>
+
+    <div class="section">
+        <h2>1. Cheat Sheet: Ορισμοί & Αριθμοί</h2>
+        
+        <h3>Διαχωρισμός Υλικών & Πάχος</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Κατηγορία</th>
+                    <th>Πάχος Στρώματος</th>
+                    <th>Λειτουργία</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>**Επίχρισμα (Liner)**</td>
+                    <td><span class="highlight">&lt; 0,5 mm</span></td>
+                    <td>Θεραπευτική δράση, φραγμός, dentine sealer.</td>
+                </tr>
+                <tr>
+                    <td>**Βάση (Base)**</td>
+                    <td>Παχύτερο στρώμα</td>
+                    <td>Αντικατάσταση οδοντίνης, θερμική μόνωση, μείωση όγκου έμφραξης.</td>
+                </tr>
+                <tr>
+                    <td>**Αποφρακτικό (Sealer)**</td>
+                    <td>Πολύ λεπτό (μικρά)</td>
+                    <td>Φραγμός στα οδοντινοσωληνάρια (αντιμετώπιση υδροδυναμικού φαινομένου).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>pH και Χημικές Ιδιότητες</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Υλικό</th>
+                    <th>pH (Οξύτητα/Αλκαλικότητα)</th>
+                    <th>Ιδιότητα Κλειδί</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>**Υδροξείδιο Ασβεστίου Ca(OH)₂**</td>
+                    <td><span class="highlight">11 - 12 (Αλκαλικό)</span></td>
+                    <td>Διεγείρει σχηματισμό **δευτερογενούς οδοντίνης** (οδοντινική γέφυρα).</td>
+                </tr>
+                <tr>
+                    <td>**Κονία ZOE (μετά την πήξη)**</td>
+                    <td><span class="highlight">6,6 - 8,0 (Ουδέτερο)</span></td>
+                    <td>Καταπραϋντική δράση (ευγενόλη).</td>
+                </tr>
+                <tr>
+                    <td>**Φωσφορική Κονία**</td>
+                    <td>Χαμηλό pH (Όξινο)</td>
+                    <td>Μπορεί να ερεθίσει τον πολφό (ιστορική αναφορά).</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h3>Σύσταση & Αναλογίες (Κονίες)</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Υλικό</th>
+                    <th>Συστατικά / Αναλογίες</th>
+                    <th>Παρατηρήσεις</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>**ZOE (Αναλογία)**</td>
+                    <td>3:1 (Σκόνη : Υγρό)</td>
+                    <td>Απαιτείται για την έναρξη της πήξης.</td>
+                </tr>
+                <tr>
+                    <td>**Καταλύτης Πήξης ZOE**</td>
+                    <td><span class="highlight">Νερό / Υγρασία</span></td>
+                    <td>Το νερό είναι παραπροϊόν αλλά και καταλύτης της αντίδρασης.</td>
+                </tr>
+                <tr>
+                    <td>**EBA Υγρό (Σύσταση)**</td>
+                    <td><span class="highlight">37% Ευγενόλη</span><br><span class="highlight">63% EBA</span> (αιθοξυβενζοϊκό οξύ)</td>
+                    <td>Αντικατάσταση μέρους της ευγενόλης για αντοχή.</td>
+                </tr>
+                <tr>
+                    <td>**EBA Σκόνη (Πρόσθετα)**</td>
+                    <td>20-35% Οξείδιο Αλουμινίου (Alumina)</td>
+                    <td>Για αύξηση αντοχής.</td>
+                </tr>
+                <tr>
+                    <td>**Αντοχή ZOE vs EBA**</td>
+                    <td>EBA: ~40 MPa (υψηλότερη)<br>ZOE: χαμηλότερη</td>
+                    <td>Η EBA χρησιμοποιείται ως βάση λόγω αντοχής.</td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+    <div class="section">
+        <h2>2. Κουίζ Λεπτομερειών</h2>
+        <p>Επίλεξε τη σωστή απάντηση βάσει των πινάκων και του κειμένου.</p>
+        
+        <form id="quizForm">
+            <div class="question">
+                <strong>1. Ποιο είναι το μέγιστο πάχος ενός υλικού για να χαρακτηριστεί ως "επίχρισμα" (liner);</strong>
+                <div class="options">
+                    <label><input type="radio" name="q1" value="wrong"> 1.0 mm</label>
+                    <label><input type="radio" name="q1" value="correct"> 0.5 mm</label>
+                    <label><input type="radio" name="q1" value="wrong"> 1.5 mm</label>
+                    <label><input type="radio" name="q1" value="wrong"> 2.0 mm</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <strong>2. Ποιο είναι το pH του Υδροξειδίου του Ασβεστίου (Ca(OH)₂);</strong>
+                <div class="options">
+                    <label><input type="radio" name="q2" value="wrong"> 6.6 - 8.0</label>
+                    <label><input type="radio" name="q2" value="wrong"> 3.0 - 4.0</label>
+                    <label><input type="radio" name="q2" value="correct"> 11 - 12</label>
+                    <label><input type="radio" name="q2" value="wrong"> 7.0 (Ουδέτερο)</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <strong>3. Ποια ουσία λειτουργεί ως καταλύτης για την έναρξη της αντίδρασης πήξης της κονίας οξειδίου ψευδαργύρου-ευγενόλης;</strong>
+                <div class="options">
+                    <label><input type="radio" name="q3" value="wrong"> Οξυγόνο</label>
+                    <label><input type="radio" name="q3" value="correct"> Νερό / Υγρασία</label>
+                    <label><input type="radio" name="q3" value="wrong"> Φως</label>
+                    <label><input type="radio" name="q3" value="wrong"> Αλκοόλη</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <strong>4. Ποια είναι η σύσταση του ΥΓΡΟΥ στις κονίες EBA;</strong>
+                <div class="options">
+                    <label><input type="radio" name="q4" value="wrong"> 100% Ευγενόλη</label>
+                    <label><input type="radio" name="q4" value="wrong"> 50% Ευγενόλη - 50% Νερό</label>
+                    <label><input type="radio" name="q4" value="correct"> 37% Ευγενόλη - 63% EBA</label>
+                    <label><input type="radio" name="q4" value="wrong"> 10% Ευγενόλη - 90% Φωσφορικό Οξύ</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <strong>5. Τι προστίθεται στη σκόνη της κονίας EBA για να αυξηθεί η αντοχή της;</strong>
+                <div class="options">
+                    <label><input type="radio" name="q5" value="correct"> 20-35% Οξείδιο του Αλουμινίου (Alumina)</label>
+                    <label><input type="radio" name="q5" value="wrong"> 10% Διαμάντι</label>
+                    <label><input type="radio" name="q5" value="wrong"> 40% Ρητίνη Bis-GMA</label>
+                    <label><input type="radio" name="q5" value="wrong"> 5% Φθόριο</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <strong>6. Σύμφωνα με την υδροδυναμική θεωρία, τι προκαλεί τον πόνο;</strong>
+                <div class="options">
+                    <label><input type="radio" name="q6" value="wrong"> Η άμεση επαφή του μετάλλου με το νεύρο.</label>
+                    <label><input type="radio" name="q6" value="correct"> Η μετακίνηση υγρού μέσα στα οδοντινοσωληνάρια.</label>
+                    <label><input type="radio" name="q6" value="wrong"> Η αύξηση της θερμοκρασίας πάνω από τους 60°C.</label>
+                    <label><input type="radio" name="q6" value="wrong"> Η χημική διάβρωση της αδαμαντίνης.</label>
+                </div>
+            </div>
+
+            <div class="question">
+                <strong>7. Ποια αναλογία σκόνης-υγρού απαιτείται περίπου για την αντίδραση πήξης της κονίας οξειδίου ψευδαργύρου;</strong>
+                <div class="options">
+                    <label><input type="radio" name="q7" value="wrong"> 1:1</label>
+                    <label><input type="radio" name="q7" value="correct"> 3:1</label>
+                    <label><input type="radio" name="q7" value="wrong"> 10:1</label>
+                    <label><input type="radio" name="q7" value="wrong"> 1:5</label>
+                </div>
+            </div>
+
+             <div class="question">
+                <strong>8. Τι ισχύει για τη χρήση κονίας με ευγενόλη (ZOE) κάτω από σύνθετες ρητίνες;</strong>
+                <div class="options">
+                    <label><input type="radio" name="q8" value="wrong"> Συνιστάται γιατί αυξάνει την πρόσφυση.</label>
+                    <label><input type="radio" name="q8" value="correct"> Απαγορεύεται γιατί η ευγενόλη αναστέλλει τον πολυμερισμό της ρητίνης.</label>
+                    <label><input type="radio" name="q8" value="wrong"> Είναι αδιάφορο, δεν αλληλεπιδρούν.</label>
+                    <label><input type="radio" name="q8" value="wrong"> Επιτρέπεται μόνο αν η ρητίνη είναι μπλε χρώματος.</label>
+                </div>
+            </div>
+
+            <button type="button" onclick="checkAnswers()">Έλεγχος Αποτελεσμάτων</button>
+        </form>
+
+        <div id="result"></div>
+    </div>
+
+    <script>
+        function checkAnswers() {
+            var totalQuestions = 8;
+            var score = 0;
+            var resultDiv = document.getElementById('result');
+            
+            // Get all answers
+            var q1 = document.querySelector('input[name="q1"]:checked');
+            var q2 = document.querySelector('input[name="q2"]:checked');
+            var q3 = document.querySelector('input[name="q3"]:checked');
+            var q4 = document.querySelector('input[name="q4"]:checked');
+            var q5 = document.querySelector('input[name="q5"]:checked');
+            var q6 = document.querySelector('input[name="q6"]:checked');
+            var q7 = document.querySelector('input[name="q7"]:checked');
+            var q8 = document.querySelector('input[name="q8"]:checked');
+
+            var answers = [q1, q2, q3, q4, q5, q6, q7, q8];
+            var allAnswered = true;
+
+            answers.forEach(function(ans) {
+                if (!ans) allAnswered = false;
+                else if (ans.value === "correct") score++;
+            });
+
+            if (!allAnswered) {
+                resultDiv.style.display = 'block';
+                resultDiv.style.backgroundColor = '#ffeeba';
+                resultDiv.style.color = '#856404';
+                resultDiv.innerHTML = "Παρακαλώ απάντησε σε όλες τις ερωτήσεις!";
+                return;
+            }
+
+            var percentage = (score / totalQuestions) * 100;
+            var message = "";
+            var color = "";
+            var bgColor = "";
+
+            if (percentage === 100) {
+                message = "Άριστα! Ξέρεις όλες τις λεπτομέρειες!";
+                color = "#155724";
+                bgColor = "#d4edda";
+            } else if (percentage >= 70) {
+                message = "Πολύ καλά! Μικρές ελλείψεις.";
+                color = "#0c5460";
+                bgColor = "#d1ecf1";
+            } else {
+                message = "Χρειάζεται επανάληψη στον πίνακα!";
+                color = "#721c24";
+                bgColor = "#f8d7da";
+            }
+
+            resultDiv.style.display = 'block';
+            resultDiv.style.backgroundColor = bgColor;
+            resultDiv.style.color = color;
+            resultDiv.innerHTML = `Σκορ: ${score} / ${totalQuestions} (${percentage}%) <br> ${message}`;
+        }
+    </script>
+</body>
+</html>
