@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Υαλοϊονομερείς Κονίες - Ultimate Study Guide & Quiz</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            line-height: 1.6;
+            color: #333;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 20px;
+        }
+        h1, h2, h3 {
+            color: #2c3e50;
+        }
+        h1 {
+            text-align: center;
+            border-bottom: 3px solid #3498db;
+            padding-bottom: 10px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            padding: 12px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
+        th {
+            background-color: #2c3e50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f9f9f9;
+        }
+        
+        /* Highlights */
+        .highlight-danger {
+            background-color: #ffebee;
+            color: #c0392b;
+            font-weight: bold;
+        }
+        .highlight-success {
+            background-color: #e8f5e9;
+            color: #27ae60;
+            font-weight: bold;
+        }
+        .highlight-warning {
+            background-color: #fff3e0;
+            color: #e67e22;
+            font-weight: bold;
+        }
+        .sos {
+            color: #d35400;
+            font-weight: bold;
+        }
+
+        /* Cheat Sheet */
+        .cheat-sheet {
+            background-color: #ecf0f1;
+            padding: 15px;
+            border-left: 5px solid #3498db;
+            margin-bottom: 30px;
+        }
+        .cheat-sheet ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        .cheat-sheet li {
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ddd;
+            padding-bottom: 5px;
+        }
+
+        /* Quiz Styles */
+        .quiz-section {
+            margin-top: 40px;
+        }
+        .question-card {
+            background: #fff;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            padding: 15px;
+            margin-bottom: 15px;
+        }
+        .question-text {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 10px;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+        }
+        .option-btn {
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            background: #f8f9fa;
+            cursor: pointer;
+            text-align: left;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .option-btn:hover {
+            background-color: #e2e6ea;
+        }
+        
+        /* Quiz Feedback */
+        .correct-answer {
+            background-color: #d4edda !important;
+            border-color: #c3e6cb !important;
+            color: #155724;
+        }
+        .wrong-answer {
+            background-color: #f8d7da !important;
+            border-color: #f5c6cb !important;
+            color: #721c24;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e7f3fe;
+            border-left: 4px solid #2196F3;
+            display: none; /* Hidden by default */
+            font-size: 0.9em;
+        }
+        .nav-btn {
+            display: block;
+            width: 100%;
+            padding: 15px;
+            background-color: #3498db;
+            color: white;
+            text-align: center;
+            border: none;
+            font-size: 1.2em;
+            cursor: pointer;
+            margin-top: 20px;
+            border-radius: 5px;
+        }
+        .nav-btn:hover {
+            background-color: #2980b9;
+        }
+
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Υαλοϊονομερείς Κονίες: Οδηγός & Quiz</h1>
+
+    <h2>1. Συγκριτικοί Πίνακες & Ιδιότητες</h2>
+    
+    <h3>Α. Σύγκριση Ειδών</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Είδος</th>
+                <th>Συμβατικές</th>
+                <th>Cermets (Αργυρομεταλλικές)</th>
+                <th>Ρητινώδεις Τροποποιημένες (ΡΤΥΚ)</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><strong>Σύνθεση</strong></td>
+                <td>Σκόνη (Υάλος) + Υγρό (Οξύ)</td>
+                <td>Υάλος + Άργυρος (Sintered)</td>
+                <td>Υάλος + Οξύ + <span class="sos">Ρητίνη (HEMA)</span></td>
+            </tr>
+            <tr>
+                <td><strong>Μηχανισμός Πήξης</strong></td>
+                <td>Χημική (Οξέος-Βάσης)</td>
+                <td>Χημική</td>
+                <td><span class="highlight-success">Διπλός</span> (Χημική + Φωτοπολυμερισμός)</td>
+            </tr>
+            <tr>
+                <td><strong>Ευαισθησία στο νερό (Αρχικά)</strong></td>
+                <td><span class="highlight-danger">ΥΨΗΛΗ</span> (Διάλυση/Αφυδάτωση)</td>
+                <td>Μέτρια</td>
+                <td><span class="highlight-success">Χαμηλή</span> (Προστασία από ρητίνη)</td>
+            </tr>
+            <tr>
+                <td><strong>Υγροσκοπική Διαστολή</strong></td>
+                <td>Όχι</td>
+                <td>Όχι</td>
+                <td><span class="highlight-danger">ΝΑΙ</span> (Λόγω HEMA)</td>
+            </tr>
+            <tr>
+                <td><strong>Λείανση</strong></td>
+                <td>Μετά από <span class="sos">24 ώρες</span></td>
+                <td>Μετά από 24 ώρες</td>
+                <td><span class="highlight-success">Άμεσα</span></td>
+            </tr>
+        </tbody>
+    </table>
+
+    <h2>2. Cheat Sheet: Αριθμοί & SOS Ουσίες</h2>
+    <div class="cheat-sheet">
+        <h3>🧪 Ουσίες & Χημεία</h3>
+        <ul>
+            <li><strong>Conditioner (Προετοιμασία):</strong> <span class="sos">Πολυακρυλικό οξύ</span> (10-20%). Αφαιρεί το smear layer χωρίς να ανοίγει τα σωληνάρια.</li>
+            <li><strong>Απαγορευμένη ουσία:</strong> <span class="highlight-danger">Φωσφορικό Οξύ 37%</span> (ΔΕΝ το χρησιμοποιούμε όπως στις ρητίνες).</li>
+            <li><strong>HEMA:</strong> Υδρόφιλο μονομερές στις Ρητινώδεις. Προκαλεί <span class="sos">Υγροσκοπική Διαστολή</span>.</li>
+            <li><strong>CaOH (Υδροξείδιο Ασβεστίου):</strong> Απαραίτητο για προστασία πολφού σε βαθιές κοιλότητες.</li>
+        </ul>
+
+        <h3>🔢 Αριθμητικά Δεδομένα</h3>
+        <ul>
+            <li><strong>Χρόνος Conditioner:</strong> <span class="sos">10 - 20 δευτερόλεπτα</span>.</li>
+            <li><strong>Ανάμειξη κάψουλας:</strong> 10 δευτερόλεπτα στις 4000 στροφές.</li>
+            <li><strong>Χρόνος Λείανσης (Συμβατικές):</strong> <span class="highlight-danger">24 ώρες</span> μετά την τοποθέτηση.</li>
+            <li><strong>Χρόνος Λείανσης (Ρητινώδεις):</strong> Άμεσα.</li>
+            <li><strong>Πάχος οδοντίνης για προστασία πολφού:</strong> Αν είναι < 0.5mm, βάζουμε CaOH.</li>
+        </ul>
+
+        <h3>⚠️ Κλινικές Προειδοποιήσεις</h3>
+        <ul>
+            <li><strong>Βερνίκι:</strong> ΥΠΟΧΡΕΩΤΙΚΟ στις συμβατικές αμέσως μετά την τοποθέτηση.</li>
+            <li><strong>Ξήρανση:</strong> Ποτέ υπερβολική ξήρανση (desiccation) -> προκαλεί μετεγχειρητική ευαισθησία και ρωγμές.</li>
+            <li><strong>Αντενδείξεις:</strong> Όχι σε κοπτικά χείλη (χαμηλή αντοχή σε εφελκυσμό) & Όχι ΡΤΥΚ κάτω από ολοκεραμικές (σπάνε λόγω διαστολής).</li>
+        </ul>
+    </div>
+
+    <div class="quiz-section">
+        <h2>3. Quiz Εμπαίδωσης (20 Ερωτήσεις)</h2>
+        <p>Κάνε κλικ στη σωστή απάντηση. Η διόρθωση γίνεται αυτόματα.</p>
+        
+        <div id="quiz-container">
+            </div>
+
+        <button class="nav-btn" onclick="location.reload()">🔄 Επαναφορά Κουίζ</button>
+    </div>
+
+</div>
+
+<script>
+    const questions = [
+        {
+            q: "Ποιο οξύ χρησιμοποιείται ως Conditioner για την προετοιμασία της οδοντίνης;",
+            options: ["Φωσφορικό οξύ 37%", "Πολυακρυλικό οξύ 10-20%", "Υδροχλωρικό οξύ", "Κιτρικό οξύ 50%"],
+            correct: 1,
+            explanation: "Χρησιμοποιούμε πολυακρυλικό οξύ (conditioner) για να αφαιρέσουμε το smear layer χωρίς να απομεταλλώσουμε πλήρως την οδοντίνη. Το φωσφορικό οξύ είναι πολύ ισχυρό."
+        },
+        {
+            q: "Πόσος είναι ο ενδεδειγμένος χρόνος εφαρμογής του Conditioner;",
+            options: ["1 λεπτό", "30-60 δευτερόλεπτα", "10-20 δευτερόλεπτα", "5 δευτερόλεπτα"],
+            correct: 2,
+            explanation: "Ο χρόνος 10-20 δευτερόλεπτα είναι αρκετός για καθαρισμό. Περισσότερος χρόνος μπορεί να ανοίξει τα οδοντινοσωληνάρια και να προκαλέσει ευαισθησία."
+        },
+        {
+            q: "Πότε επιτρέπεται η τελική λείανση/στίλβωση σε μια ΣΥΜΒΑΤΙΚΗ υαλοϊονομερή κονία;",
+            options: ["Αμέσως μετά την πήξη", "Μετά από 10 λεπτά", "Μετά από 24 ώρες", "Μετά από 1 εβδομάδα"],
+            correct: 2,
+            explanation: "Οι συμβατικές κονίες χρειάζονται 24 ώρες για να ωριμάσουν πλήρως. Η πρόωρη λείανση προκαλεί αφυδάτωση και διαταράσσει την επιφάνεια."
+        },
+        {
+            q: "Ποιο συστατικό ευθύνεται για την υγροσκοπική διαστολή στις Ρητινώδεις Υαλοϊονομερείς (ΡΤΥΚ);",
+            options: ["Η ύαλος", "Το φθόριο", "Το νερό", "Το HEMA"],
+            correct: 3,
+            explanation: "Το HEMA είναι υδρόφιλο μονομερές ρητίνης που απορροφά νερό μετά την πήξη, προκαλώντας διόγκωση του υλικού."
+        },
+        {
+            q: "Γιατί απαγορεύεται η χρήση ΡΤΥΚ κάτω από ολοκεραμικές στεφάνες;",
+            options: ["Δεν συγκρατούν τη στεφάνη", "Λόγω της υγροσκοπικής διαστολής (κίνδυνος κατάγματος πορσελάνης)", "Επειδή έχουν κακό χρώμα", "Επειδή δεν απελευθερώνουν φθόριο"],
+            correct: 1,
+            explanation: "Η υγροσκοπική διαστολή (φούσκωμα) του υλικού μπορεί να ασκήσει εσωτερική πίεση και να σπάσει την ολοκεραμική στεφάνη."
+        },
+        {
+            q: "Ποιο είναι το κύριο μειονέκτημα των Αργυρομεταλλικών κονιών (Cermets);",
+            options: ["Χαμηλή αντοχή", "Πολύ αργή πήξη", "Κακή αισθητική (Γκρι χρώμα)", "Υψηλή τοξικότητα"],
+            correct: 2,
+            explanation: "Λόγω της ενσωμάτωσης αργύρου, έχουν γκρι μεταλλικό χρώμα, άρα δεν είναι αισθητικές."
+        },
+        {
+            q: "Ποια είναι η βασική ιδιότητα αντοχής των υαλοϊονομερών;",
+            options: ["Υψηλή αντοχή σε εφελκυσμό, Χαμηλή σε θλίψη", "Υψηλή αντοχή σε θλίψη, Χαμηλή σε εφελκυσμό", "Υψηλή και στα δύο", "Χαμηλή και στα δύο"],
+            correct: 1,
+            explanation: "Είναι ψαθυρά υλικά. Αντέχουν στο πάτημα (θλίψη) αλλά σπάνε εύκολα αν λυγίσουν (εφελκυσμός)."
+        },
+        {
+            q: "Τι πρέπει να κάνουμε ΟΠΩΣΔΗΠΟΤΕ αμέσως μετά την τοποθέτηση μιας συμβατικής υαλοϊονομερούς;",
+            options: ["Να φυσήξουμε δυνατά με αέρα", "Να βάλουμε βερνίκι προστασίας", "Να τροχίσουμε", "Να βάλουμε φωσφορικό οξύ"],
+            correct: 1,
+            explanation: "Το βερνίκι προστατεύει την κονία από το σάλιο (διάλυση) και τον αέρα (αφυδάτωση/ρωγμές) μέχρι να πήξει πλήρως."
+        },
+        {
+            q: "Πώς συγκολλούνται τα υαλοϊονομερή στο δόντι;",
+            options: ["Μόνο μηχανικά (υποσκαφές)", "Χημικά (με ιόντα ασβεστίου)", "Με τη βοήθεια ρητίνης bonding μόνο", "Δεν συγκολλούνται"],
+            correct: 1,
+            explanation: "Δημιουργούν χημικό δεσμό με το ασβέστιο της οδοντίνης και της αδαμαντίνης."
+        },
+        {
+            q: "Σε πολύ βαθιές κοιλότητες (οδοντίνη < 0.5mm), τι τοποθετούμε πριν την κονία;",
+            options: ["Τίποτα, μπαίνει απευθείας", "Φωσφορικό οξύ", "Υδροξείδιο του Ασβεστίου (CaOH)", "Βερνίκι"],
+            correct: 2,
+            explanation: "Επειδή τα υαλοϊονομερή είναι όξινα αρχικά, μπορεί να ερεθίσουν τον πολφό. Το CaOH τον προστατεύει."
+        },
+        {
+            q: "Ποιος είναι ο χρόνος ανάμειξης μιας κάψουλας υαλοϊονομερούς στον δονητή;",
+            options: ["10 δευτερόλεπτα", "30 δευτερόλεπτα", "1 λεπτό", "2 λεπτά"],
+            correct: 0,
+            explanation: "Συνήθως 10 δευτερόλεπτα σε υψηλή ταχύτητα (4000 rpm) είναι αρκετά."
+        },
+        {
+            q: "Ποιο είδος υαλοϊονομερούς επιτρέπει την ΆΜΕΣΗ λείανση;",
+            options: ["Συμβατικές", "Cermets", "Ρητινώδεις Τροποποιημένες", "Καμία"],
+            correct: 2,
+            explanation: "Οι Ρητινώδεις πήζουν με φως (φωτοπολυμερισμός), οπότε σκληραίνουν αμέσως και μπορούν να λειανθούν."
+        },
+        {
+            q: "Τι συμβαίνει αν αφυδατωθεί υπερβολικά (desiccation) μια συμβατική κονία;",
+            options: ["Γίνεται πιο σκληρή", "Δημιουργούνται ρωγμές και γίνεται αδιαφανής", "Βελτιώνεται η αισθητική", "Τίποτα"],
+            correct: 1,
+            explanation: "Η απώλεια νερού σταματά την αντίδραση πήξης και προκαλεί μικρο-ρωγμές στην επιφάνεια (crazing)."
+        },
+        {
+            q: "Για ποια κατηγορία κοιλοτήτων είναι ιδανικά τα υαλοϊονομερή;",
+            options: ["Ομάδα ΙV (Κοπτικά χείλη)", "Ομάδα V (Αυχενικές)", "Μεγάλες ανασυστάσεις σε γομφίους", "Γέφυρες"],
+            correct: 1,
+            explanation: "Οι αυχενικές κοιλότητες (V) δεν δέχονται μεγάλα μασητικά φορτία και ωφελούνται από την απελευθέρωση φθορίου."
+        },
+        {
+            q: "Η 'Τεχνική Σάντουιτς' συνδυάζει:",
+            options: ["Αμάλγαμα και Ρητίνη", "Υαλοϊονομερή (βάση) και Σύνθετη Ρητίνη (επικάλυψη)", "Δύο στρώματα βερνικιού", "Cermets και Συμβατικές"],
+            correct: 1,
+            explanation: "Βάζουμε υαλοϊονομερή στη βάση για χημική συγκόλληση/φθόριο και ρητίνη από πάνω για αισθητική και αντοχή."
+        },
+        {
+            q: "Τι προσφέρει η προσθήκη ρητίνης στις Τροποποιημένες κονίες (ΡΤΥΚ) ως προς τον χειρισμό;",
+            options: ["Μικρότερο χρόνο εργασίας", "Command set (έλεγχο πήξης με φως)", "Ανάγκη για βερνίκι", "Μειωμένη αντοχή"],
+            correct: 1,
+            explanation: "Ο γιατρός μπορεί να πολυμερίσει το υλικό όποτε θέλει με τη λάμπα, ελέγχοντας τον χρόνο πήξης."
+        },
+        {
+            q: "Αν το υλικό κολλήσει στο εργαλείο κατά την τοποθέτηση, τι δεν πρέπει να χρησιμοποιήσουμε;",
+            options: ["Αλκοόλη", "Bonding χωρίς οξύ", "Ξηρό εργαλείο", "Βερνίκι"],
+            correct: 0,
+            explanation: "Η αλκοόλη μπορεί να αφυδατώσει το υλικό. Συνήθως χρησιμοποιούμε εργαλείο ελαφρώς διαβρεγμένο με bonding (χωρίς filler)."
+        },
+        {
+            q: "Η απελευθέρωση φθορίου από τα υαλοϊονομερή:",
+            options: ["Σταματά μετά από 24 ώρες", "Συμβαίνει μόνο στις Cermets", "Είναι μακροχρόνια και επαναφορτιζόμενη", "Είναι μύθος"],
+            correct: 2,
+            explanation: "Τα υαλοϊονομερή απελευθερώνουν φθόριο για μεγάλο διάστημα και μπορούν να 'γεμίσουν' ξανά αν ο ασθενής χρησιμοποιεί φθοριούχο οδοντόκρεμα."
+        },
+        {
+            q: "Ποιο υλικό έχει τη μεγαλύτερη αντοχή στην αποτριβή;",
+            options: ["Συμβατική Υαλοϊονομερής", "Cermet (Αργυρομεταλλική)", "Οξείδιο του ψευδαργύρου", "Όλα ίδια"],
+            correct: 1,
+            explanation: "Η ενίσχυση με μόρια αργύρου (Cermets) βελτιώνει σημαντικά την αντοχή στην τριβή."
+        },
+        {
+            q: "Τα υαλοϊονομερή χαρακτηρίζονται ως:",
+            options: ["Υδρόφοβα υλικά", "Βιοσυμβατά υλικά", "Τοξικά υλικά", "Αδρανή υλικά"],
+            correct: 1,
+            explanation: "Θεωρούνται βιοσυμβατά (ειδικά μετά την πήξη) και φιλικά προς τους ιστούς, με καλή αντίδραση των ούλων στις αυχενικές εμφράξεις."
+        }
+    ];
+
+    function loadQuiz() {
+        const container = document.getElementById('quiz-container');
+        container.innerHTML = '';
+
+        questions.forEach((q, index) => {
+            const card = document.createElement('div');
+            card.className = 'question-card';
+            
+            const title = document.createElement('div');
+            title.className = 'question-text';
+            title.innerText = `${index + 1}. ${q.q}`;
+            card.appendChild(title);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            q.options.forEach((opt, i) => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, i, q.correct, card, q.explanation);
+                optionsDiv.appendChild(btn);
+            });
+
+            card.appendChild(optionsDiv);
+
+            const expl = document.createElement('div');
+            expl.className = 'explanation';
+            expl.innerHTML = `<strong>Εξήγηση:</strong> ${q.explanation}`;
+            card.appendChild(expl);
+
+            container.appendChild(card);
+        });
+    }
+
+    function checkAnswer(btn, selectedIndex, correctIndex, card, explanationText) {
+        // Disable all buttons in this card
+        const buttons = card.querySelectorAll('.option-btn');
+        buttons.forEach(b => b.disabled = true);
+
+        // Show explanation
+        const explDiv = card.querySelector('.explanation');
+        explDiv.style.display = 'block';
+
+        if (selectedIndex === correctIndex) {
+            btn.classList.add('correct-answer');
+            btn.innerHTML += ' ✅';
+        } else {
+            btn.classList.add('wrong-answer');
+            btn.innerHTML += ' ❌';
+            // Highlight the correct one
+            buttons[correctIndex].classList.add('correct-answer');
+            buttons[correctIndex].innerHTML += ' ✅ (Σωστό)';
+        }
+    }
+
+    // Initialize Quiz on load
+    window.onload = loadQuiz;
+</script>
+
+</body>
+</html>
