@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="el">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Κουίζ Μηχανικής Υλικών</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f4f9;
+            color: #333;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+        }
+        .quiz-container {
+            background: white;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .question-block {
+            margin-bottom: 30px;
+            border-bottom: 1px solid #eee;
+            padding-bottom: 20px;
+        }
+        .question-text {
+            font-weight: bold;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            color: #2c3e50;
+        }
+        .options {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .option-btn {
+            padding: 10px 15px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            background: #fff;
+            cursor: pointer;
+            text-align: left;
+            transition: all 0.2s;
+            font-size: 1em;
+        }
+        .option-btn:hover:not(.disabled) {
+            background-color: #f0f8ff;
+            border-color: #3498db;
+        }
+        .option-btn.correct {
+            background-color: #d4edda;
+            border-color: #28a745;
+            color: #155724;
+        }
+        .option-btn.incorrect {
+            background-color: #f8d7da;
+            border-color: #dc3545;
+            color: #721c24;
+        }
+        .explanation {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #e8f4fd;
+            border-left: 4px solid #3498db;
+            display: none; /* Κρυφό αρχικά */
+            font-size: 0.95em;
+        }
+        .disabled {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Κουίζ Ορισμών</h1>
+    <div class="quiz-container" id="quiz">
+        </div>
+
+<script>
+    // Τα δεδομένα από το κείμενό σας
+    const quizData = [
+        {
+            term: "Μέτρο ελαστικότητας",
+            definition: "Ο λόγος της τάσης προς την παραμόρφωση όπου η τάση μεταβάλλεται γραμμικά σε σχέση με την παραμόρφωση."
+        },
+        {
+            term: "Τάση διαρροής (Όριο διαρροής)",
+            definition: "Η ελάχιστη τιμή τάσης που προκαλεί πλαστική παραμόρφωση σε ένα δοκίμιο."
+        },
+        {
+            term: "Όριο αντοχής",
+            definition: "Είναι η μέγιστη τάση στην καμπύλη Τάσης-Παραμόρφωσης (ΤΠ)."
+        },
+        {
+            term: "Τάση θραύσης (Όριο θραύσης)",
+            definition: "Είναι το τελευταίο σημείο της καμπύλης ΤΠ, που αντιστοιχεί στην τάση που το υλικό έσπασε."
+        },
+        {
+            term: "Όριο αναλογίας",
+            definition: "Είναι η τιμή της τάσης στην καμπύλη ΤΠ, πάνω από την οποία η καμπύλη φεύγει εκτός της αρχικής γραμμικής συμπεριφοράς."
+        },
+        {
+            term: "Όριο ελαστικότητας",
+            definition: "Είναι η τιμή της τάσης στην καμπύλη ΤΠ, πάνω από την οποία προκαλούνται πλαστικές παραμορφώσεις (το υλικό δεν επιστρέφει στο αρχικό σχήμα)."
+        },
+        {
+            term: "Ελαστική παραμόρφωση",
+            definition: "Ένα υλικό υπό φόρτιση λέγεται ότι παρουσιάζει αυτό το είδος παραμόρφωσης, εάν επιστρέφει στο αρχικό σχήμα και μέγεθος κατά την αποφόρτισή του."
+        },
+        {
+            term: "Πλαστική παραμόρφωση",
+            definition: "Ένα υλικό υπό φόρτιση λέγεται ότι παρουσιάζει αυτό το είδος παραμόρφωσης, εάν παρουσιάζει μόνιμες παραμορφώσεις κατά την αποφόρτισή του."
+        },
+        {
+            term: "Ολκιμότητα",
+            definition: "Είναι η ικανότητα υλικού να παρουσιάζει πλαστικές παραμορφώσεις χωρίς να υποστεί θραύση."
+        },
+        {
+            term: "Λαίμωση (Necking)",
+            definition: "Φαινόμενο στα όλκιμα υλικά όπου η παραμόρφωση συγκεντρώνεται σε μια περιοχή, προκαλώντας ισχυρή μείωση διατομής («λαιμός»)."
+        },
+        {
+            term: "Μέτρο Ανθεκτικότητας (Modulus of Resilience)",
+            definition: "Η ελαστική ενέργεια ανά μονάδα όγκου που απαιτείται για την παραμόρφωση του δοκιμίου έως το σημείο διαρροής (εμβαδόν κάτω από το ελαστικό τμήμα)."
+        },
+        {
+            term: "Σκληρότητα (Toughness)",
+            definition: "Η συνολική ενέργεια ανά μονάδα όγκου που απορροφάται από το δοκίμιο μέχρι τη θραύση του (εμβαδόν κάτω από ολόκληρη την καμπύλη)."
+        }
+    ];
+
+    const quizContainer = document.getElementById('quiz');
+
+    // Συνάρτηση για ανακάτεμα πίνακα (Fisher-Yates shuffle)
+    function shuffleArray(array) {
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [array[i], array[j]] = [array[j], array[i]];
+        }
+        return array;
+    }
+
+    function createQuiz() {
+        quizData.forEach((item, index) => {
+            // Δημιουργία επιλογών: Η σωστή + 3 τυχαίες λάθος
+            let options = [item.term];
+            
+            // Βρίσκουμε όλους τους άλλους όρους για να πάρουμε λάθος απαντήσεις
+            let otherTerms = quizData.filter(i => i.term !== item.term).map(i => i.term);
+            shuffleArray(otherTerms);
+            
+            // Παίρνουμε τους 3 πρώτους από τους ανακατεμένους λάθος όρους
+            options.push(...otherTerms.slice(0, 3));
+            
+            // Ανακατεύουμε τις τελικές επιλογές ώστε η σωστή να μην είναι πάντα πρώτη
+            shuffleArray(options);
+
+            // Δημιουργία HTML για την ερώτηση
+            const questionBlock = document.createElement('div');
+            questionBlock.className = 'question-block';
+
+            const questionText = document.createElement('div');
+            questionText.className = 'question-text';
+            questionText.innerHTML = `${index + 1}. ${item.definition}`;
+            questionBlock.appendChild(questionText);
+
+            const optionsDiv = document.createElement('div');
+            optionsDiv.className = 'options';
+
+            options.forEach(opt => {
+                const btn = document.createElement('button');
+                btn.className = 'option-btn';
+                btn.innerText = opt;
+                btn.onclick = () => checkAnswer(btn, item.term, optionsDiv, explanationDiv);
+                optionsDiv.appendChild(btn);
+            });
+            questionBlock.appendChild(optionsDiv);
+
+            // Πλαίσιο εξήγησης
+            const explanationDiv = document.createElement('div');
+            explanationDiv.className = 'explanation';
+            explanationDiv.innerHTML = `<strong>Σωστή απάντηση:</strong> ${item.term}<br><em>${item.definition}</em>`;
+            questionBlock.appendChild(explanationDiv);
+
+            quizContainer.appendChild(questionBlock);
+        });
+    }
+
+    function checkAnswer(selectedBtn, correctAnswer, optionsContainer, explanationDiv) {
+        const buttons = optionsContainer.querySelectorAll('.option-btn');
+        
+        // Απενεργοποίηση όλων των κουμπιών
+        buttons.forEach(btn => {
+            btn.classList.add('disabled');
+            if (btn.innerText === correctAnswer) {
+                btn.classList.add('correct'); // Πάντα πρασινίζουμε τη σωστή
+            } else if (btn === selectedBtn) {
+                btn.classList.add('incorrect'); // Κοκκινίζουμε την επιλεγμένη αν είναι λάθος
+            }
+        });
+
+        // Εμφάνιση εξήγησης
+        explanationDiv.style.display = 'block';
+    }
+
+    // Εκκίνηση
+    createQuiz();
+
+</script>
+
+</body>
+</html>
